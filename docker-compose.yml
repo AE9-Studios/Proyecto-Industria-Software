@@ -71,7 +71,7 @@ services:
     restart: always
     tty: true
     ports: 
-      - "8000:80"
+      - "80:80"
     networks: 
       - node-network
     depends_on:
