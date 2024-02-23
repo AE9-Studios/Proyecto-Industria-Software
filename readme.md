@@ -56,10 +56,10 @@ Las dependencias son las dependencias iniciales para que el proyecto funcione, u
 
 Si quiere desarrollar fuera del docker lo puede hacer, solo le recomendaría deje descomentada la base de datos del docker-compose y comente el backEnd, El frontEnd y el servidor nginx.
 
-base de datos en el puerto 5432
-backend en el puerto 3000
-frontend en el puerto 5173, exepto si trabaja fuera del docker y buildea el proyecto el front correria en el puerto 4173
-pgadmin puerto 8001
+- base de datos en el puerto 5432
+- backend en el puerto 3000
+- frontend en el puerto 5173, exepto si trabaja fuera del docker y buildea el proyecto el front correria en el puerto 4173
+- pgadmin puerto 8001
 
 El nginx corre en el puerto 80 (puerto por defecto del localhost) y redirige las direcciones tanto al backend como al frontend, por lo que si entra al puerto 80 ira al frontend y al 80/api ira al backend.
 
