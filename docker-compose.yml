@@ -15,8 +15,6 @@ services:
     tty: true
     ports: 
       - "3000:3000"
-    expose:
-      - "3000"
     command: npm run dev
     depends_on:
        - db
@@ -71,7 +69,7 @@ services:
     restart: always
     tty: true
     ports: 
-      - "80:80"
+      - "8000:80"
     networks: 
       - node-network
     depends_on:
