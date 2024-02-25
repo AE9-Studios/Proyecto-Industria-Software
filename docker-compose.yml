@@ -42,7 +42,7 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./dbdata:/var/lib/postgresql/data
     environment: 
       - POSTGRES_PASSWORD=1234
     ports: 
