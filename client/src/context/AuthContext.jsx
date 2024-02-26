@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 
 import { login, register, verify } from '../api/auth.js'
 import { set } from "react-hook-form";
+import { Navigate } from "react-router-dom";
 
 
 export const authContext = createContext();
@@ -28,10 +29,12 @@ export const AuthProvider = ({ children }) => {
             setUser(res.data)
             setIsAuthenticated(true)
             setErrors([])
+            setLoading(false)
         } catch (error) {
             setErrors(error.response.data)
             setIsAuthenticated(false)
             setUser(null)
+            setLoading(false)
         }
     }
 
@@ -41,10 +44,12 @@ export const AuthProvider = ({ children }) => {
             setUser(res.data)
             setIsAuthenticated(true)
             setErrors([])
+            setLoading(false)
         } catch (error) {
             setErrors(error.response.data)
             setIsAuthenticated(false)
             setUser(null)
+            setLoading(false)
         }
     }
 
@@ -64,6 +69,8 @@ export const AuthProvider = ({ children }) => {
 
             if (!cookies.token) {
                 setIsAuthenticated(false)
+                setLoading(false)
+                setErrors([])   
                 return setUser(null)
             }
 
@@ -88,7 +95,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         checkUser()
-    })
+    },[isAuthenticated])
 
     return <authContext.Provider value={{
         signin,

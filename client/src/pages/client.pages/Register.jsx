@@ -4,13 +4,15 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
-  const { signup, isAuthenticated, errors } = useAuth()
+  const { signup, isAuthenticated, errors, user } = useAuth()
   const { register, handleSubmit, formState: { errors: formErrors } } = useForm()
   const navigate = useNavigate()
 
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/')
+    if (isAuthenticated && user.role === 'CLIENTE' ) navigate('/client/home')
+    if (isAuthenticated && user.role === 'EMPLEADO' ) navigate('/employee/home')
+    if (isAuthenticated && user.role === 'ADMINISTRADOR' ) navigate('/admin/home')
   }, [isAuthenticated])
 
   const onSubmit = handleSubmit(async (values) => {

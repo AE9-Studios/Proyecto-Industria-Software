@@ -13,7 +13,9 @@ const Login = () => {
 
 
     useEffect(()=> {
-        if(isAuthenticated) navigate('/')
+        if (isAuthenticated && user.role === 'CLIENTE' ) navigate('/client/home')
+        if (isAuthenticated && user.role === 'EMPLEADO' ) navigate('/employee/home')
+        if (isAuthenticated && user.role === 'ADMINISTRADOR' ) navigate('/admin/home')
     }, [isAuthenticated])
 
     const onSubmit = handleSubmit( async (values)=>{
