@@ -5,7 +5,13 @@ const Home = () => {
   const {user} = useAuth()
 
   return (
-    <div>Home</div>
+    <div className='container'>
+      <h2>Pagina de inicio</h2>
+      <a href="/login">Iniciar sesion</a>
+      <br />
+      <a href="/register">Registrarse</a>
+
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import Cookies from 'js-cookie'
 
-import { login, register, verify } from '../api/auth.js'
+import { login, register, verify, logout } from '../api/auth.js'
 import { set } from "react-hook-form";
 import { Navigate } from "react-router-dom";
 
@@ -53,6 +53,20 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const logoutUser = async() => {
+        try {
+            const res = await logout()
+            setUser(null)
+            setIsAuthenticated(false)
+            setErrors([])
+            setLoading(false)
+            return <Navigate to= '/home' replace/>            
+        } catch (error) {
+            setErrors(error.response.data)
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         if (errors.length > 0) {
             const timer = setTimeout(() => {
@@ -100,6 +114,7 @@ export const AuthProvider = ({ children }) => {
     return <authContext.Provider value={{
         signin,
         signup,
+        logoutUser,
         loading,
         user,
         isAuthenticated,

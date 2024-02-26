@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -14,13 +14,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Producto {
-  id          String   @id @default(uuid())
-  nombre      String
-  precio      Float
-  descripcion String
-  imagen      String
-  categoria   String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+enum GENDER {
+  MASCULINO
+  FEMENINO
+}
+
+enum ROL {
+  ADMINISTRADOR
+  EMPLEADO
+  CLIENTE
+}
+
+model USER {
+  Id         Int        @id @default(autoincrement())
+  User_Name  String
+  Email      String     @unique
+  Password   String
+  Role       ROL
+  created_At DateTime   @default(now())
+  updated_At DateTime?  @updatedAt
+  Employee   EMPLOYEE[]
+  Patient    CLIENT[]
+  Admin      ADMIN[]
+}
+
+model PERSON {
+  Id           Int        @id @default(autoincrement())
+  DNI          String     @unique
+  First_Name   String
+  Last_Name    String
+  Birth_Date   String
+  Phone_Number String?
+  Address      String?
+  Gender       GENDER
+  Created_At   DateTime   @default(now())
+  Updated_At   DateTime?  @default(now()) @updatedAt
+  Employee     EMPLOYEE[]
+  Client       CLIENT[]
+  Admin        ADMIN[]
+}
+
+model EMPLOYEE {
+  Id         Int       @id @default(autoincrement())
+  Phone      String?
+  Email      String    @unique
+  Password   String?
+  Salary     Float
+  Person_Fk  Int
+  User_Fk    Int
+  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
+  User       USER      @relation(fields: [User_Fk], references: [Id])
+  Created_At DateTime  @default(now())
+  Updated_At DateTime? @default(now()) @updatedAt
+}
+
+model CLIENT {
+  Id         Int       @id @default(autoincrement())
+  Person_Fk  Int
+  User_Fk    Int
+  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
+  User       USER      @relation(fields: [User_Fk], references: [Id])
+  Created_At DateTime  @default(now())
+  Updated_At DateTime? @default(now()) @updatedAt
+}
+
+model ADMIN {
+  Id         Int       @id @default(autoincrement())
+  Email      String    @unique
+  Password   String
+  Person_Fk  Int
+  User_Fk    Int
+  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
+  User       USER      @relation(fields: [User_Fk], references: [Id])
+  Created_At DateTime  @default(now())
+  Updated_At DateTime? @default(now()) @updatedAt
 }
