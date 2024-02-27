@@ -4,10 +4,10 @@ import { useAuth } from '../context/AuthContext'
 
 const NavBar = () => {
 
-    const {user} = useAuth()
+    const { user, isAuthenticated } = useAuth()
 
     const location = window.location.pathname
-    
+
     return (
         <div>
             <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -33,23 +33,38 @@ const NavBar = () => {
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className={`nav-link ${location === "/products" ? "active" : ""}`}  href="/products">
+                                <a className={`nav-link ${location === "/products" ? "active" : ""}`} href="/products">
                                     <i className="bi bi-search px-2 fs-4"></i>
                                     Productos
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className={`nav-link ${location === "/services" ? "active" : ""}`}  href="/services">
+                                <a className={`nav-link ${location === "/services" ? "active" : ""}`} href="/services">
                                     <i className="bi bi-briefcase-fill px-2 fs-4"></i>
                                     Servicios
                                 </a>
                             </li>
                         </ul>
                         <span className='nav-item'>
-                            <a className="nav-link me-4" href={`/${user?.role === 'CLIENTE' ? 'client/home' : user?.role === 'ADMINISTRADOR' ? 'admin/home' : user?.role === 'EMPLEADO' ? 'employee/home': 'login'}`}>
-                                <i className="bi bi-person-circle px-2 fs-3"></i>
-                                Perfil
-                            </a>
+                            {
+                                isAuthenticated && <spam className="nav-item">
+                                    <a className="nav-link me-4" href={`/${user?.role === 'CLIENTE' ? 'client/home' : user?.role === 'ADMINISTRADOR' ? 'admin/home' : user?.role === 'EMPLEADO' ? 'employee/home' : 'login'}`}>
+                                        <span className="btn btn-primary">
+                                            <i className="bi bi-person-circle px-2 fs-3 text-white"></i>
+                                        </span>
+                                    </a>
+                                </spam>
+                            }
+                            {
+                                !isAuthenticated && <span>
+                                    <a className="text-center  me-4 btn btn-primary p-2" href="/login">
+                                        Iniciar Sesión
+                                    </a>
+                                    <a className="text-center  me-4 btn btn-warning p-2" href="/register">
+                                        Registrarse
+                                    </a>
+                                </span>
+                            }
                         </span>
                     </div>
                 </div>

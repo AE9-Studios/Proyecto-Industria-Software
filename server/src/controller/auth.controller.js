@@ -90,7 +90,8 @@ export const registerClient = async (req, res) => {
             id: newUser.Id,
             email: newUser.Email,
             userName: newUser.User_Name,
-            role: newUser.Role
+            role: newUser.Role,
+            token: token
         });
 
     } catch (error) {
@@ -131,20 +132,11 @@ export const login = async (req, res) => {
             id: user.Id,
             email: user.Email,
             userName: user.User_Name,
-            role: user.Role
+            role: user.Role,
+            token: token
         });
     } catch (error) {
-        return http500(error, req, res);
-    }
-}
-
-export const logout = async (req, res) => {
-    try {
-        //eliminar token
-        res.clearCookie('token');
-        // res.cookie('token', '', { expires: new Date(0) })
-        res.status(200).json(['Logout']);
-    } catch (error) {
+        console.log(error);
         return http500(error, req, res);
     }
 }
@@ -174,7 +166,7 @@ export const getUser = async (req, res) => {
 
 export const verifyToken = async (req, res) => {
     try {
-        const {token} = req.cookies;
+        const {token} = req.body;
         if (!token) {
             return res.status(401).json(['No autorizado']);
         }
@@ -198,7 +190,8 @@ export const verifyToken = async (req, res) => {
                 id: userFound.Id,
                 email: userFound.Email,
                 userName: userFound.User_Name,
-                role: userFound.Role
+                role: userFound.Role,
+                token: token
             });
         });
 

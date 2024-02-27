@@ -8,16 +8,8 @@ import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 
-const corsOptions = {
-    origin: ['http://192.168.0.3/5173', 'http://http://192.168.0.3/4173', 'http://172.21.32.1/5173', 'http://http://172.21.32.1/4173', 'http://0.0.0.0:5173', 'http://0.0.0.0:4173', 'http://localhost:5173', 'http://localhost:4173', 'http://nginx:8000', 'http://0.0.0.0:8000', 'http://front-end:5173', 'http://front-end:5173'],
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    headers: 'Access-Control-Allow-Headers,Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept'
-};
 
-
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());

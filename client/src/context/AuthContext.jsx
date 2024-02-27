@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import Cookies from 'js-cookie'
 
-import { login, register, verify, logout } from '../api/auth.js'
+import { login, register, verify } from '../api/auth.js'
 import { set } from "react-hook-form";
 import { Navigate } from "react-router-dom";
 
@@ -30,6 +30,7 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true)
             setErrors([])
             setLoading(false)
+            Cookies.set('token',res.data.token)
         } catch (error) {
             setErrors(error.response.data)
             setIsAuthenticated(false)
@@ -45,6 +46,7 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true)
             setErrors([])
             setLoading(false)
+            Cookies.set('token',res.data.token)
         } catch (error) {
             setErrors(error.response.data)
             setIsAuthenticated(false)
@@ -55,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
     const logoutUser = async() => {
         try {
-            const res = await logout()
+            Cookies.remove('token')
             setUser(null)
             setIsAuthenticated(false)
             setErrors([])
@@ -80,7 +82,6 @@ export const AuthProvider = ({ children }) => {
     const checkUser = async () => {
         try {
             const cookies = Cookies.get()
-
             if (!cookies.token) {
                 setIsAuthenticated(false)
                 setLoading(false)
@@ -88,7 +89,7 @@ export const AuthProvider = ({ children }) => {
                 return setUser(null)
             }
 
-            const res = await verify()
+            const res = await verify({token: cookies.token})
 
             if (!res.data){
                 setIsAuthenticated(false)
