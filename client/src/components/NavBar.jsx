@@ -47,13 +47,13 @@ const NavBar = () => {
                         </ul>
                         <span className='nav-item'>
                             {
-                                isAuthenticated && <spam className="nav-item">
+                                isAuthenticated && <span className="nav-item">
                                     <a className="nav-link me-4" href={`/${user?.role === 'CLIENTE' ? 'client/home' : user?.role === 'ADMINISTRADOR' ? 'admin/home' : user?.role === 'EMPLEADO' ? 'employee/home' : 'login'}`}>
                                         <span className="btn btn-primary">
                                             <i className="bi bi-person-circle px-2 fs-3 text-white"></i>
                                         </span>
                                     </a>
-                                </spam>
+                                </span>
                             }
                             {
                                 !isAuthenticated && <span>

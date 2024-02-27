@@ -14,6 +14,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// This Prisma schema defines the database structure for a project related to a medical clinic or healthcare facility. It includes models for users, employees, clients, schedules, appointments, products, suppliers, purchase orders, invoices, and more.
+
+/// The `GENDER` enum represents the gender of a person, with options for "MASCULINO" (male) and "FEMENINO" (female).
+
+/// The `ROL` enum represents the role of a user, with options for "ADMINISTRADOR" (administrator), "EMPLEADO" (employee), and "CLIENTE" (client).
+
+/// The `POSITIONS` enum represents the position of an employee, with options for "MEDICO" (doctor), "ENFERMERO" (nurse), "ADMINISTRATIVO" (administrative staff), "LIMPIEZA" (cleaning staff), and "SEGURIDAD" (security staff).
+
+/// The `USER` model represents a user in the system, with fields for ID, username, email, password, role, creation date, update date, and relationships with employees and clients.
+
+/// The `PERSON` model represents a person, with fields for ID, DNI (identification number), first name, last name, birth date, phone number, address, gender, creation date, update date, and relationships with employees and clients.
+
+/// The `SCHEDULE` model represents a schedule, with fields for ID, start date, end date, creation date, update date, and relationships with scheduled employees.
+
+/// The `EMPLOYEE` model represents an employee, with fields for ID, phone number, email, password, person foreign key, user foreign key, position, start date, creation date, update date, and relationships with person, user, schedules, permissions, vacations, salaries, appointments, purchase orders, and invoice orders.
+
+/// The `SALARY` model represents the salary of an employee, with fields for ID, employee foreign key, amount, state, creation date, update date, and a relationship with the employee.
+
+/// The `SCHEDULE_EMPLOYEE` model represents the relationship between a schedule and an employee, with fields for ID, schedule foreign key, employee foreign key, description, creation date, update date, and relationships with the schedule and employee.
+
+/// The `PERMISION` model represents a permission granted to an employee, with fields for ID, employee foreign key, reason, discount, description, attached file, creation date, update date, and a relationship with the employee.
+
+/// The `VACATION` model represents a vacation requested by an employee, with fields for ID, employee foreign key, start date, end date, creation date, update date, and a relationship with the employee.
+
+/// The `CLIENT` model represents a client, with fields for ID, person foreign key, user foreign key, creation date, update date, and relationships with appointments, purchase orders, and invoice orders.
+
+/// The `SUPPLIER` model represents a supplier, with fields for ID, name, email, phone number, address, creation date, update date, and relationships with products and purchase quotations.
+
+/// The `CATEGORY` model represents a category for products, with fields for ID, name, description, creation date, update date, and a relationship with products.
+
+/// The `PRODUCT` model represents a product, with fields for ID, name, description, brand, buy price, sell price, supplier foreign key, category foreign key, creation date, update date, and relationships with supplier, category, inventory, purchase quotations, purchase order details, and invoice order product details.
+
+/// The `INVENTORY` model represents the inventory of a product, with fields for ID, product foreign key, stock, minimum stock, valued inventory, creation date, update date, and a relationship with the product.
+
+/// The `APPOINTMENT` model represents an appointment, with fields for ID, date, description, client foreign key, employee foreign key, state, creation date, update date, and relationships with client and employee.
+
+/// The `SERVICE` model represents a service offered by the clinic, with fields for ID, name, description, price, creation date, update date, and a relationship with invoice order service details.
+
+/// The `PURCHASE_QUOTATION` model represents a purchase quotation, with fields for ID, date, description, state, product foreign key, supplier foreign key, creation date, update date, and relationships with product and supplier.
+
+/// The `PURCHASE_ORDER_DETAILED` model represents a detailed item in a purchase order, with fields for ID, date, quantity, discount, description, product foreign key, purchase order foreign key, creation date, update date, and relationships with product and purchase order.
+
+/// The `PURCHASE_ORDER` model represents a purchase order, with fields for ID, date, client foreign key, employee foreign key, description, subtotal, discount, ISV, total, creation date, update date, and relationships with client and employee.
+
+/// The `ACCOUNT_PLAYABLE` model represents a payable account, with fields for ID, date, amount, creditor, description, state, creation date, update date.
+
+/// The `ACCOUNT_RECEIVABLE` model represents a receivable account, with fields for ID, date, amount, debtor, description, state, creation date, update date.
+
+/// The `INVOICE_ORDER_PRODUCT_DETAILS` model represents a detailed item in an invoice order, with fields for ID, quantity, product foreign key, discount, description, creation date, update date.
+
+/// The schema also includes various scalar types such as `Int`, `String`, `Boolean`, `Float`, and `DateTime` for representing different data types in the database.
+
 enum GENDER {
   MASCULINO
   FEMENINO
@@ -25,6 +77,14 @@ enum ROL {
   CLIENTE
 }
 
+enum POSITIONS {
+  MEDICO
+  ENFERMERO
+  ADMINISTRATIVO
+  LIMPIEZA
+  SEGURIDAD
+}
+
 model USER {
   Id         Int        @id @default(autoincrement())
   User_Name  String
@@ -34,8 +94,7 @@ model USER {
   created_At DateTime   @default(now())
   updated_At DateTime?  @updatedAt
   Employee   EMPLOYEE[]
-  Patient    CLIENT[]
-  Admin      ADMIN[]
+  Client     CLIENT[]
 }
 
 model PERSON {
@@ -51,41 +110,275 @@ model PERSON {
   Updated_At   DateTime?  @default(now()) @updatedAt
   Employee     EMPLOYEE[]
   Client       CLIENT[]
-  Admin        ADMIN[]
+}
+
+model SCHEDULE {
+  Id                Int                 @id @default(autoincrement())
+  Start_Date        DateTime
+  End_Date          DateTime
+  Created_At        DateTime            @default(now())
+  Updated_At        DateTime?           @default(now()) @updatedAt
+  Schedule_Employee SCHEDULE_EMPLOYEE[]
 }
 
 model EMPLOYEE {
-  Id         Int       @id @default(autoincrement())
-  Phone      String?
-  Email      String    @unique
-  Password   String?
-  Salary     Float
-  Person_Fk  Int
-  User_Fk    Int
-  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
-  User       USER      @relation(fields: [User_Fk], references: [Id])
-  Created_At DateTime  @default(now())
-  Updated_At DateTime? @default(now()) @updatedAt
+  Id                Int                 @id @default(autoincrement())
+  Phone             String?
+  Email             String              @unique
+  Password          String?
+  Person_Fk         Int
+  User_Fk           Int
+  Position          POSITIONS
+  Start_Date        DateTime
+  Person            PERSON              @relation(fields: [Person_Fk], references: [Id], onDelete: Cascade)
+  User              USER                @relation(fields: [User_Fk], references: [Id])
+  Created_At        DateTime            @default(now())
+  Updated_At        DateTime?           @default(now()) @updatedAt
+  Schedule_Employee SCHEDULE_EMPLOYEE[]
+  Permision         PERMISION[]
+  Vacation          VACATION[]
+  Salary            SALARY[]
+  APPOINTMENT       APPOINTMENT[]
+  PURCHASE_ORDER    PURCHASE_ORDER[]
+  INVOICE_ORDER     INVOICE_ORDER[]
+}
+
+model SALARY {
+  Id          Int       @id @default(autoincrement())
+  Employee_Fk Int
+  Amount      Float
+  State       Boolean
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+}
+
+model SCHEDULE_EMPLOYEE {
+  Id          Int       @id @default(autoincrement())
+  Schedule_Fk Int
+  Employee_Fk Int
+  description String?
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Schedule    SCHEDULE  @relation(fields: [Schedule_Fk], references: [Id])
+  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+}
+
+model PERMISION {
+  Id            Int       @id @default(autoincrement())
+  Employee_Fk   Int
+  Reason        String
+  Discount      Boolean
+  Description   String
+  Attached_File String?
+  Created_At    DateTime  @default(now())
+  Updated_At    DateTime? @default(now()) @updatedAt
+  Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+  Role          ROL[]
+}
+
+model VACATION {
+  Id          Int       @id @default(autoincrement())
+  Employee_Fk Int
+  Start_Date  DateTime
+  End_Date    DateTime
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
 }
 
 model CLIENT {
-  Id         Int       @id @default(autoincrement())
-  Person_Fk  Int
-  User_Fk    Int
-  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
-  User       USER      @relation(fields: [User_Fk], references: [Id])
-  Created_At DateTime  @default(now())
-  Updated_At DateTime? @default(now()) @updatedAt
+  Id             Int              @id @default(autoincrement())
+  Person_Fk      Int
+  User_Fk        Int?
+  Person         PERSON           @relation(fields: [Person_Fk], references: [Id])
+  User           USER?            @relation(fields: [User_Fk], references: [Id], onDelete: Cascade)
+  Created_At     DateTime         @default(now())
+  Updated_At     DateTime?        @default(now()) @updatedAt
+  APPOINTMENT    APPOINTMENT[]
+  PURCHASE_ORDER PURCHASE_ORDER[]
+  INVOICE_ORDER  INVOICE_ORDER[]
 }
 
-model ADMIN {
-  Id         Int       @id @default(autoincrement())
-  Email      String    @unique
-  Password   String
-  Person_Fk  Int
-  User_Fk    Int
-  Person     PERSON    @relation(fields: [Person_Fk], references: [Id])
-  User       USER      @relation(fields: [User_Fk], references: [Id])
-  Created_At DateTime  @default(now())
-  Updated_At DateTime? @default(now()) @updatedAt
+model SUPPLIER {
+  Id                 Int                  @id @default(autoincrement())
+  Name               String
+  Email              String               @unique
+  Phone              String
+  Address            String
+  Created_At         DateTime             @default(now())
+  Updated_At         DateTime?            @default(now()) @updatedAt
+  Product            PRODUCT[]
+  PURCHASE_QUOTATION PURCHASE_QUOTATION[]
+}
+
+model CATEGORY {
+  Id          Int       @id @default(autoincrement())
+  Name        String
+  description String?
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Product     PRODUCT[]
+}
+
+model PRODUCT {
+  Id                            Int                             @id @default(autoincrement())
+  Name                          String
+  Description                   String?
+  Brand                         String
+  Price_Buy                     Float
+  Price_Sell                    Float
+  Supplier_Fk                   Int
+  Category_Fk                   Int
+  Created_At                    DateTime                        @default(now())
+  Updated_At                    DateTime?                       @default(now()) @updatedAt
+  Supplier                      SUPPLIER                        @relation(fields: [Supplier_Fk], references: [Id])
+  Category                      CATEGORY?                       @relation(fields: [Category_Fk], references: [Id])
+  Inventory                     INVENTORY[]
+  PURCHASE_QUOTATION            PURCHASE_QUOTATION[]
+  PURCHASE_ORDER                PURCHASE_ORDER_DETAILED[]
+  INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
+}
+
+model INVENTORY {
+  Id               Int       @id @default(autoincrement())
+  Product_Fk       Int
+  Stock            Int
+  Min_Stock        Int
+  Valued_Inventory Float
+  Created_At       DateTime  @default(now())
+  Updated_At       DateTime? @default(now()) @updatedAt
+  Product          PRODUCT   @relation(fields: [Product_Fk], references: [Id], onDelete: Cascade)
+}
+
+model APPOINTMENT {
+  Id          Int       @id @default(autoincrement())
+  Date        DateTime
+  Description String?
+  Client_Fk   Int
+  Employee_Fk Int
+  State       Boolean
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Client      CLIENT    @relation(fields: [Client_Fk], references: [Id], onDelete: Cascade)
+  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+}
+
+model SERVICE {
+  Id                            Int                             @id @default(autoincrement())
+  Name                          String
+  Description                   String?
+  Price                         Float
+  Created_At                    DateTime                        @default(now())
+  Updated_At                    DateTime?                       @default(now()) @updatedAt
+  INVOICE_ORDER_SERVICE_DETAILS INVOICE_ORDER_SERVICE_DETAILS[]
+}
+
+model PURCHASE_QUOTATION {
+  Id          Int       @id @default(autoincrement())
+  Date        DateTime
+  Description String?
+  State       Boolean
+  Product_Fk  Int
+  Supplier_Fk Int
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+  Product     PRODUCT   @relation(fields: [Product_Fk], references: [Id], onDelete: Cascade)
+  Supplier    SUPPLIER  @relation(fields: [Supplier_Fk], references: [Id], onDelete: Cascade)
+}
+
+model PURCHASE_ORDER_DETAILED {
+  Id                Int            @id @default(autoincrement())
+  Date              DateTime
+  Quantity          Int
+  Discount          Float?
+  Description       String?
+  Product_Fk        Int
+  Purchase_Order_Fk Int
+  Created_At        DateTime       @default(now())
+  Updated_At        DateTime?      @default(now()) @updatedAt
+  Product           PRODUCT        @relation(fields: [Product_Fk], references: [Id])
+  Purchase_Order    PURCHASE_ORDER @relation(fields: [Purchase_Order_Fk], references: [Id], onDelete: Cascade)
+}
+
+model PURCHASE_ORDER {
+  Id                      Int                       @id @default(autoincrement())
+  Date                    DateTime
+  Client_Fk               Int
+  Employee_Fk             Int
+  Description             String?
+  Subtotal                Float
+  Discount                Float?
+  ISV                     Float
+  Total                   Float
+  Created_At              DateTime                  @default(now())
+  Updated_At              DateTime?                 @default(now()) @updatedAt
+  Client                  CLIENT                    @relation(fields: [Client_Fk], references: [Id])
+  Employee                EMPLOYEE                  @relation(fields: [Employee_Fk], references: [Id])
+  PURCHASE_ORDER_DETAILED PURCHASE_ORDER_DETAILED[]
+}
+
+model ACCOUNT_PLAYABLE {
+  Id          Int       @id @default(autoincrement())
+  Date        DateTime
+  Amount      Float
+  Creditor    String
+  Description String?
+  State       Boolean
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+}
+
+model ACCOUNT_RECEIVABLE {
+  Id          Int       @id @default(autoincrement())
+  Date        DateTime
+  Amount      Float
+  Debtor      String
+  Description String?
+  State       Boolean
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+}
+
+model INVOICE_ORDER_PRODUCT_DETAILS {
+  Id               Int           @id @default(autoincrement())
+  Quantity         Int
+  Product_Fk       Int
+  Discount         Float?
+  Description      String?
+  Invoice_Order_Fk Int
+  Created_At       DateTime      @default(now())
+  Updated_At       DateTime?     @default(now()) @updatedAt
+  Product          PRODUCT       @relation(fields: [Product_Fk], references: [Id], onDelete: Cascade)
+  Invoice_Order    INVOICE_ORDER @relation(fields: [Invoice_Order_Fk], references: [Id])
+}
+
+model INVOICE_ORDER_SERVICE_DETAILS {
+  Id               Int           @id @default(autoincrement())
+  Service_Fk       Int
+  Discount         Float?
+  Description      String?
+  Invoice_Order_Fk Int
+  Created_At       DateTime      @default(now())
+  Updated_At       DateTime?     @default(now()) @updatedAt
+  Service          SERVICE       @relation(fields: [Service_Fk], references: [Id])
+  Invoice_Order    INVOICE_ORDER @relation(fields: [Invoice_Order_Fk], references: [Id], onDelete: Cascade)
+}
+
+model INVOICE_ORDER {
+  Id                            Int                             @id @default(autoincrement())
+  Client_Fk                     Int
+  Employee_Fk                   Int
+  Date                          DateTime
+  Description                   String?
+  Subtotal                      Float
+  Discount                      Float?
+  ISV                           Float
+  Total                         Float
+  Created_At                    DateTime                        @default(now())
+  Updated_At                    DateTime?                       @default(now()) @updatedAt
+  Client                        CLIENT                          @relation(fields: [Client_Fk], references: [Id])
+  Employee                      EMPLOYEE                        @relation(fields: [Employee_Fk], references: [Id])
+  INVOICE_ORDER_SERVICE_DETAILS INVOICE_ORDER_SERVICE_DETAILS[]
+  INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
 }
