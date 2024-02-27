@@ -1,6 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
-import logo from '../public/favicon-32x32.png'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/client.pages/Register'

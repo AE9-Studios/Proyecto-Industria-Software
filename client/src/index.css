@@ -1,3 +1,42 @@
 body {
     background-color: #DDE6EE;
 }
+
+.container-cardProductsCategories{
+    max-width: 190px;
+}
+
+.div-container-productCategoryHome{
+    justify-content: space-between;
+}
+
+.container-cardServices {
+    max-width: 280px;
+}
+
+.div-container-footer {
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (min-width: 900px) {
+
+    .div-container-footer {
+        justify-content: space-between;
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container-cardProductsCategories{
+        max-width: 290px;
+    }
+
+    .container-cardServices {
+        max-width: 230px;
+    }
+    .container-appointment-home {
+        max-width: 50%;
+    }
+
+}
