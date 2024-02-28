@@ -4,6 +4,8 @@
 server/node_modules
 #server/.env
 
+#base de datos
+dbdata
 
 #client
 # Logs

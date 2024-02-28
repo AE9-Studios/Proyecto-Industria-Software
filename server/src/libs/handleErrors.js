@@ -5,6 +5,8 @@
  * 
  * - 200 solicitud procesada con exito el servidor envia respuesta, es el por defecto en el res.send()
  * 
+ * -201 solicitud procesada con exito el servidor envia respuesta, se usa para peticiones que crean un nuevo recurso
+ * 
  * - 204 solicitud procesada con exito el servidor el servidor no envia respuesta, se usa para peticiones que no devuelven nada
  * 
  * -> Los 300 son de redireccion
@@ -27,7 +29,7 @@
 * -> Los 500 son de error de servidor
 - 500 Internal Server Error es el status más utilizado, representa 
 un error en el servidor y no da más detalles, esto se suele hacer 
-por razones de seguridad en servidores de producción
+por razones de seguridad en servidores de producción, asi que se recomienda solo enviar el codigo 500 indicar que algo ha ido mal y que intente mas tarde, no dar detalles del error por seguridad del server
 
 
  * 
@@ -36,16 +38,11 @@ por razones de seguridad en servidores de producción
 
 export const http500 = (err, req, res) => {
     console.error(err.stack);
-    res.status(500).json(['Error inesperado en el servidor, intentelo mas tarde']);
-}
-
-export const http401 = (err, req, res) => {
-    console.error(err.stack);
-    res.status(500).json(['Inicio de sesión requrido']);
+    return res.status(500).json(['Error inesperado en el servidor, intentelo mas tarde']);
 }
 
 export const http403 = (err, req, res) => {
     console.error(err.stack);
-    res.status(500).json(['No Autorizado']);
+    return res.status(403).json(['No Autorizado']);
 }
 

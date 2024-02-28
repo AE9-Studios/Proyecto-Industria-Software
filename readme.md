@@ -63,3 +63,9 @@ Si quiere desarrollar fuera del docker lo puede hacer, solo le recomendaría dej
 
 El nginx corre en el puerto 80 (puerto por defecto del localhost) y redirige las direcciones tanto al backend como al frontend, por lo que si entra al puerto 80 ira al frontend y al 80/api ira al backend.
 
+
+# Restaurar los datos de la BD
+- corra el comando docker exec -t db pg_dumpall -c -U postgres > dump.sql desde la carpeta proyecto/server para guardar una copia de la base de datos
+
+- corra el comando type dump.sql | docker exec -i db psql -U postgres para restaurarla en windows
+cat dump.sql | docker exec -i db psql -U postgres en linux (este se usara para produccion)
