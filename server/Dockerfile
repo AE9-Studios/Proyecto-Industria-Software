@@ -1,5 +1,5 @@
 FROM node:alpine
- 
+
 WORKDIR /usr/src/app
 
 ENV DATABASE_URL postgresql://postgres:1234@db:5432/postgres?schema=public
@@ -14,8 +14,6 @@ ENV TOKEN_SECRET 1234
 
 COPY . .
 
-
-
 RUN npm install
- 
+
 EXPOSE 3000
