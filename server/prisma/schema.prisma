@@ -125,7 +125,6 @@ model EMPLOYEE {
   Id                Int                 @id @default(autoincrement())
   Phone             String?
   Email             String              @unique
-  Password          String?
   Person_Fk         Int
   User_Fk           Int
   Position          POSITIONS
