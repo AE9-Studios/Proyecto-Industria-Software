@@ -52,7 +52,7 @@ export const registerClient = async (req, res) => {
             }
         });
 
-        const userName = `${firstName.toUpperCase()}.${lastName.toUpperCase()}`
+        const userName = `${firstName.toUpperCase()} ${lastName.toUpperCase()}`
 
         const newUser = await prisma.USER.create({
             data: {
