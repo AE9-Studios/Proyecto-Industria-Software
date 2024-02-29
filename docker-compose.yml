@@ -2,40 +2,40 @@ version: '3'
 
 services: 
 
-  back-end:
-    build: 
-      context: server
-    container_name: back-end
-    working_dir: /usr/src/app
-    networks: 
-      - node-network
-    # volumes: 
-    #   - ./server:/usr/src/app
-    #   - /usr/src/app/node_modules
-    tty: true
-    ports: 
-      - "3000:3000"
-    expose:
-      - "3000"
-    command: npm run dev
-    depends_on:
-       - db
+  # back-end:
+  #   build: 
+  #     context: server
+  #   container_name: back-end
+  #   working_dir: /usr/src/app
+  #   networks: 
+  #     - node-network
+  #   # volumes: 
+  #   #   - ./server:/usr/src/app
+  #   #   - /usr/src/app/node_modules
+  #   tty: true
+  #   ports: 
+  #     - "3000:3000"
+  #   expose:
+  #     - "3000"
+  #   command: npm run dev
+  #   depends_on:
+  #      - db
 
-  front-end:
-    build: 
-      context: client
-    container_name: front-end
-    working_dir: /usr/src/app
-    networks: 
-      - node-network
-    # volumes: 
-    #   - ./client:/usr/src/app
-    #   - /usr/src/app/node_modules
-    tty: true
-    ports: 
-      - "5173:5173"
-    command: npm run preview -- --host #para produccion
-    # command: npm run dev -- --host 
+  # front-end:
+  #   build: 
+  #     context: client
+  #   container_name: front-end
+  #   working_dir: /usr/src/app
+  #   networks: 
+  #     - node-network
+  #   # volumes: 
+  #   #   - ./client:/usr/src/app
+  #   #   - /usr/src/app/node_modules
+  #   tty: true
+  #   ports: 
+  #     - "5173:5173"
+  #   command: npm run preview -- --host #para produccion
+  #   # command: npm run dev -- --host 
 
   db:
     image: postgres
@@ -63,19 +63,19 @@ services:
     networks: 
       - node-network
 
-  nginx:
-    build: 
-      context: nginx
-    container_name: nginx
-    restart: always
-    tty: true
-    ports: 
-      - "80:8000"
-    networks: 
-      - node-network
-    depends_on:
-       - back-end
-       - front-end
+  # nginx:
+  #   build: 
+  #     context: nginx
+  #   container_name: nginx
+  #   restart: always
+  #   tty: true
+  #   ports: 
+  #     - "80:8000"
+  #   networks: 
+  #     - node-network
+  #   depends_on:
+  #      - back-end
+  #      - front-end
 
 networks: 
   node-network:
