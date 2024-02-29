@@ -1,5 +1,5 @@
 import prisma from "../db.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import 'dotenv/config'
 
@@ -109,7 +109,6 @@ export const login = async (req, res) => {
             }
         });
 
-
         if (!user) {
             return res.status(404).json(['Usuario no encontrado']);
         }
@@ -130,7 +129,6 @@ export const login = async (req, res) => {
         res.cookie('token', token)
         res.json({
             id: user.Id,
-            email: user.Email,
             userName: user.User_Name,
             role: user.Role,
             token: token

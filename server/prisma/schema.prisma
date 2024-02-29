@@ -381,3 +381,12 @@ model INVOICE_ORDER {
   INVOICE_ORDER_SERVICE_DETAILS INVOICE_ORDER_SERVICE_DETAILS[]
   INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
 }
+
+model ACTIVITY_LOG {
+  Id          Int       @id @default(autoincrement())
+  Date        DateTime
+  name        String
+  Description String
+  Created_At  DateTime  @default(now())
+  Updated_At  DateTime? @default(now()) @updatedAt
+}

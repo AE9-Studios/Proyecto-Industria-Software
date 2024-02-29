@@ -46,10 +46,10 @@ export default defineConfig({
   plugins: [react(), VitePWA(manifestForPluginPWA)],
   preview: {
     host: true,
-    // port: 4173, //when not running preview in docker compose, para dev si ejecuta fuera de docker descomentar cuando no se este corriendo en docker compose
+    port: 4173, //when not running preview in docker compose, para dev si ejecuta fuera de docker descomentar cuando no se este corriendo en docker compose
   },
   server: {
     host: true,
-    //port: 5173, //When not running with docker compose, this is the port which will be used in docker (descomentar cuando no se este corriendo en docker compose)
+    port: 5173, //When not running with docker compose, this is the port which will be used in docker (descomentar cuando no se este corriendo en docker compose)
   }
 })
