@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOKER_USERNAME -p $DOCKER_PASSWORD
+    - name: Remove old Docker images and containers
+      run: |
+        sudo docker rm -f $(docker ps -a -q)
+        sudo docker rmi -f $(docker images -a -q)
+    
+    - name: Build the Docker image
+      run: sudo docker-composer up -d --build
+    - name: Up DB data
+      run: sudo cat dump.sql | docker exec -i db psql -U postgres
