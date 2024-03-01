@@ -34,5 +34,6 @@ client/*.sln
 client/*.sw?
 
 #aws
+aws
 opticaclassicvision-ec2-deploy-putty.ppk
 opticaclassicvision-ec2-deploy.pem
