@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2 
       - name: Change permissions
-        run: sudo rm -rf dbdata
+        run: sudo chmod -R 777 dbdata && sudo rm -rf dbdata
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_KEY }}
