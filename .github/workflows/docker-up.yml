@@ -30,8 +30,9 @@ jobs:
           if [ "$(docker ps -a -q)" != "" ]; then
           sudo docker rm -f $(docker ps -a -q)
           fi
-          sudo docker images -q | xargs -r sudo docker rmi -f' &&
-          sudo docker-compose up -d --build &&
+          sudo docker images -q | xargs -r sudo docker rmi -f &&
+          sudo docker-compose build &&
+          sudo docker-compose up -d &&
           for i in {1..10}; do
             if sudo docker exec db pg_isready -U postgres; then
               break
@@ -39,4 +40,4 @@ jobs:
             echo "Waiting for PostgreSQL to become ready..."
             sleep 10
           done &&
-          sudo cat dump.sql | docker exec -i db psql -U postgres
+          sudo cat dump.sql | docker exec -i db psql -U postgres'
