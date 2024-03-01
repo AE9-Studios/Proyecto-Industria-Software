@@ -11,7 +11,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Login Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOKER_USERNAME -p $DOCKER_PASSWORD
     - name: Build the Docker image
-      run: docker-compose up
-    - name: Up DB data
-      run: cat dump.sql | docker exec -i db psql -U postgres
+      run: docker build -t classicvision .
+    - name: Push the Docker image
+      run: docker push classicvision
+
+
