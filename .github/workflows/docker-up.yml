@@ -24,7 +24,7 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.USERNAME }}
+        username: ${{ secrets.USERNAME }} 
         key: ${{ secrets.SSH_KEY }}
         script: |
           if [ "$(docker ps -a -q)" != "" ]; then
