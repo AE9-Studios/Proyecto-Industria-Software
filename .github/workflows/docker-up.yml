@@ -19,7 +19,7 @@ jobs:
             HOSTNAME: ${{secrets.EC2_HOST}}
             USER_NAME: ${{secrets.USERNAME}}
         run: |
-          echo "$PRIVATE_KEY" > private_key.pem && chmod 600 private_key.pem
+          echo ${{secrets.SSH_KEY}} > private_key.pem && chmod 600 private_key.pem
           ssh -t -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-229-95-96.compute-1.amazonaws.com '
           cd /home/ubuntu/classicvision &&
           git checkout master &&
