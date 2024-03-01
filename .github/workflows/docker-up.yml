@@ -13,9 +13,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: Remove old Docker images and containers
       run: |
+        if [ "$(docker ps -a -q)" != "" ]; then
         sudo docker rm -f $(docker ps -a -q)
+        fi
+        if [ "$(docker images -a -q)" != "" ]; then
         sudo docker rmi -f $(docker images -a -q)
-    
+        fi
     - name: Build the Docker image
       run: sudo docker-composer up -d --build
     - name: Up DB data
