@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker CI/CD Pipeline
 
 on:
   push:
@@ -7,28 +7,36 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Remove old Docker images and containers
-      run: |
-        if [ "$(docker ps -a -q)" != "" ]; then
-        sudo docker rm -f $(docker ps -a -q)
-        fi
-        if [ "$(docker images -a -q)" != "" ]; then
-        sudo docker rmi -f $(docker images -a -q)
-        fi
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Build the Docker image
-      run: sudo docker-compose up -d --build
-    - name: Wait for PostgreSQL to become ready
-      run: |
-        for i in {1..10}; do
-          if sudo docker exec db pg_isready -U postgres; then
-            break
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: .
+        push: true
+        tags: tariq87/webapp:latest
+    - name: Deploy to EC2 instance
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        script: |
+          if [ "$(docker ps -a -q)" != "" ]; then
+          sudo docker rm -f $(docker ps -a -q)
           fi
-          echo "Waiting for PostgreSQL to become ready..."
-          sleep 10
-        done
-    - name: Up DB data
-      run: sudo cat dump.sql | docker exec -i db psql -U postgres
+          if [ "$(docker images -a -q)" != "" ]; then
+          sudo docker rmi -f $(docker images -a -q)
+          fi
+          sudo docker-compose -f /home/ubuntu/actions-runner/_work/Proyecto-Industria-Software/Proyecto-Industria-Software/docker-compose.yml up -d
+          for i in {1..10}; do
+            if sudo docker exec db pg_isready -U postgres; then
+              break
+            fi
+            echo "Waiting for PostgreSQL to become ready..."
+            sleep 10
+          done
+          sudo cat dump.sql | docker exec -i db psql -U postgres
