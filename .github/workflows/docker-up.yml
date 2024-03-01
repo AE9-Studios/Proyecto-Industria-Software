@@ -11,8 +11,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2 
-      - name: Change permissions
-        run: sudo chmod -R 777 dbdata && sudo rm -rf dbdata
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_KEY }}
@@ -24,6 +22,7 @@ jobs:
           ssh -t -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-229-95-96.compute-1.amazonaws.com '
           cd /home/ubuntu/classicvision &&
           git checkout master &&
+          sudo rm -rf dbdata &&
           git fetch --all &&
           git reset --hard origin/master &&
           git pull origin master &&
@@ -43,4 +42,3 @@ jobs:
           sudo cat dump.sql | docker exec -i db psql -U postgres'
 
 
-          
