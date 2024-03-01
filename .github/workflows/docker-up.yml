@@ -22,6 +22,7 @@ jobs:
           ssh -t -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-229-95-96.compute-1.amazonaws.com '
           cd /home/ubuntu/classicvision &&
           git checkout master &&
+          sudo chmod -R 777 dbdata &&
           sudo rm -rf dbdata &&
           git fetch --all &&
           git reset --hard origin/master &&
