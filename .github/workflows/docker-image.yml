@@ -12,6 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker-composes up
+      run: docker-compose up
     - name: Up DB data
       run: cat dump.sql | docker exec -i db psql -U postgres
