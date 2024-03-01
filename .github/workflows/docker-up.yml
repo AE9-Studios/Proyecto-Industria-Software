@@ -11,6 +11,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2 
+      - name: Change permissions
+        run: sudo chmod -R 777 ./dbdata
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_KEY }}
@@ -19,7 +21,7 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-
+    
           cd /home/ubuntu/classicvision &&
           git checkout master &&
           git fetch --all &&
@@ -32,11 +34,3 @@ jobs:
           sudo docker rmi -f $(docker images -a -q)
           fi &&
           docker-compose.yml up -d --build &&
-          for i in {1..10}; do
-            if sudo docker exec db pg_isready -U postgres; then
-              break
-            fi
-            echo "Waiting for PostgreSQL to become ready..."
-            sleep 10
-          done &&
-          sudo cat dump.sql | docker exec -i db psql -U postgres
