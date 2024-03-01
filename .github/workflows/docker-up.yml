@@ -41,3 +41,6 @@ jobs:
             sleep 10
           done &&
           sudo cat dump.sql | docker exec -i db psql -U postgres'
+
+
+          
