@@ -15,9 +15,11 @@ jobs:
             run: |
               echo "${{secrets.SSH_KEY}}" > private_key.pem
               chmod 600 private_key.pem
-              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-174-129-140-142.compute-1.amazonaws.com &&
-              git checkout master &&
-              git pull origin master &&
-              sudo usermod -aG docker $USER &&
-              sudo docker-compose up --build -d &&
-              sudo cat dump.sql | docker exec -i db psql -U postgres
+              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-54-221-140-4.compute-1.amazonaws.com << EOF
+              sudo docker ps -q | grep -v "\$(sudo docker ps -qf 'name=db')" | xargs -r sudo docker stop
+              git checkout master
+              git pull origin master
+              sudo usermod -aG docker $USER
+              sudo docker-compose up --build -d
+              cat dump.sql | sudo docker exec -i db psql -U postgres
+              EOF
