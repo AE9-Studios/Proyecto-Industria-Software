@@ -16,13 +16,13 @@ const Login = () => {
         if (isAuthenticated && user.role === 'CLIENTE') navigate('/client/home')
         if (isAuthenticated && user.role === 'EMPLEADO') navigate('/employee/home')
         if (isAuthenticated && user.role === 'ADMINISTRADOR') navigate('/admin/home')
-    }, [isAuthenticated])
+        console.log(errors)
+    }, [isAuthenticated, errors])
 
     const onSubmit = handleSubmit(async (values) => {
         signin(values)
     })
 
-    console.log(errors)
 
     return (
         <>
@@ -39,11 +39,7 @@ const Login = () => {
                         <div className="d-flex flex-column align-items-center p-5">
                             <h2 className="text-center mb-3">Inicia sesión en tu cuenta antes de continuar</h2>
                             <div className="container d-flex flex-column">
-                                {errors.length > 0 && (
-                                    <>
-                                        {errors.map((error, index) => <p className='alert alert-warning' key={index}>{error}</p>)}
-                                    </>
-                                )}
+
                             </div>
                             <div className='p-2 mb-3 container'>
                                 <label className="form-label">Correo</label>
