@@ -27,5 +27,5 @@ jobs:
             echo "Waiting for PostgreSQL to become ready..."
             sleep 10
           done &&
-          sudo cat dump.sql | docker exec -i db psql -U postgres' &&
+          sudo cat dump.sql | docker exec -i db psql -U postgres &&
           sudo chmod -R 777 dbdata
