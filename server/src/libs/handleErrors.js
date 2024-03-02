@@ -38,7 +38,7 @@ por razones de seguridad en servidores de producción, asi que se recomienda sol
 
 export const http500 = (err, req, res) => {
     console.error(err.stack);
-    return res.status(500).json(['Error inesperado en el servidor, intentelo mas tarde', error]);
+    return res.status(500).json(['Error inesperado en el servidor, intentelo mas tarde']);
 }
 
 export const http403 = (err, req, res) => {

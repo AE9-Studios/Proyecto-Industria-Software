@@ -20,7 +20,18 @@ jobs:
               git checkout master &&
               git pull origin master &&
               sudo usermod -aG docker $USER &&
-              sudo docker ps -q | grep -v "\$(sudo docker ps -qf 'name=db')" | xargs -r sudo docker stop &&
+              if [ $(sudo docker ps -q -f name=nginx) ]; then
+                sudo docker stop nginx
+              fi
+              if [ $(sudo docker ps -q -f name=back-end) ]; then
+                sudo docker stop back-end
+              fi
+              if [ $(sudo docker ps -q -f name=front-end) ]; then
+                sudo docker stop front-end
+              fi
+              if [ $(sudo docker ps -q -f name=pgadmin) ]; then
+                sudo docker stop pgadmin
+              fi
               sudo docker-compose up --build -d &&
               sudo cat dump.sql | docker exec -i db psql -U postgres &&
               exit
