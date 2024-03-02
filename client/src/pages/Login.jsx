@@ -22,6 +22,8 @@ const Login = () => {
         signin(values)
     })
 
+    console.log(errors)
+
     return (
         <>
             <div className="container-sm mb-3">
