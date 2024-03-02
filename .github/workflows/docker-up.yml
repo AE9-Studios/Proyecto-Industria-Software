@@ -16,6 +16,8 @@ jobs:
               echo "${{secrets.SSH_KEY}}" > private_key.pem
               chmod 600 private_key.pem
               ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-203-241-194.compute-1.amazonaws.com &&
+              sudo docker-compose down &&
+              sudo rm -fr dbdata &&
               sudo rm -fr dbdata &&
               sudo rm -fr dbdata &&
               git checkout master &&
