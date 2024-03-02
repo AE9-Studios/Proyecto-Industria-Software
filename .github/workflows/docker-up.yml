@@ -16,10 +16,6 @@ jobs:
               echo "${{secrets.SSH_KEY}}" > private_key.pem
               chmod 600 private_key.pem
               ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-203-241-194.compute-1.amazonaws.com &&
-              sudo docker-compose down &&
-              sudo rm -fr dbdata &&
-              sudo rm -fr dbdata &&
-              sudo rm -fr dbdata &&
               git checkout master &&
               git pull origin master &&
               sudo usermod -aG docker $USER &&
@@ -32,4 +28,3 @@ jobs:
                 sleep 10
               done &&
               sudo cat dump.sql | docker exec -i db psql -U postgres &&
-              sudo chmod -R 777 dbdata

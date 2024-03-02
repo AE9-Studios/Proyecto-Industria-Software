@@ -37,19 +37,19 @@ services:
     command: npm run preview -- --host #para produccion
     # command: npm run dev -- --host 
 
-  db:
-    image: postgres
-    container_name: db
-    restart: always
-    tty: true
-    volumes:
-      - ./dbdata:/var/lib/postgresql/data:chmod=777
-    environment: 
-      - POSTGRES_PASSWORD=1234
-    ports: 
-      - "5432:5432"
-    networks: 
-      - node-network
+  # db:
+  #   image: postgres
+  #   container_name: db
+  #   restart: always
+  #   tty: true
+  #   volumes:
+  #     - ./dbdata:/var/lib/postgresql/data:chmod=777
+  #   environment: 
+  #     - POSTGRES_PASSWORD=1234
+  #   ports: 
+  #     - "5432:5432"
+  #   networks: 
+  #     - node-network
 
   pgadmin:
     image: dpage/pgadmin4
