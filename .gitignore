@@ -2,7 +2,8 @@
 
 #server
 server/node_modules
-#server/.env
+server/.env
+server/Dokerfile
 
 #base de datos
 dbdata
@@ -32,3 +33,7 @@ client/*.ntvs*
 client/*.njsproj
 client/*.sln
 client/*.sw?
+
+
+#general
+docker-compose.yml
