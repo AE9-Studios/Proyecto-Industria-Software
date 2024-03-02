@@ -8,7 +8,7 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - node-network
+      - database-postgres_node-network
     # volumes: 
     #   - ./server:/usr/src/app
     #   - /usr/src/app/node_modules
@@ -27,7 +27,7 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - node-network
+      - database-postgres_node-network
     # volumes: 
     #   - ./client:/usr/src/app
     #   - /usr/src/app/node_modules
@@ -49,7 +49,7 @@ services:
   #   ports: 
   #     - "5432:5432"
   #   networks: 
-  #     - node-network
+  #     - database-postgres_node-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -61,7 +61,7 @@ services:
     ports:
       - "8001:81"
     networks: 
-      - node-network
+      - database-postgres_node-network
 
   nginx:
     build: 
@@ -72,7 +72,7 @@ services:
     ports: 
       - "80:8000"
     networks: 
-      - node-network
+      - database-postgres_node-network
     depends_on:
        - back-end
        - front-end
