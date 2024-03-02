@@ -33,6 +33,3 @@ jobs:
           done &&
           sudo cat dump.sql | docker exec -i db psql -U postgres' &&
           sudo chmod -R 777 dbdata
-
-
-          
