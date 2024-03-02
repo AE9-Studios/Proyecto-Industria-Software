@@ -43,7 +43,7 @@ services:
     restart: always
     tty: true
     volumes:
-      - ./dbdata:/var/lib/postgresql/data
+      - ./dbdata:/var/lib/postgresql/data:chmod=777
     environment: 
       - POSTGRES_PASSWORD=1234
     ports: 
