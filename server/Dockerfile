@@ -2,7 +2,7 @@ FROM node:alpine
 
 WORKDIR /usr/src/app
 
-ENV DATABASE_URL postgresql://postgres:1234@54.221.140.4:5432/postgres?schema=public
+ENV DATABASE_URL postgresql://postgres:1234@db:5432/postgres?schema=public
 ENV DB_USER postgres
 ENV DB_HOST db
 ENV DB_NAME postgres

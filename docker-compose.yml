@@ -79,4 +79,4 @@ services:
 
 networks: 
   node-network:
-    driver: bridge
+    external: true
