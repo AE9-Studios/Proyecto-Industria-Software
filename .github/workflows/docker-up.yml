@@ -5,27 +5,27 @@ on:
     branches: [ "master" ]
 
 jobs:
-  Deploy:
-    name: Deploy to EC2
-    runs-on: self-hosted
-
-    steps:
-      - uses: actions/checkout@v2 
-      - name: Build & Deploy
-        run: |
-          echo "${{secrets.SSH_KEY}}" > private_key.pem
-          chmod 600 private_key.pem
-          ssh -t -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-229-95-96.compute-1.amazonaws.com &&
-          cd /actions-runner/_work/Proyecto-Industria-Software/Proyecto-Industria-Software &&
-          git checkout master &&
-          git pull origin master &&
-          sudo docker-compose up --build -d &&
-          for i in {1..10}; do
-            if sudo docker exec db pg_isready -U postgres; then
-              break
-            fi
-            echo "Waiting for PostgreSQL to become ready..."
-            sleep 10
-          done &&
-          sudo cat dump.sql | docker exec -i db psql -U postgres &&
-          sudo chmod -R 777 dbdata
+    Deploy:
+        name: Deploy to EC2
+        runs-on: self-hosted
+    
+        steps:
+          - uses: actions/checkout@v2 
+          - name: Build & Deploy
+            run: |
+              echo "${{secrets.SSH_KEY}}" > private_key.pem
+              chmod 600 private_key.pem
+              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-34-229-95-96.compute-1.amazonaws.com &&
+              cd /actions-runner/_work/Proyecto-Industria-Software/Proyecto-Industria-Software &&
+              git checkout master &&
+              git pull origin master &&
+              sudo docker-compose up --build -d &&
+              for i in {1..10}; do
+                if sudo docker exec db pg_isready -U postgres; then
+                  break
+                fi
+                echo "Waiting for PostgreSQL to become ready..."
+                sleep 10
+              done &&
+              sudo cat dump.sql | docker exec -i db psql -U postgres &&
+              sudo chmod -R 777 dbdata
