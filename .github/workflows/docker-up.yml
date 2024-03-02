@@ -20,11 +20,4 @@ jobs:
               git pull origin master &&
               sudo usermod -aG docker $USER &&
               sudo docker-compose up --build -d &&
-              for i in {1..10}; do
-                if sudo docker exec db pg_isready -U postgres; then
-                  break
-                fi
-                echo "Waiting for PostgreSQL to become ready..."
-                sleep 10
-              done &&
-              sudo cat dump.sql | docker exec -i db psql -U postgres &&
+              sudo cat dump.sql | docker exec -i db psql -U postgres
