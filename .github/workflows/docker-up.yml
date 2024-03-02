@@ -22,4 +22,5 @@ jobs:
               sudo usermod -aG docker $USER &&
               sudo docker ps -q | grep -v "\$(sudo docker ps -qf 'name=db')" | xargs -r sudo docker stop &&
               sudo docker-compose up --build -d &&
-              sudo cat dump.sql | docker exec -i db psql -U postgres
+              sudo cat dump.sql | docker exec -i db psql -U postgres &&
+              exit
