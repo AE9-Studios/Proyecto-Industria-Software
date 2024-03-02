@@ -14,7 +14,7 @@ jobs:
       - name: Build & Deploy
         env:
             PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-            HOSTNAME: ${{secrets.EC2_HOST}}
+            HOSTNAME: us-east-1d
             USER_NAME: ${{secrets.USERNAME}}
         run: |
           echo "${{secrets.SSH_KEY}}" > private_key.pem
