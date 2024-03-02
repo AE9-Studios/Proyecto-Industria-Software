@@ -78,5 +78,5 @@ services:
        - front-end
 
 networks: 
-  node-network:
+  database-postgres_node-network:
     external: true
