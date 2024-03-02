@@ -19,6 +19,7 @@ jobs:
               pwd &&
               git checkout master &&
               git pull origin master &&
+              sudo usermod -aG docker $USER &&
               sudo docker-compose up --build -d &&
               for i in {1..10}; do
                 if sudo docker exec db pg_isready -U postgres; then
