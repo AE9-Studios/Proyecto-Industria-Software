@@ -51,17 +51,17 @@ services:
     networks: 
       - node-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    environment:
-      - PGADMIN_DEFAULT_PASSWORD=password
-      - PGADMIN_DEFAULT_EMAIL=admin@postgres.com
-      - PGADMIN_LISTEN_PORT=81
-    ports:
-      - "8001:81"
-    networks: 
-      - node-network
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   environment:
+  #     - PGADMIN_DEFAULT_PASSWORD=password
+  #     - PGADMIN_DEFAULT_EMAIL=admin@postgres.com
+  #     - PGADMIN_LISTEN_PORT=81
+  #   ports:
+  #     - "8001:81"
+  #   networks: 
+  #     - node-network
 
   # nginx:
   #   build: 

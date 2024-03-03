@@ -19,5 +19,4 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/auth', authRoutes);
 
 
-
 export default app; // exportamos la aplicación para poder usarla en otros archivos
