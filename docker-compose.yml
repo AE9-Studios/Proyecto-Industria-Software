@@ -77,6 +77,8 @@ services:
     depends_on:
        - back-end
        - front-end
+    volumes:
+      - /etc/letsencrypt/live/classic-vision.alhanisespinal.tech:/etc/letsencrypt/live/classic-vision.alhanisespinal.tech
 
 networks: 
   database-postgres_node-network:
