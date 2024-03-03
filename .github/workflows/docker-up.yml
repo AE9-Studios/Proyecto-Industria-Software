@@ -15,7 +15,7 @@ jobs:
             run: |
               echo "${{secrets.SSH_KEY}}" > private_key.pem
               chmod 600 private_key.pem
-              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-54-221-140-4.compute-1.amazonaws.com &&
+              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-3-221-247-199.compute-1.amazonaws.com &&
 
               git checkout master &&
               git pull origin master &&
