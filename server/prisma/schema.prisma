@@ -83,6 +83,11 @@ enum APPOINTMENT_SOLICITATION_STATE {
   RECHAZADO
 }
 
+enum APPOINTMENT_STATE {
+  PENDIENTE
+  ATENDIDO
+}
+
 enum INVENTORY_MOVEMENT_TYPE {
   ENTRADA
   SALIDA
@@ -269,7 +274,7 @@ model APPOINTMENT {
   Description String?
   Client_Fk   Int
   Employee_Fk Int
-  State       Boolean
+  State       APPOINTMENT_STATE
   Created_At  DateTime  @default(now())
   Updated_At  DateTime? @default(now()) @updatedAt
   Client      CLIENT    @relation(fields: [Client_Fk], references: [Id], onDelete: Cascade)

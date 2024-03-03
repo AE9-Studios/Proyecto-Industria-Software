@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 
 import inventoryRoutes from './routes/inventory.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import appointmentRoutes from './routes/appointment.routes.js';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.urlencoded());
 
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/appointment', appointmentRoutes);
 
 
 export default app; // exportamos la aplicación para poder usarla en otros archivos
