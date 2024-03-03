@@ -51,17 +51,17 @@ services:
   #   networks: 
   #     - database-postgres_node-network
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    environment:
-      - PGADMIN_DEFAULT_PASSWORD=password
-      - PGADMIN_DEFAULT_EMAIL=admin@postgres.com
-      - PGADMIN_LISTEN_PORT=81
-    ports:
-      - "8001:81"
-    networks: 
-      - database-postgres_node-network
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   environment:
+  #     - PGADMIN_DEFAULT_PASSWORD=password
+  #     - PGADMIN_DEFAULT_EMAIL=admin@postgres.com
+  #     - PGADMIN_LISTEN_PORT=81
+  #   ports:
+  #     - "8001:81"
+  #   networks: 
+  #     - database-postgres_node-network
 
   nginx:
     build: 
@@ -69,6 +69,10 @@ services:
     container_name: nginx
     restart: always
     tty: true
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./fullchain.pem:/etc/ssl/certs/fullchain.pem
+      - ./privkey.pem:/etc/ssl/private/privkey.pem
     ports: 
       - "80:80"
       - "443:443"
@@ -77,8 +81,6 @@ services:
     depends_on:
        - back-end
        - front-end
-    volumes:
-      - /etc/letsencrypt/live/classic-vision.alhanisespinal.tech:/etc/letsencrypt/live/classic-vision.alhanisespinal.tech
 
 networks: 
   database-postgres_node-network:
