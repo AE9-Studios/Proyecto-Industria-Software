@@ -16,7 +16,7 @@ const NavBar = () => {
                         <div className="d-flex align-items-center justify-content-center">
                             <img width='60px' src={logo} alt="" />
                             <blockquote className="blockquote mb-0">
-                                <p className='ps-4 fs-4 fw-bolder'>Óptica Classic Vision</p>
+                                <p className='ps-4 fs-4 fw-bolder'>Classic Vision</p>
                                 <footer className="ps-3 fst-normal fw-light fs-6 blockquote-footer">Estilo y Elegancia as su Alcance</footer>
                             </blockquote>
                         </div>
