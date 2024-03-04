@@ -36,4 +36,8 @@ client/*.sw?
 
 
 #general
+<<<<<<< HEAD
 docker-compose.yml
+=======
+docker-compose.yml
+>>>>>>> dev-alh

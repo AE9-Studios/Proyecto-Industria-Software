@@ -8,6 +8,8 @@ import ProtectedRoute from './ProtectedRoute'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import ClientHome from './pages/client.pages/ClientHome'
 import EmployeeHome from './pages/human-resourses.pages/EmployeeHome'
+import InventoryMovement from './pages/admin.pages/InventoryMovement'
+import InventoryPanel from './pages/admin.pages/InventoryPanel'
 
 function App() {
   return (
@@ -37,6 +39,9 @@ function AdminRoutes() {
       {user.role === 'ADMINISTRADOR' && <>
       // aqui se agregan las rutas para el administrador
         <Route path='home' element={<PanelAdmin />} />
+        <Route path='inventory' element={<InventoryPanel />} />
+        <Route path='inventory/movement' element={<InventoryMovement />} />
+
       </>}
     </Routes>
   )
