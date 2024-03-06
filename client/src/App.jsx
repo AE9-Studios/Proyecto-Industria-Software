@@ -7,9 +7,16 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import ClientHome from './pages/client.pages/ClientHome'
-import EmployeeHome from './pages/human-resourses.pages/EmployeeHome'
 import InventoryMovement from './pages/admin.pages/InventoryMovement'
 import InventoryPanel from './pages/admin.pages/InventoryPanel'
+
+import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
+import EmployeeList from './pages/human-resources.pages/EmployeeList'
+import EmployeeCreate from './pages/human-resources.pages/EmployeeCreate'
+import EmployeeDetails from './pages/human-resources.pages/EmployeeDetails'
+import EmployeeRequest from './pages/human-resources.pages/EmployeeRequest'
+import EmployeeSchedule from './pages/human-resources.pages/EmployeeSchedule'
+
 
 function App() {
   return (
@@ -42,6 +49,13 @@ function AdminRoutes() {
         <Route path='inventory' element={<InventoryPanel />} />
         <Route path='inventory/movement' element={<InventoryMovement />} />
 
+        {/** Módulo RRHH */}
+        <Route path='human-resources' element={<EmployeeHome />} />
+        <Route path='human-resources/employees' element={<EmployeeList />} />
+        <Route path='human-resources/create-employee' element={<EmployeeCreate />} />
+        <Route path='human-resources/employee/:id' element={<EmployeeDetails />} /> 
+        <Route path='human-resources/create-schedule' element={<EmployeeSchedule />} /> 
+
       </>}
     </Routes>
   )
@@ -69,6 +83,7 @@ function EmployeeRoutes() {
       {user.role === 'EMPLEADO' && <>
       // aqui se agregan las rutas para el empleado
         <Route path='home' element={<EmployeeHome />} />
+        <Route path='request' element={<EmployeeRequest />} />
       </>}
     </Routes>
   )

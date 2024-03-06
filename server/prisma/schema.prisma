@@ -88,6 +88,11 @@ enum APPOINTMENT_STATE {
   ATENDIDO
 }
 
+enum EMPLOYEE_STATE {
+  ENABLED
+  DISABLED
+}
+
 enum INVENTORY_MOVEMENT_TYPE {
   ENTRADA
   SALIDA
@@ -130,8 +135,8 @@ model PERSON {
 
 model SCHEDULE {
   Id                Int                 @id @default(autoincrement())
-  Start_Date        DateTime
-  End_Date          DateTime
+  ScheduleName      String             
+  Schedule          Json               
   Created_At        DateTime            @default(now())
   Updated_At        DateTime?           @default(now()) @updatedAt
   Schedule_Employee SCHEDULE_EMPLOYEE[]
@@ -139,12 +144,12 @@ model SCHEDULE {
 
 model EMPLOYEE {
   Id                Int                 @id @default(autoincrement())
-  Phone             String?
   Email             String              @unique
   Person_Fk         Int
   User_Fk           Int
   Position          POSITIONS
   Start_Date        DateTime
+  State             EMPLOYEE_STATE      @default(ENABLED)
   Person            PERSON              @relation(fields: [Person_Fk], references: [Id], onDelete: Cascade)
   User              USER                @relation(fields: [User_Fk], references: [Id])
   Created_At        DateTime            @default(now())
@@ -172,7 +177,6 @@ model SCHEDULE_EMPLOYEE {
   Id          Int       @id @default(autoincrement())
   Schedule_Fk Int
   Employee_Fk Int
-  description String?
   Created_At  DateTime  @default(now())
   Updated_At  DateTime? @default(now()) @updatedAt
   Schedule    SCHEDULE  @relation(fields: [Schedule_Fk], references: [Id])
@@ -189,7 +193,6 @@ model PERMISION {
   Created_At    DateTime  @default(now())
   Updated_At    DateTime? @default(now()) @updatedAt
   Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
-  Role          ROL[]
 }
 
 model VACATION {

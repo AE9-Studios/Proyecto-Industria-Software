@@ -14,7 +14,7 @@ const PanelAdmin = () => {
           <CardModules title="Compras" description="Administra las compras realizadas." icon="bi bi-credit-card" url="purchases" />
           <CardModules title="Inventario" description="Controla y supervisa el inventario disponible." icon="bi bi-archive" url="inventory" />
           <CardModules title="Citas" description="Organiza y gestiona citas y eventos." icon="bi bi-file-earmark-text" url="appointments" />
-          <CardModules title="Recursos Humanos" description="Gestiona el personal y recursos humanos." icon="bi bi-people" url="human-resourses" />
+          <CardModules title="Recursos Humanos" description="Gestiona el personal y recursos humanos." icon="bi bi-people" url="human-resources" />
         </div>
         <br />
       </div>

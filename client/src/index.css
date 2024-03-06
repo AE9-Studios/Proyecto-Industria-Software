@@ -41,3 +41,27 @@ body {
     }
 
 }
+
+.badge-detail {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem; 
+    font-weight: 700; 
+    line-height: 1.5; 
+    color: #fff; 
+    background-color: #007bff; 
+    border-radius: 0.25rem; 
+}
+
+.badge-detail-gold {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem; 
+    font-weight: 700; 
+    line-height: 1.5; 
+    color: #fff; 
+    background-color: #3a3737; 
+    border-radius: 0.25rem; 
+}
