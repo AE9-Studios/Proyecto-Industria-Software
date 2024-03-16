@@ -93,6 +93,12 @@ enum EMPLOYEE_STATE {
   DISABLED
 }
 
+enum REQUEST_STATE {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
 enum INVENTORY_MOVEMENT_TYPE {
   ENTRADA
   SALIDA
@@ -149,6 +155,7 @@ model EMPLOYEE {
   User_Fk           Int
   Position          POSITIONS
   Start_Date        DateTime
+  Days_Spent        Int?                @default(0)
   State             EMPLOYEE_STATE      @default(ENABLED)
   Person            PERSON              @relation(fields: [Person_Fk], references: [Id], onDelete: Cascade)
   User              USER                @relation(fields: [User_Fk], references: [Id])
@@ -187,22 +194,31 @@ model PERMISION {
   Id            Int       @id @default(autoincrement())
   Employee_Fk   Int
   Reason        String
-  Discount      Boolean
+  State         REQUEST_STATE
+  Read          Boolean
+  ReadEmployee  Boolean
   Description   String
+  Answer        String?
   Attached_File String?
+  Start_Date    String
+  End_Date      String
   Created_At    DateTime  @default(now())
   Updated_At    DateTime? @default(now()) @updatedAt
   Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
 }
 
 model VACATION {
-  Id          Int       @id @default(autoincrement())
-  Employee_Fk Int
-  Start_Date  DateTime
-  End_Date    DateTime
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
-  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+  Id            Int       @id @default(autoincrement())
+  Employee_Fk   Int
+  State         REQUEST_STATE
+  Read          Boolean
+  ReadEmployee  Boolean
+  Answer        String?
+  Start_Date    String
+  End_Date      String
+  Created_At    DateTime  @default(now())
+  Updated_At    DateTime? @default(now()) @updatedAt
+  Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
 }
 
 model CLIENT {

@@ -10,13 +10,23 @@ import ClientHome from './pages/client.pages/ClientHome'
 import InventoryMovement from './pages/admin.pages/InventoryMovement'
 import InventoryPanel from './pages/admin.pages/InventoryPanel'
 
-import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
-import EmployeeList from './pages/human-resources.pages/EmployeeList'
-import EmployeeCreate from './pages/human-resources.pages/EmployeeCreate'
-import EmployeeDetails from './pages/human-resources.pages/EmployeeDetails'
-import EmployeeRequest from './pages/human-resources.pages/EmployeeRequest'
-import EmployeeSchedule from './pages/human-resources.pages/EmployeeSchedule'
-
+{/** Módulo RRHH */}
+import AdminCalendar from './pages/human-resources.pages/AdminCalendar'
+import AdminEmployeeCreate from './pages/human-resources.pages/AdminEmployeeCreate'
+import AdminEmployeeDetails from './pages/human-resources.pages/AdminEmployeeDetails'
+import AdminEmployeeList from './pages/human-resources.pages/AdminEmployeeList'
+import AdminPermissionDetails from './pages/human-resources.pages/AdminPermissionDetails'
+import AdminRequestList from './pages/human-resources.pages/AdminRequestList'
+import AdminScheduleCreate from './pages/human-resources.pages/AdminScheduleCreate'
+import AdminScheduleList from './pages/human-resources.pages/AdminScheduleList'
+import AdminScheduleDetails from './pages/human-resources.pages/AdminScheduleDetails'
+import AdminVacationDetails from './pages/human-resources.pages/AdminVacationDetails'
+import EmployeePermissionCreate from './pages/human-resources.pages/EmployeePermissionCreate'
+import EmployeeRequestList from './pages/human-resources.pages/EmployeeRequestList'
+import EmployeePermissionDetails from './pages/human-resources.pages/EmployeePermissionDetails'
+import EmployeeVacationCreate from './pages/human-resources.pages/EmployeeVacationCreate'
+import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacationDetails'
+import HHRRHome from './pages/human-resources.pages/HHRRHome'
 
 function App() {
   return (
@@ -50,11 +60,17 @@ function AdminRoutes() {
         <Route path='inventory/movement' element={<InventoryMovement />} />
 
         {/** Módulo RRHH */}
-        <Route path='human-resources' element={<EmployeeHome />} />
-        <Route path='human-resources/employees' element={<EmployeeList />} />
-        <Route path='human-resources/create-employee' element={<EmployeeCreate />} />
-        <Route path='human-resources/employee/:id' element={<EmployeeDetails />} /> 
-        <Route path='human-resources/create-schedule' element={<EmployeeSchedule />} /> 
+        <Route path='human-resources' element={<HHRRHome />} />
+        <Route path='human-resources/employees' element={<AdminEmployeeList />} />
+        <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} /> 
+        <Route path='human-resources/permissions' element={<AdminRequestList />} /> 
+        <Route path='human-resources/permissions/:id' element={<AdminPermissionDetails />} /> 
+        <Route path='human-resources/vacations/:id' element={<AdminVacationDetails />} /> 
+        <Route path='human-resources/create-employee' element={<AdminEmployeeCreate />} />
+        <Route path='human-resources/create-schedule' element={<AdminScheduleCreate />} /> 
+        <Route path='human-resources/schedules' element={<AdminScheduleList />} /> 
+        <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} /> 
+        <Route path='human-resources/calendar' element={<AdminCalendar />} /> 
 
       </>}
     </Routes>
@@ -82,8 +98,13 @@ function EmployeeRoutes() {
     <Routes>
       {user.role === 'EMPLEADO' && <>
       // aqui se agregan las rutas para el empleado
-        <Route path='home' element={<EmployeeHome />} />
-        <Route path='request' element={<EmployeeRequest />} />
+        <Route path='home' element={<HHRRHome />} />
+        <Route path='permission' element={<EmployeePermissionCreate />} />
+        <Route path='vacation' element={<EmployeeVacationCreate />} />
+        <Route path='permission/:id' element={<EmployeePermissionDetails />} /> 
+        <Route path='vacation/:id' element={<EmployeeVacationDetails />} />         
+        <Route path='requests' element={<EmployeeRequestList />} />
+
       </>}
     </Routes>
   )
