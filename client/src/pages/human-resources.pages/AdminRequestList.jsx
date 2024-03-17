@@ -80,6 +80,21 @@ const AdminRequestList = () => {
     }
   });
 
+  const calculateDaysWithoutWeekends = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let count = 0;
+
+    while (start <= end) {
+      if (start.getDay() !== 6 && start.getDay() !== 0) {
+        count++;
+      }
+      start.setDate(start.getDate() + 1);
+    }
+
+    return count;
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const itemsToShow = sortedItems.slice(indexOfFirstItem, indexOfLastItem);
@@ -152,13 +167,19 @@ const AdminRequestList = () => {
                 </td>
 
                 <td>
-                  {"Start_Date" in item &&
-                    Math.ceil(
-                      (new Date(item.End_Date) - new Date(item.Start_Date)) /
-                        (1000 * 60 * 60 * 24) +
-                        1
-                    )}
+                  {"Reason" in item
+                    ? "Start_Date" in item &&
+                      Math.ceil(
+                        (new Date(item.End_Date) - new Date(item.Start_Date)) /
+                          (1000 * 60 * 60 * 24) +
+                          1
+                      )
+                    : calculateDaysWithoutWeekends(
+                        item.Start_Date,
+                        item.End_Date
+                      )}
                 </td>
+
                 <td>
                   {"State" in item && (
                     <span className={`badge ${getBadgeColor(item.State)}`}>

@@ -55,6 +55,16 @@ const AdminVacationDetails = () => {
     }
   }, [vacation]);
 
+  useEffect(() => {
+    if (vacation && vacation.Start_Date) {
+      const days = calculateDaysWithoutWeekends(
+        vacation.Start_Date,
+        vacation.End_Date
+      );
+      setDaysBetween(days);
+    }
+  }, [vacation]);
+  
   const handleStateChange = async () => {
     try {
       if (!newState) {
@@ -99,6 +109,22 @@ const AdminVacationDetails = () => {
     }
   };
 
+  const calculateDaysWithoutWeekends = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let count = 0;
+  
+    while (start <= end) {
+      const day = start.getDay();
+      if (day !== 0 && day !== 6) {
+        count++;
+      }
+      start.setDate(start.getDate() + 1);
+    }
+  
+    return count;
+  };
+  
   const calculateVacationDays = (Start_Date, Days_Spent) => {
     const currentDate = new Date();
     const startYear = new Date(Start_Date).getFullYear();

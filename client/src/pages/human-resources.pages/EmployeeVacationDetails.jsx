@@ -8,6 +8,7 @@ const EmployeeVacationDetails = () => {
   const { user } = useAuth();
   const params = useParams();
 
+
   useEffect(() => {
     const loadVacation = async () => {
       try {
@@ -21,6 +22,26 @@ const EmployeeVacationDetails = () => {
     loadVacation();
   }, [params.id, user.role]);
 
+  const calculateDaysWithoutWeekends = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let count = 0;
+
+    while (start <= end) {
+      const day = start.getDay();
+      if (day !== 0 && day !== 6) {
+        count++;
+      }
+      start.setDate(start.getDate() + 1);
+    }
+
+    return count;
+  };
+
+  const daysBetween = vacation
+  ? calculateDaysWithoutWeekends(vacation.Start_Date, vacation.End_Date)
+  : null;
+  
   const getBadgeColor = (state) => {
     switch (state) {
       case "PENDIENTE":
@@ -77,14 +98,7 @@ const EmployeeVacationDetails = () => {
                     <label className="form-label">
                       <strong>Cantidad de días:</strong>
                     </label>
-                    <span className="badge-detail">
-                      {Math.ceil(
-                        (new Date(vacation.End_Date) -
-                          new Date(vacation.Start_Date)) /
-                          (1000 * 60 * 60 * 24) +
-                          1
-                      )}
-                    </span>
+                    <span className="badge-detail">{daysBetween}</span>
                   </div>
 
                   <div className="p-2 mb-3 container">

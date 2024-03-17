@@ -447,7 +447,6 @@ export const disableEmployee = async (req, res) => {
   }
 };
 
-
 export const savePermissionRequest = async (req, res) => {
   try {
     const { Reason, Description, Id, StartDate, EndDate } = req.body;
@@ -456,31 +455,6 @@ export const savePermissionRequest = async (req, res) => {
 
     if (req.file) {
       attachedFile = req.file.filename;
-    }
-
-    const overlappingVacations = await prisma.VACATION.findFirst({
-      where: {
-        Employee_Fk: parseInt(Id),
-        Start_Date: { lte: EndDate },
-        End_Date: { gte: StartDate },
-        State: "APROBADO",
-      },
-    });
-
-    const overlappingPermissions = await prisma.PERMISION.findFirst({
-      where: {
-        Employee_Fk: parseInt(Id),
-        Start_Date: { lte: EndDate },
-        End_Date: { gte: StartDate },
-        State: "APROBADO",
-      },
-    });
-
-    if (overlappingVacations || overlappingPermissions) {
-      return res.status(400).json({
-        error:
-          "Ya tiene solicitudes de permisos o vacaciones aprobadas en el rango de fechas proporcionado",
-      });
     }
 
     const user = await prisma.USER.findUnique({
@@ -497,6 +471,31 @@ export const savePermissionRequest = async (req, res) => {
     }
 
     const employeeId = user.Employee[0].Id;
+
+    const overlappingVacations = await prisma.VACATION.findFirst({
+      where: {
+        Employee_Fk: parseInt(employeeId),
+        Start_Date: { lte: EndDate },
+        End_Date: { gte: StartDate },
+        State: "APROBADO",
+      },
+    });
+
+    const overlappingPermissions = await prisma.PERMISION.findFirst({
+      where: {
+        Employee_Fk: parseInt(employeeId),
+        Start_Date: { lte: EndDate },
+        End_Date: { gte: StartDate },
+        State: "APROBADO",
+      },
+    });
+
+    if (overlappingVacations || overlappingPermissions) {
+      return res.status(400).json({
+        error:
+          "Ya tiene solicitudes de permisos o vacaciones aprobadas en el rango de fechas proporcionado",
+      });
+    }
 
     const permission = await prisma.PERMISION.create({
       data: {
@@ -542,34 +541,52 @@ export const saveVacationRequest = async (req, res) => {
     const { Start_Date, Days_Spent } = employee.Employee[0];
     const availableDays = calculateVacationDays(Start_Date, Days_Spent);
 
-    const requestedDays = calculateVacationDays(StartDate, 0) - calculateVacationDays(EndDate, 0);
+    const requestedDays = calculateDaysWithoutWeekends(StartDate, EndDate);
 
     if (requestedDays > availableDays) {
-      return res.status(400).json({ error: "El rango de fechas solicitado excede los días disponibles de vacaciones" });
+      return res.status(400).json({
+        error:
+          "El rango de fechas solicitado excede los días disponibles de vacaciones",
+      });
     }
 
-    const overlappingEvents = await prisma.$transaction([
-      prisma.VACATION.findFirst({
-        where: {
-          Employee_Fk: parseInt(id),
-          Start_Date: { lte: EndDate },
-          End_Date: { gte: StartDate },
-          State: "APROBADO",
-        },
-      }),
-      prisma.PERMISION.findFirst({
-        where: {
-          Employee_Fk: parseInt(id),
-          Start_Date: { lte: EndDate },
-          End_Date: { gte: StartDate },
-          State: "APROBADO",
-        },
-      }),
-    ]);
+    const user = await prisma.USER.findUnique({
+      where: {
+        Id: parseInt(id),
+      },
+      include: {
+        Employee: true,
+      },
+    });
 
-    if (overlappingEvents.some((event) => event !== null)) {
+    if (!user || !user.Employee || !user.Employee[0]) {
+      return res.status(404).json({ error: "Empleado no encontrado" });
+    }
+
+    const employeeId = user.Employee[0].Id;
+
+    const overlappingVacations = await prisma.VACATION.findFirst({
+      where: {
+        Employee_Fk: parseInt(employeeId),
+        Start_Date: { lte: EndDate },
+        End_Date: { gte: StartDate },
+        State: "APROBADO",
+      },
+    });
+
+    const overlappingPermissions = await prisma.PERMISION.findFirst({
+      where: {
+        Employee_Fk: parseInt(employeeId),
+        Start_Date: { lte: EndDate },
+        End_Date: { gte: StartDate },
+        State: "APROBADO",
+      },
+    });
+
+    if (overlappingVacations || overlappingPermissions) {
       return res.status(400).json({
-        error: "Ya tiene solicitudes de permisos o vacaciones aprobadas en el rango de fechas proporcionado",
+        error:
+          "Ya tiene solicitudes de permisos o vacaciones aprobadas en el rango de fechas proporcionado",
       });
     }
 
@@ -594,6 +611,20 @@ export const saveVacationRequest = async (req, res) => {
   }
 };
 
+const calculateDaysWithoutWeekends = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  let count = 0;
+
+  while (start <= end) {
+    if (start.getDay() !== 6 && start.getDay() !== 0) {
+      count++;
+    }
+    start.setDate(start.getDate() + 1);
+  }
+
+  return count;
+};
 
 export const saveSchedule = async (req, res) => {
   try {

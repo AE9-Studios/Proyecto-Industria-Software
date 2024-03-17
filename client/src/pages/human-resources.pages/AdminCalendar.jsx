@@ -46,7 +46,7 @@ const AdminCalendar = () => {
     };
 
     fetchEvents();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   const customTileContent = ({ date }) => {
@@ -125,7 +125,7 @@ const AdminCalendar = () => {
                 {event.Employee.Person.Last_Name}{" "}
               </strong>
               <br />
-              {permissions.some((perm) => perm.Id === event.Id) ? (
+              {event.Reason ? (
                 <span className="badge bg-info" style={{ color: "black" }}>
                   Permiso desde {event.Start_Date} hasta {event.End_Date}{" "}
                 </span>
@@ -133,7 +133,7 @@ const AdminCalendar = () => {
                 <span className="badge bg-dark">
                   Vacaciones desde {event.Start_Date} hasta {event.End_Date}{" "}
                 </span>
-              )}{" "}
+              )}
             </li>
           ))}
         </ul>

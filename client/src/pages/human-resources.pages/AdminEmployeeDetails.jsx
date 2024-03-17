@@ -15,7 +15,7 @@ const AdminEmployeeDetails = () => {
   const [employee, setEmployee] = useState(null);
   const [editableEmployee, setEditableEmployee] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formErrors, setFormErrors] = useState([]);
+  const [formErrors, setFormErrors] = useState({});
   const [schedules, setSchedules] = useState([]);
   const [errors, setErrors] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
@@ -128,13 +128,12 @@ const AdminEmployeeDetails = () => {
 
   const handleSaveEdit = async () => {
     try {
-      setShowUpdateModal(false);
-
       await updateEmployee(editableEmployee.data.employee);
       setIsEditing(false);
       setEmployee(editableEmployee);
       setFormErrors({});
       setErrors([]);
+      setShowUpdateModal(false);
 
       const response = await getSalaryByEmployeeId(params.id);
       setPreviousSalaries(response.data.salary);
@@ -520,7 +519,7 @@ const AdminEmployeeDetails = () => {
               onClick={() => {
                 const formErrors = validateInputs(editableEmployee);
                 if (!Object.values(formErrors).some((error) => error)) {
-                  handleSaveEdit();
+                  setShowUpdateModal(true);
                 }
               }}
               disabled={!hasChanges}
