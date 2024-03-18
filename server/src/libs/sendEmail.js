@@ -8,14 +8,14 @@ const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: "opticaclassicvision@gmail.com",
-    pass: "yrkz fzvi vssd bufe",
+    pass: "dpyw heyg extw fwtc",
   },
 });
 
 export const sendEmailEmployeeCreated = async (employeeData) => {
   try {
     const mailOptions = {
-      from: "softwareengineeringtestproject@gmail.com",
+      from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',
       to: employeeData.email,
       subject: "¡Bienvenido!",
       html: `
@@ -35,8 +35,8 @@ export const sendEmailEmployeeCreated = async (employeeData) => {
             `,
       attachments: [
         {
-          filename: "logo-horizontal.jpg",
-          path: path.join(__dirname, "../assets/logo-horizontal.jpg"),
+          filename: "signature.jpg",
+          path: path.join(__dirname, "../assets/signature.jpg"),
           cid: "signature",
         },
       ],
