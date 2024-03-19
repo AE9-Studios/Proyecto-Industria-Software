@@ -188,18 +188,18 @@ const generateUniqueEmail = async (
     const firstPart = removeAccents(firstName.trim().split(" ")[0]);
     const secondPart = removeAccents(lastName.trim().split(" ")[0]);
 
-    const firstPartClean = firstPart.replace(/[^a-zA-Z]/g, "");
-    const secondPartClean = secondPart.replace(/[^a-zA-Z]/g, "");
+    const firstPartClean = firstPart.replace(/[^a-zA-Z0-9]/g, "");
+    const secondPartClean = secondPart.replace(/[^a-zA-Z0-9]/g, "");
 
     const institutionalEmail = `${firstPartClean}.${secondPartClean}${
       count === 1 ? "" : count
     }@classicvision.com`;
 
-    const emailFound = await prisma.USER.findUnique({
-      where: { Email: institutionalEmail },
+    const emailFound = await prisma.USER.findFirst({
+      where: { Email: institutionalEmail.toLowerCase() },
     });
 
-    if (emailFound || emails.includes(institutionalEmail)) {
+    if (emailFound || emails.includes(institutionalEmail.toLowerCase())) {
       if (count < maxAttempts) {
         return generateUniqueEmail(
           firstName,
@@ -214,9 +214,7 @@ const generateUniqueEmail = async (
         );
       }
     } else {
-      const normalizedEmail = institutionalEmail.toLowerCase();
-
-      return normalizedEmail;
+      return institutionalEmail.toLowerCase();
     }
   } catch (error) {
     throw error;
