@@ -113,8 +113,10 @@ const AdminEmployeeList = () => {
                   </td>
                   <td>{employee.User.Email}</td>
                   <td>{formatPosition(employee.Position)}</td>
-                  <td>{employee.Schedule_Employee[0].Schedule.ScheduleName}</td>
-                  <td>
+                  <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ? employee.Schedule_Employee[0].Schedule.ScheduleName : "Este empleado no tiene los campos actualizados"}</td>
+                
+                  <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ?
+
                     <button
                       className="btn btn-primary btn-sm"
                       onClick={() =>
@@ -124,7 +126,7 @@ const AdminEmployeeList = () => {
                       }
                     >
                       Editar
-                    </button>
+                    </button> : ""}
                   </td>
                 </tr>
               ))}

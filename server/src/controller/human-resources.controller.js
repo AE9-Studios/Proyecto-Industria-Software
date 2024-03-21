@@ -29,124 +29,121 @@ export const getEmployees = async (req, res) => {
 };
 
 export const createEmployees = async (req, res) => {
+  const {
+    dni,
+    firstName,
+    lastName,
+    phone,
+    email,
+    address,
+    birthDate,
+    gender,
+    position,
+    salary,
+    schedule,
+  } = req.body;
+
+  const password = generateRandomPassword();
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const institutionalEmail = await generateUniqueEmail(firstName, lastName, []);
+
   try {
-    const {
-      dni,
-      firstName,
-      lastName,
-      phone,
-      email,
-      address,
-      birthDate,
-      gender,
-      position,
-      salary,
-      schedule,
-    } = req.body;
+    await prisma.$transaction(async (prisma) => {
+      const person = await prisma.PERSON.findUnique({
+        where: {
+          DNI: dni,
+        },
+      });
 
-    const employee = await prisma.EMPLOYEE.findUnique({
-      where: {
-        Email: email,
-      },
-    });
+      if (person) {
+        throw new Error("Este DNI ya está registrado");
+      }
 
-    const person = await prisma.PERSON.findUnique({
-      where: {
-        DNI: dni,
-      },
-    });
+      const employee = await prisma.EMPLOYEE.findUnique({
+        where: {
+          Email: email,
+        },
+      });
 
-    if (person) return res.status(400).json(["Este DNI ya está registrado"]);
+      if (employee) {
+        throw new Error("Este correo ya está registrado");
+      }
 
-    if (employee) {
-      return res.status(400).json(["Este correo ya está registrado"]);
-    }
+      const newPerson = await prisma.PERSON.create({
+        data: {
+          DNI: dni,
+          First_Name: firstName,
+          Last_Name: lastName,
+          Birth_Date: birthDate,
+          Phone_Number: phone,
+          Address: address,
+          Gender: gender,
+        },
+      });
 
-    const password = generateRandomPassword();
+      const userName = `${firstName.toUpperCase()} ${lastName.toUpperCase()}`;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await prisma.USER.create({
+        data: {
+          User_Name: userName,
+          Email: institutionalEmail,
+          Password: hashedPassword,
+          Role: "EMPLEADO",
+        },
+      });
 
-    const institutionalEmail = await generateUniqueEmail(
-      firstName,
-      lastName,
-      []
-    );
-
-    const newPerson = await prisma.PERSON.create({
-      data: {
-        DNI: dni,
-        First_Name: firstName,
-        Last_Name: lastName,
-        Birth_Date: birthDate,
-        Phone_Number: phone,
-        Address: address,
-        Gender: gender,
-      },
-    });
-
-    const userName = `${firstName.toUpperCase()} ${lastName.toUpperCase()}`;
-
-    const newUser = await prisma.USER.create({
-      data: {
-        User_Name: userName,
-        Email: institutionalEmail,
-        Password: hashedPassword,
-        Role: "EMPLEADO",
-      },
-    });
-
-    const newEmployee = await prisma.EMPLOYEE.create({
-      data: {
-        Email: email,
-        Position: position,
-        Start_Date: new Date(),
-        Person: {
-          connect: {
-            Id: newPerson.Id,
+      const newEmployee = await prisma.EMPLOYEE.create({
+        data: {
+          Email: email,
+          Position: position,
+          Start_Date: new Date(),
+          Person: {
+            connect: {
+              Id: newPerson.Id,
+            },
+          },
+          User: {
+            connect: {
+              Id: newUser.Id,
+            },
           },
         },
-        User: {
-          connect: {
-            Id: newUser.Id,
+      });
+
+      await prisma.SALARY.create({
+        data: {
+          Amount: parseFloat(salary),
+          State: true,
+          Employee: {
+            connect: {
+              Id: newEmployee.Id,
+            },
           },
         },
-      },
-    });
+      });
 
-    await prisma.SALARY.create({
-      data: {
-        Amount: parseFloat(salary),
-        State: true,
-
-        Employee: {
-          connect: {
-            Id: newEmployee.Id,
-          },
+      await prisma.SCHEDULE_EMPLOYEE.create({
+        data: {
+          Schedule_Fk: parseInt(schedule),
+          Employee_Fk: newEmployee.Id,
         },
-      },
-    });
+      });
 
-    await prisma.SCHEDULE_EMPLOYEE.create({
-      data: {
-        Schedule_Fk: parseInt(schedule),
-        Employee_Fk: newEmployee.Id,
-      },
-    });
+      await sendEmailEmployeeCreated({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        institutionalEmail: institutionalEmail,
+        position: position,
+        password: password,
+      });
 
-    await sendEmailEmployeeCreated({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      institutionalEmail: institutionalEmail,
-      position: position,
-      password: password,
-    });
-
-    res.json({
-      id: newUser.Id,
-      email: newUser.Email,
-      userName: newUser.User_Name,
-      role: newUser.Role,
+      res.json({
+        id: newUser.Id,
+        email: newUser.Email,
+        userName: newUser.User_Name,
+        role: newUser.Role,
+      });
     });
   } catch (error) {
     return http500(error, req, res);

@@ -325,7 +325,10 @@ const AdminEmployeeCreate = () => {
                   <button
                     className="btn btn-primary mt-3 py-2 px-5 rounded-4"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={
+                      isSubmitting ||
+                      (schedules.data && schedules.data.length === 0)
+                    }
                   >
                     {isSubmitting ? (
                       <div
