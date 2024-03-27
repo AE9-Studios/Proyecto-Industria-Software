@@ -119,6 +119,22 @@ export const login = async (req, res) => {
             return res.status(401).json(['Contraseña incorrecta']);
         }
 
+        if (user.Role === 'EMPLEADO') {
+            const employee = await prisma.EMPLOYEE.findFirst({
+                where: {
+                    User_Fk: user.Id
+                }
+            });
+
+            if (!employee) {
+                return res.status(404).json(['Empleado no encontrado']);
+            }
+
+            if (employee.State !== 'ENABLED') {
+                return res.status(401).json(['Cuenta desactivada']);
+            }
+        }
+
         //crear token si es correcto
         const token = await createAccessToken({
             id: user.Id,
@@ -181,6 +197,17 @@ export const verifyToken = async (req, res) => {
             });
 
             if (!userFound) {
+                return res.status(401).json(['No autorizado']);
+            }
+
+            const employee = await prisma.EMPLOYEE.findFirst({
+                where: {
+                    User_Fk: user.id,
+                    State: 'DISABLED'
+                }
+            });
+
+            if (employee) {
                 return res.status(401).json(['No autorizado']);
             }
 

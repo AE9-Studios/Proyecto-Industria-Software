@@ -43,23 +43,14 @@ const manifestForPluginPWA = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), VitePWA(manifestForPluginPWA), 
-    // mkcert()
-  ],
+  plugins: [react(), VitePWA(manifestForPluginPWA)],
   preview: {
     host: true,
     port: 4173, //when not running preview in docker compose, para dev si ejecuta fuera de docker descomentar cuando no se este corriendo en docker compose
-    // https: {
-    //   key: 'ssl/classic-vision-privateKey.key',
-    //   cert: '/ssl/classic-vision.crt'
-    // }
+
   },
   server: {
     host: true,
     port: 5173, //When not running with docker compose, this is the port which will be used in docker (descomentar cuando no se este corriendo en docker compose)
-    // https: {
-    //   key: 'ssl/classic-vision-privateKey.key',
-    //   cert: '/ssl/classic-vision.crt'
-    // }
   },
 })
