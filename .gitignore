@@ -1,5 +1,11 @@
 #No subur al repositorio
 
+#aws
+aws
+
+#nginx
+nginx
+
 #server
 server/node_modules
 server/.env
@@ -33,11 +39,9 @@ client/*.ntvs*
 client/*.njsproj
 client/*.sln
 client/*.sw?
+client/Dockerfile
 
 
 #general
-<<<<<<< HEAD
 docker-compose.yml
-=======
-docker-compose.yml
->>>>>>> dev-alh
+
