@@ -54,3 +54,32 @@ export const sendEmailEmployeeCreated = async (employeeData) => {
     throw error;
   }
 };
+
+export const sendEmailSupplier = async (supplierData, message, subject) => {
+  try {
+    const mailOptions = {
+      from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',
+      to: supplierData.Email,
+      subject: subject,
+      html: message,
+      attachments: [
+        {
+          filename: "signature.jpg",
+          path: path.join(__dirname, "../assets/signature.jpg"),
+          cid: "signature",
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(
+      `Correo enviado a ${supplierData.Email}`
+    );
+  } catch (error) {
+    console.error(
+      "Error al enviar el correo electrónico al proveedor:",
+      error
+    );
+    throw error;
+  }
+};

@@ -1,6 +1,6 @@
 import prisma from "../db.js";
 import {http500} from "../libs/handleErrors.js";
-
+import { sendEmailSupplier } from "../libs/sendEmail.js";
 
 export const getProducts = async (req, res) => {
     try {
@@ -11,18 +11,28 @@ export const getProducts = async (req, res) => {
     }
 }
 
-export const createInventoryMovement = async (req, res) => {
+export const getSuppliers = async (req, res) => {
     try {
-        const { productId, State, Quantity, Description } = req.body;
-        const inventoryMovement = await prisma.iNVENTORY_MOVEMENT.create({
-            data: {
-                Product_Fk: productId,
-                Quantity,
-                State,
-                Description
-            }
-        });
-        res.status(200).json(inventoryMovement);
+        const suppliers = await prisma.SUPPLIER.findMany();
+        res.status(200).json(suppliers);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const getCategory = async (req, res) => {
+    try {
+        const category = await prisma.CATEGORY.findMany();
+        res.status(200).json(category);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const getPurchaseQuotations = async (req, res) => {
+    try {
+        const purchaseQuotations = await prisma.PURCHASE_QUOTATION.findMany();
+        res.status(200).json(purchaseQuotations);
     } catch (error) {
         http500(error, req, res);
     }
@@ -56,4 +66,275 @@ export const getInventoryMovements = async (req, res) => {
         http500(error, req, res);
     }
 }
+
+export const createCategory = async (req, res) => {
+    try {
+        const { Name, Description } = req.body;
+        const category = await prisma.CATEGORY.create({
+            data: {
+                Name,
+                description: Description
+            }
+        });
+        res.status(200).json(category);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const updateCategory = async (req, res) => {
+    try {
+        const { id, Name, Description } = req.body;
+        const category = await prisma.CATEGORY.update({
+            where: { id },
+            data: {
+                Name,
+                Description
+            }
+        });
+        res.status(200).json(category);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const createSupplier = async (req, res) => {
+    try {
+        const { Name, Description, Phone, Email, Address } = req.body;
+        const supplier = await prisma.SUPPLIER.create({
+            data: {
+                Name,
+                Description,
+                Phone,
+                Email,
+                Address
+            }
+        });
+        sendEmailSupplier(supplier, 
+            "¡Se ha agregado como proveedor de Óptica Classic Vision!", 
+            `<p>Hola <strong>${supplier.Name}</strong>,</p>
+            <p>Te damos la bienvenida a nuestra empresa.</p>
+            <p>Se te ha añadido como proveedor en Classic Vision.</p>
+            <p>Recibiras correos con peticiones de productos</p>
+            <br>
+            <p>¡Bienvenido!</p>
+            <img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">
+        `)
+        res.status(200).json(supplier);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const updateSupplier = async (req, res) => {
+    try {
+        const { Name, Description, Phone, Email, Address } = req.body;
+        const supplier = await prisma.SUPPLIER.update({
+            where: { id: req.body.id },
+            data: {
+                Name,
+                Description,
+                Phone,
+                Email,
+                Address
+            }
+        });
+        sendEmailSupplier(supplier,
+            "¡Actualización de información en Óptica Classic Vision!",
+            "¡Se ha actualizado tu información en Óptica Classic Vision!",
+            `<p>Hola <strong>${supplier.Name}</strong>,</p>
+            <p>Se ha actualizado tu información en Classic Vision.</p>
+            <p>Recibiras correos con peticiones de productos</p>
+            <br>
+            <p>¡Bienvenido!</p>
+            <img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">
+        `)
+        res.status(200).json(supplier);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const createProduct = async (req, res) => {
+    try {
+        const { Name, Description, Brand, Price_Buy, Price_Sell, Supplier_Fk, Category_Fk } = req.body;
+        const product = await prisma.PRODUCT.create({
+            data: {
+                Name,
+                Description,
+                Brand,
+                Price_Buy,
+                Price_Sell,
+                Supplier_Fk,
+                Category_Fk
+            }
+        });
+        res.status(200).json(product);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const updateProduct = async (req, res) => {
+    try {
+        const { Name, Description, Brand, Price_Buy, Price_Sell, Supplier_Fk, Category_Fk } = req.body;
+        const product = await prisma.PRODUCT.update({
+            where: { id: req.body.id },
+            data: {
+                Name,
+                Description,
+                Brand,
+                Price_Buy,
+                Price_Sell,
+                Supplier_Fk,
+                Category_Fk
+            }
+        });
+        res.status(200).json(product);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const createInventoryMovement = async (req, res) => {
+    try {
+        const { productId, State, Quantity, Description } = req.body;
+        const inventoryMovement = await prisma.iNVENTORY_MOVEMENT.create({
+            data: {
+                Product_Fk: productId,
+                Quantity,
+                State,
+                Description
+            }
+        });
+        res.status(200).json(inventoryMovement);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const updateInventoryMovement = async (req, res) => {
+    try {
+        const { id, productId, State, Quantity, Description } = req.body;
+        const inventoryMovement = await prisma.INVENTORY_MOVEMENT.update({
+            where: { id },
+            data: {
+                Product_Fk: productId,
+                Quantity,
+                State,
+                Description
+            }
+        });
+        res.status(200).json(inventoryMovement);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const createPurchaseQuotation = async (req, res) => {
+    try {
+        const { Supplier_Fk, Product_Fk, Quantity, Price, Description } = req.body;
+        const purchaseQuotation = await prisma.PURCHASE_QUOTATION.create({
+            data: {
+                Supplier_Fk,
+                Product_Fk,
+                Quantity,
+                Price,
+                Description
+            }
+        });
+        res.status(200).json(purchaseQuotation);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const updatePurchaseQuotation = async (req, res) => {
+    try {
+        const { id, Supplier_Fk, Product_Fk, Quantity, Price, Description } = req.body;
+        const purchaseQuotation = await prisma.PURCHASE_QUOTATION.update({
+            where: { id },
+            data: {
+                Supplier_Fk,
+                Product_Fk,
+                Quantity,
+                Price,
+                Description
+            }
+        });
+        res.status(200).json(purchaseQuotation);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const deletePurchaseQuotation = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await prisma.PURCHASE_QUOTATION.delete({
+            where: { id }
+        });
+        res.status(200).json(["Se ha eliminado el registro con éxito" ]);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await prisma.PRODUCT.delete({
+            where: { id }
+        });
+        res.status(200).json(["Se ha eliminado el registro con éxito" ]);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const deleteSupplier = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await prisma.SUPPLIER.delete({
+            where: { id }
+        });
+        res.status(200).json(["Se ha eliminado el registro con éxito" ]);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const deleteCategory = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await prisma.CATEGORY.delete({
+            where: { id }
+        });
+        res.status(200).json(["Se ha eliminado el registro con éxito" ]);
+    } catch (error) {
+        http500(error, req, res);
+    }
+}
+
+export const deleteInventoryMovement = async (req, res) => {
+    try {
+        const { id } = req.body;
+        await prisma.INVENTORY_MOVEMENT.delete({
+            where: { id }
+        });
+        res.status(200).json(["Se ha eliminado el registro con éxito" ]);
+    }
+    catch (error) {
+        http500(error, req, res);
+    }
+}
+
+
+
+
+
+
+
+
+
 

@@ -7,8 +7,8 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import ClientHome from './pages/client.pages/ClientHome'
-import InventoryMovement from './pages/admin.pages/InventoryMovement'
-import InventoryPanel from './pages/admin.pages/InventoryPanel'
+import InventoryMovement from './pages/inventory.pages/InventoryMovement'
+import InventoryPanel from './pages/inventory.pages/InventoryPanel'
 
 {/** Módulo RRHH */}
 import AdminCalendar from './pages/human-resources.pages/AdminCalendar'
