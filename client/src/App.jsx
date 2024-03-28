@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
-import Home from './pages/Home'
+import Home from './pages/admin.pages/Home'
 import Login from './pages/Login'
 import Register from './pages/client.pages/Register'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -10,7 +10,7 @@ import ClientHome from './pages/client.pages/ClientHome'
 import InventoryMovement from './pages/inventory.pages/InventoryMovement'
 import InventoryPanel from './pages/inventory.pages/InventoryPanel'
 
-{/** Módulo RRHH */}
+{/** Módulo RRHH */ }
 import AdminCalendar from './pages/human-resources.pages/AdminCalendar'
 import AdminEmployeeCreate from './pages/human-resources.pages/AdminEmployeeCreate'
 import AdminEmployeeDetails from './pages/human-resources.pages/AdminEmployeeDetails'
@@ -27,6 +27,8 @@ import EmployeePermissionDetails from './pages/human-resources.pages/EmployeePer
 import EmployeeVacationCreate from './pages/human-resources.pages/EmployeeVacationCreate'
 import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacationDetails'
 import HHRRHome from './pages/human-resources.pages/HHRRHome'
+import Inventory from './pages/inventory.pages/Inventory'
+import Reorder from './pages/inventory.pages/Reorder'
 
 function App() {
   return (
@@ -49,28 +51,30 @@ function App() {
 
 function AdminRoutes() {
   const { user } = useAuth()
-  if(user.role !== 'ADMINISTRADOR') return <Navigate to='/' replace/>
+  if (user.role !== 'ADMINISTRADOR') return <Navigate to='/' replace />
 
   return (
     <Routes>
       {user.role === 'ADMINISTRADOR' && <>
-      // aqui se agregan las rutas para el administrador
+        {/* // aqui se agregan las rutas para el administrador */}
         <Route path='home' element={<PanelAdmin />} />
+        {/* Modulo inventario */}
         <Route path='inventory' element={<InventoryPanel />} />
         <Route path='inventory/movement' element={<InventoryMovement />} />
-
+        <Route path='inventory/view-inventory' element={<Inventory />} />
+        <Route path='inventory/reorder' element={<Reorder />} />
         {/** Módulo RRHH */}
         <Route path='human-resources' element={<HHRRHome />} />
         <Route path='human-resources/employees' element={<AdminEmployeeList />} />
-        <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} /> 
-        <Route path='human-resources/permissions' element={<AdminRequestList />} /> 
-        <Route path='human-resources/permissions/:id' element={<AdminPermissionDetails />} /> 
-        <Route path='human-resources/vacations/:id' element={<AdminVacationDetails />} /> 
+        <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} />
+        <Route path='human-resources/permissions' element={<AdminRequestList />} />
+        <Route path='human-resources/permissions/:id' element={<AdminPermissionDetails />} />
+        <Route path='human-resources/vacations/:id' element={<AdminVacationDetails />} />
         <Route path='human-resources/create-employee' element={<AdminEmployeeCreate />} />
-        <Route path='human-resources/create-schedule' element={<AdminScheduleCreate />} /> 
-        <Route path='human-resources/schedules' element={<AdminScheduleList />} /> 
-        <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} /> 
-        <Route path='human-resources/calendar' element={<AdminCalendar />} /> 
+        <Route path='human-resources/create-schedule' element={<AdminScheduleCreate />} />
+        <Route path='human-resources/schedules' element={<AdminScheduleList />} />
+        <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} />
+        <Route path='human-resources/calendar' element={<AdminCalendar />} />
 
       </>}
     </Routes>
@@ -78,8 +82,8 @@ function AdminRoutes() {
 }
 
 function ClientRoutes() {
-  const {user} = useAuth()
-  if(user.role !== 'CLIENTE') return <Navigate to='/' replace/>
+  const { user } = useAuth()
+  if (user.role !== 'CLIENTE') return <Navigate to='/' replace />
   return (
     <Routes>
       {user.role === 'CLIENTE' && <>
@@ -91,8 +95,8 @@ function ClientRoutes() {
 }
 
 function EmployeeRoutes() {
-  const {user} = useAuth()
-  if(user.role !== 'EMPLEADO') return <Navigate to='/' replace/>
+  const { user } = useAuth()
+  if (user.role !== 'EMPLEADO') return <Navigate to='/' replace />
 
   return (
     <Routes>
@@ -101,8 +105,8 @@ function EmployeeRoutes() {
         <Route path='home' element={<HHRRHome />} />
         <Route path='permission' element={<EmployeePermissionCreate />} />
         <Route path='vacation' element={<EmployeeVacationCreate />} />
-        <Route path='permission/:id' element={<EmployeePermissionDetails />} /> 
-        <Route path='vacation/:id' element={<EmployeeVacationDetails />} />         
+        <Route path='permission/:id' element={<EmployeePermissionDetails />} />
+        <Route path='vacation/:id' element={<EmployeeVacationDetails />} />
         <Route path='requests' element={<EmployeeRequestList />} />
 
       </>}

@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext';
-import { getMovement } from '../../api/inventory';
+import { getInventory } from '../../api/inventory';
 
-const InventoryMovement = () => {
-    const { user } = useAuth();
-    const [inventoryMovement, setInventoryMovement] = useState([]);
-    const [error, setError] = useState([]);
+const Inventory = () => {
 
+    const [inventory, setInvetory] = useState([]);
 
-    const getInventoryMovement = async () => {
+    const getInventoryFunc = async () => {
         try {
-            const res = await getMovement();
-            setInventoryMovement(res.data);
-            console.log(res.data);
-        } catch (error) {
-            setError(error.response.data)
+            const res = await getInventory();
+            setInvetory(res.data);
+        }
+        catch (error) {
             console.log(error);
         }
     }
 
     useEffect(() => {
         try {
-            getInventoryMovement();
+            getInventoryFunc();
         } catch (error) {
             console.log(error);
         }
     }, []);
-
-
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = inventoryMovement.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = inventory.slice(indexOfFirstItem, indexOfLastItem);
+    console.log(currentItems);
+    console.log(inventory);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -45,24 +41,25 @@ const InventoryMovement = () => {
                 <table className="table wrap-table" >
                     <thead>
                         <tr>
-                            <th scope="col">Estado</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Proveedor</th>
                             <th scope="col">Cantidad</th>
-                            <th scope="col">Product</th>
-                            <th scope="col">Prooveedor</th>
-                            <th scope="col">Descripcion</th>
+                            <th scope="col">Precio Compra</th>
+                            <th scope="col">Precio Venta</th>
                             <th scope="col">Fecha</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             currentItems.map((movement, index) => (
-                                <tr key={index} className={movement.State === 'ENTRADA' ? 'table-info' : 'table-warning'}>
-                                    <td>{movement.State}</td>
-                                    <td>{movement.Quantity}</td>
+                                <tr key={index}>
                                     <td>{movement.Product.Name}</td>
                                     <td>{movement.Product.Supplier.Name}</td>
-                                    <td>{movement.Description}</td>
-                                    <td>{movement.Created_At}</td>
+                                    <td>{movement.Stock}</td>
+                                    <td>{movement.Product.Price_Buy}</td>
+                                    <td>{movement.Product.Price_Sell}</td>
+                                    <td>{movement.Updated_At}</td>
+
                                 </tr>
                             ))
                         }
@@ -73,12 +70,7 @@ const InventoryMovement = () => {
                         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                             <a className="page-link" onClick={() => paginate(currentPage - 1)}>Anterior</a>
                         </li>
-                        {/* {Array.from({ length: Math.ceil(inventoryMovement.length / itemsPerPage) }, (_, i) => (
-                            <li className={`page-item ${currentPage === i + 1 ? 'active' : ''}`} key={i} onClick={() => paginate(i + 1)}>
-                                <a className="page-link">{i + 1}</a>
-                            </li>
-                        ))} */}
-                        <li className={`page-item ${currentPage === Math.ceil(inventoryMovement.length / itemsPerPage) ? 'disabled' : ''}`}>
+                        <li className={`page-item ${currentPage === Math.ceil(inventory.length / itemsPerPage) ? 'disabled' : ''}`}>
                             <a className="page-link" onClick={() => paginate(currentPage + 1)}>Siguiente</a>
                         </li>
                     </ul>
@@ -88,7 +80,7 @@ const InventoryMovement = () => {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
-export default InventoryMovement
+export default Inventory

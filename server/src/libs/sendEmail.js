@@ -55,7 +55,7 @@ export const sendEmailEmployeeCreated = async (employeeData) => {
   }
 };
 
-export const sendEmailSupplier = async (supplierData, message, subject) => {
+export const sendEmailSupplier = async (supplierData, subject, message ) => {
   try {
     const mailOptions = {
       from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',

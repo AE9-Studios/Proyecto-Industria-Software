@@ -19,6 +19,18 @@ body {
     justify-content: center;
 }
 
+.wrap-table td,
+.wrap-table th {
+  white-space: normal !important;
+  word-wrap: break-word;
+}
+
+/* .edit-btn:hover{
+    background-color: #3a3737;
+    color: white;
+    padding: 4px;
+} */
+
 
 @media (min-width: 900px) {
 
