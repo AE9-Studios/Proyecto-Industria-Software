@@ -72,4 +72,23 @@ El nginx corre en el puerto 80 (puerto por defecto del localhost) y redirige las
 cat dump.sql | docker exec -i db psql -U postgres en linux (este se usara para produccion)
 
 
+# Métodos de pago para hacer pruebas
 
+**Cuenta Paypal:**
+
+- Email: sb-lsm8530074212@personal.example.com
+- Password: Fy+qm9ce
+
+**Tarjeta de Crédito:**
+
+- Card Number: 5110928322401165
+- Expiry Date: 04/2027
+- CVC Code: 552
+- First Name: Javier
+- Last Name: Flores
+- Street Address: Saturn
+- City: Stellar Drift
+- State: Washington
+- Zip Code: 20001
+- Mobile: +1 555-123-4567
+- Email: javier.flores@example.com

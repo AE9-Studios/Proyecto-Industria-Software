@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { uploadRequest } from "../libs/uploadRequest.js";
+import { uploadRequest } from "../libs/uploadFile.js";
 import {
   getEmployees,
   createEmployees,

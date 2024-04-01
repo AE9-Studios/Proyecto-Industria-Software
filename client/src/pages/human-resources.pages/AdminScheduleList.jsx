@@ -20,7 +20,7 @@ const AdminScheduleList = () => {
       try {
         const response = await getAllSchedules();
         setSchedules(response.data);
-        setFilteredSchedules(response.data.slice(0, 20));
+        setFilteredSchedules(response.data);
       } catch (error) {
         console.error("Error fetching schedules:", error);
       }
