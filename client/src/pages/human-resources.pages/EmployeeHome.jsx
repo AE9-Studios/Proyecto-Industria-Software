@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
-import CardEmployee from "../../components/CardEmployee";
+import CardTest from "../../components/CardTest";
 import { getRequestWithReadFalse } from "../../api/human-resources";
 
 const HHRRHome = () => {
@@ -37,31 +37,31 @@ const HHRRHome = () => {
 
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">
-              <CardEmployee
+              <CardTest
                 title="Nuevo empleado"
                 description="Crea un nuevo empleado"
                 icon="bi bi-person-plus"
                 url="human-resources/create-employee"
               />
-              <CardEmployee
+              <CardTest
                 title="Ver Empleados"
                 description="Mira la lista de todos los empleados"
                 icon="bi bi-person-lines-fill"
                 url="human-resources/employees"
               />
-              <CardEmployee
+              <CardTest
                 title="Nuevo Horario"
                 description="Programa un nuevo horario"
                 icon="bi bi-alarm"
                 url="human-resources/create-schedule"
               />
-              <CardEmployee
+              <CardTest
                 title="Ver Horarios"
                 description="Gestiona los horarios creados"
                 icon="bi bi-hourglass-split"
                 url="human-resources/schedules"
               />
-              <CardEmployee
+              <CardTest
                 title="Solicitudes"
                 description="Administra las peticiones de permisos y vacaciones"
                 icon={
@@ -72,7 +72,7 @@ const HHRRHome = () => {
                 url="human-resources/permissions"
                 requestCount={unreadPermissionsCount}
               />
-              <CardEmployee
+              <CardTest
                 title="Calendario"
                 description="Explora el calendario de permisos y vacaciones"
                 icon="bi bi-calendar-week"
@@ -92,19 +92,19 @@ const HHRRHome = () => {
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">
               {" "}
-              <CardEmployee
+              <CardTest
                 title="Permisos"
                 description="Envia una solicitud de permisos"
                 icon="bi bi-calendar-check"
                 url="permission"
               />
-              <CardEmployee
+              <CardTest
                 title="Vacaciones"
                 description="Envia una solicitud de vacaciones"
                 icon="bi bi-sunset"
                 url="vacation"
               />
-              <CardEmployee
+              <CardTest
                 title="Solicitudes"
                 description="Mira las respuestas a tus solicitudes"
                 icon={

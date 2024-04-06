@@ -88,6 +88,11 @@ enum APPOINTMENT_STATE {
   ATENDIDO
 }
 
+enum PAY_METHOD {
+  LINEA
+  CAJA
+}
+
 enum EMPLOYEE_STATE {
   ENABLED
   DISABLED
@@ -353,7 +358,10 @@ model PURCHASE_ORDER {
   Date                    DateTime
   Client_Fk               Int
   Employee_Fk             Int
-  Description             String?
+  Order_File              String?
+  State                   REQUEST_STATE
+  Read                    Boolean
+  ReadClient              Boolean
   Subtotal                Float
   Discount                Float?
   ISV                     Float
@@ -414,21 +422,23 @@ model INVOICE_ORDER_SERVICE_DETAILS {
 
 model INVOICE_ORDER {
   Id                            Int                             @id @default(autoincrement())
-  Client_Fk                     Int
+  Client_Fk                     Int?
   Employee_Fk                   Int
   Date                          DateTime
-  Description                   String?
+  Invoice_File                  String?
+  PayMethod                     PAY_METHOD                      @default(CAJA)
   Subtotal                      Float
   Discount                      Float?
   ISV                           Float
   Total                         Float
   Created_At                    DateTime                        @default(now())
   Updated_At                    DateTime?                       @default(now()) @updatedAt
-  Client                        CLIENT                          @relation(fields: [Client_Fk], references: [Id])
+  Client                        CLIENT?                         @relation(fields: [Client_Fk], references: [Id])
   Employee                      EMPLOYEE                        @relation(fields: [Employee_Fk], references: [Id])
   INVOICE_ORDER_SERVICE_DETAILS INVOICE_ORDER_SERVICE_DETAILS[]
   INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
 }
+
 
 model ACTIVITY_LOG {
   Id          Int       @id @default(autoincrement())

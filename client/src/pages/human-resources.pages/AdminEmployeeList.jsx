@@ -17,7 +17,7 @@ const AdminEmployeeList = () => {
         const response = await getEmployees();
         setEmployees(response.data);
 
-        setFilteredEmployees(response.data.slice(0, 20));
+        setFilteredEmployees(response.data);
       } catch (error) {
         console.error("Error listando los empleados:", error);
       }

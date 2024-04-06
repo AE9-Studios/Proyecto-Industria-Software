@@ -6,9 +6,15 @@ import Register from './pages/client.pages/Register'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
+import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
+// modulo de inventario
 import InventoryMovement from './pages/inventory.pages/InventoryMovement'
 import InventoryPanel from './pages/inventory.pages/InventoryPanel'
+import Inventory from './pages/inventory.pages/Inventory'
+import Reorder from './pages/inventory.pages/Reorder'
+import InventoryValued from './pages/inventory.pages/InventoryValued'
+import InventoryToHand from './pages/inventory.pages/InventoryToHand'
 
 {/** Módulo RRHH */ }
 import AdminCalendar from './pages/human-resources.pages/AdminCalendar'
@@ -27,10 +33,7 @@ import EmployeePermissionDetails from './pages/human-resources.pages/EmployeePer
 import EmployeeVacationCreate from './pages/human-resources.pages/EmployeeVacationCreate'
 import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacationDetails'
 import HHRRHome from './pages/human-resources.pages/HHRRHome'
-import Inventory from './pages/inventory.pages/Inventory'
-import Reorder from './pages/inventory.pages/Reorder'
-import InventoryValued from './pages/inventory.pages/InventoryValued'
-import InventoryToHand from './pages/inventory.pages/InventoryToHand'
+
 
 function App() {
   return (
@@ -68,7 +71,7 @@ function AdminRoutes() {
         <Route path='inventory/inventory-valued' element={<InventoryValued />} />
         <Route path='inventory/inventory-to-hand' element={<InventoryToHand />} />
         {/** Módulo RRHH */}
-        <Route path='human-resources' element={<HHRRHome />} />
+        <Route path='human-resources' element={<EmployeeHome/>} />
         <Route path='human-resources/employees' element={<AdminEmployeeList />} />
         <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} />
         <Route path='human-resources/permissions' element={<AdminRequestList />} />
@@ -80,6 +83,14 @@ function AdminRoutes() {
         <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} />
         <Route path='human-resources/calendar' element={<AdminCalendar />} />
 
+        {/** Módulo Ventas */}
+        <Route path="sales" element={<ClientHome />} />
+        <Route path="/sales/new" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesCatalogView /></ShoppingCartProvider></ProductsProvider>}/>
+        <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesPurchaseCheckout /></ShoppingCartProvider></ProductsProvider>}/>
+        <Route path="/sales/list" element={<SalesPurchaseList />} />
+        <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
+        <Route path="/sales/order-list" element={<PurchaseOrderList />} />
+
       </>}
     </Routes>
   )
@@ -89,12 +100,23 @@ function ClientRoutes() {
   const { user } = useAuth()
   if (user.role !== 'CLIENTE') return <Navigate to='/' replace />
   return (
-    <Routes>
-      {user.role === 'CLIENTE' && <>
-      // aqui se agregan las rutas para el cliente
-        <Route path='home' element={<ClientHome />} />
-      </>}
-    </Routes>
+    <ProductsProvider>
+      <ShoppingCartProvider>
+        <Cart/>
+          <Routes>
+            {user.role === 'CLIENTE' && <>
+            // aqui se agregan las rutas para el cliente
+            <Route path='home' element={<ClientHome />} />
+            <Route path="/catalog" element={<SalesCatalogView />} />
+            <Route path="/checkout" element={<SalesPurchaseCheckout />} />
+            <Route path="/purchases" element={<SalesPurchaseList />} />
+            <Route path="/orders" element={<PurchaseOrderList />} />
+            <Route path="/thankyou" element={<ThankYouPage />} />
+            <Route path="/thankyouorder" element={<ThankYouOrderPage />} />
+          </>}
+          </Routes>
+      </ShoppingCartProvider>
+    </ProductsProvider>
   )
 }
 
@@ -106,7 +128,7 @@ function EmployeeRoutes() {
     <Routes>
       {user.role === 'EMPLEADO' && <>
       // aqui se agregan las rutas para el empleado
-        <Route path='home' element={<HHRRHome />} />
+        <Route path='home' element={<EmployeeHome/>} />
         <Route path='permission' element={<EmployeePermissionCreate />} />
         <Route path='vacation' element={<EmployeeVacationCreate />} />
         <Route path='permission/:id' element={<EmployeePermissionDetails />} />
