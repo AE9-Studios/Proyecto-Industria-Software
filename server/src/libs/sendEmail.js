@@ -55,15 +55,35 @@ export const sendEmailEmployeeCreated = async (employeeData) => {
   }
 };
 
-<<<<<<< HEAD
-export const sendEmailSupplier = async (supplierData, subject, message ) => {
+export const sendEmailSupplier = async (supplierData, subject, message) => {
   try {
     const mailOptions = {
       from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',
       to: supplierData.Email,
       subject: subject,
       html: message,
-=======
+      attachments: [
+        {
+          filename: "signature.jpg",
+          path: path.join(__dirname, "../assets/signature.jpg"),
+          cid: "signature",
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(
+      `Correo enviado a ${supplierData.Email}`
+    );
+  } catch (error) {
+    console.error(
+      "Error al enviar el correo electrónico al proveedor:",
+      error
+    );
+    throw error;
+  }
+};
+
 export const sendEmailPurchaseSuccess = async (customerData) => {
   try {
     const mailOptions = {
@@ -78,15 +98,12 @@ export const sendEmailPurchaseSuccess = async (customerData) => {
         <p><strong>Esperamos que disfrutes de tus productos. ¡Gracias por tu preferencia! </strong></p>
         <img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">
       `,
->>>>>>> f99a0b0603ebf44a81d7f9e556230ba884ecc198
       attachments: [
         {
           filename: "signature.jpg",
           path: path.join(__dirname, "../assets/signature.jpg"),
           cid: "signature",
         },
-<<<<<<< HEAD
-=======
         {
           filename: `invoice_${customerData.invoice}.pdf`,
           path: path.join(
@@ -94,25 +111,19 @@ export const sendEmailPurchaseSuccess = async (customerData) => {
             `../assets/invoices/${customerData.invoice}`
           ),
         },
->>>>>>> f99a0b0603ebf44a81d7f9e556230ba884ecc198
       ],
     };
 
     await transporter.sendMail(mailOptions);
     console.log(
-<<<<<<< HEAD
+
       `Correo enviado a ${supplierData.Email}`
     );
+
   } catch (error) {
     console.error(
       "Error al enviar el correo electrónico al proveedor:",
-=======
       `Correo enviado a ${customerData.email} para agradecer por la compra.`
-    );
-  } catch (error) {
-    console.error(
-      "Error al enviar el correo electrónico de agradecimiento por la compra:",
-      error
     );
     throw error;
   }
@@ -155,7 +166,7 @@ export const sendEmailOrderDone = async (customerData) => {
   } catch (error) {
     console.error(
       "Error al enviar el correo electrónico de agradecimiento por la compra:",
->>>>>>> f99a0b0603ebf44a81d7f9e556230ba884ecc198
+
       error
     );
     throw error;

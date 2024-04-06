@@ -8,6 +8,7 @@ import ProtectedRoute from './ProtectedRoute'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
+
 // modulo de inventario
 import InventoryMovement from './pages/inventory.pages/InventoryMovement'
 import InventoryPanel from './pages/inventory.pages/InventoryPanel'
@@ -32,7 +33,21 @@ import EmployeeRequestList from './pages/human-resources.pages/EmployeeRequestLi
 import EmployeePermissionDetails from './pages/human-resources.pages/EmployeePermissionDetails'
 import EmployeeVacationCreate from './pages/human-resources.pages/EmployeeVacationCreate'
 import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacationDetails'
-import HHRRHome from './pages/human-resources.pages/HHRRHome'
+
+{/** Módulo Ventas */}
+import { Cart } from "./components/ShoppingCart";
+import { ShoppingCartProvider } from "./context/ShoppingCartContext";
+import { ProductsProvider } from "./context/ShoppingCartContext";
+import { ThankYouPage } from "./pages/client.pages/ThankYouPage";
+import { ThankYouOrderPage } from "./pages/client.pages/ThankYouPage";
+import SalesCatalogView from "./pages/sales.pages/SalesCatalogView";
+import SalesPurchaseCheckout from "./pages/sales.pages/SalesPurchaseCheckout";
+import SalesPurchaseList from "./pages/sales.pages/SalesPurchaseList";
+import PurchaseOrderList from "./pages/sales.pages/PurchaseOrderList";
+import SalesStatisticsPage from "./pages/sales.pages/SalesStatisticsPage";
+
+
+
 
 
 function App() {
