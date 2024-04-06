@@ -29,8 +29,8 @@ const Inventory = () => {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = inventory.slice(indexOfFirstItem, indexOfLastItem);
-    console.log(currentItems);
-    console.log(inventory);
+    // console.log(currentItems);
+    // console.log(inventory);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 

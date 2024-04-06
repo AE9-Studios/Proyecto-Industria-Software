@@ -29,6 +29,8 @@ import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacat
 import HHRRHome from './pages/human-resources.pages/HHRRHome'
 import Inventory from './pages/inventory.pages/Inventory'
 import Reorder from './pages/inventory.pages/Reorder'
+import InventoryValued from './pages/inventory.pages/InventoryValued'
+import InventoryToHand from './pages/inventory.pages/InventoryToHand'
 
 function App() {
   return (
@@ -63,6 +65,8 @@ function AdminRoutes() {
         <Route path='inventory/movement' element={<InventoryMovement />} />
         <Route path='inventory/view-inventory' element={<Inventory />} />
         <Route path='inventory/reorder' element={<Reorder />} />
+        <Route path='inventory/inventory-valued' element={<InventoryValued />} />
+        <Route path='inventory/inventory-to-hand' element={<InventoryToHand />} />
         {/** Módulo RRHH */}
         <Route path='human-resources' element={<HHRRHome />} />
         <Route path='human-resources/employees' element={<AdminEmployeeList />} />
