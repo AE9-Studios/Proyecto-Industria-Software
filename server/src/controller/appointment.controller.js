@@ -209,34 +209,13 @@ export const getAppointments = async (req, res) => {
 
 
 export const getAppointmentsSolicitationToClient = async (req, res) => {
-    const { clientId } = req.params;
+    const { id } = req.params;
     try {
         const appointments = await prisma.aPPOINTMENT_SOLICITATION.findMany({
             where: {
-                Client_Fk: clientId
+                Client_Fk: parseInt(id)
             },
             include: {
-                Date: true,
-                Employee: {
-                    select: {
-                        Id: true,
-                        Person: {
-                            select: {
-                                Id: true,
-                                First_Name: true,
-                                Last_Name: true,
-                                DNI: true,
-                                Phone_Number: true,
-                            }
-                        },
-                        User: {
-                            select: {
-                                Id: true,
-                                Email: true
-                            }
-                        }
-                    }
-                },
                 Client: {
                     select: {
                         Id: true,
@@ -258,6 +237,7 @@ export const getAppointmentsSolicitationToClient = async (req, res) => {
                     }
                 }
             }
+            
         });
         res.json(appointments);
     } catch (error) {
@@ -381,11 +361,11 @@ export const getAppointmentToEmployee = async (req, res) => {
 }
 
 export const getAppointmentsSolicitationToEmployee = async (req, res) => {
-    const { employeeId } = req.params;
+    const { id } = req.params;
     try {
         const appointments = await prisma.aPPOINTMENT_SOLICITATION.findMany({
             where: {
-                Employee_Fk: employeeId
+                Employee_Fk: parseInt(id)
             },
             include: {
                 Date: true,

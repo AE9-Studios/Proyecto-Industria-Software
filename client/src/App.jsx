@@ -45,6 +45,7 @@ import SalesPurchaseCheckout from "./pages/sales.pages/SalesPurchaseCheckout";
 import SalesPurchaseList from "./pages/sales.pages/SalesPurchaseList";
 import PurchaseOrderList from "./pages/sales.pages/PurchaseOrderList";
 import SalesStatisticsPage from "./pages/sales.pages/SalesStatisticsPage";
+import ClientAppointments from './pages/client.pages/ClientAppointments'
 
 
 
@@ -128,6 +129,7 @@ function ClientRoutes() {
             <Route path="/orders" element={<PurchaseOrderList />} />
             <Route path="/thankyou" element={<ThankYouPage />} />
             <Route path="/thankyouorder" element={<ThankYouOrderPage />} />
+            <Route path='/appointments' element={<ClientAppointments />} />
           </>}
           </Routes>
       </ShoppingCartProvider>
