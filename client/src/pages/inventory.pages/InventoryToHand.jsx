@@ -82,7 +82,17 @@ const InventoryToHand = () => {
     return (
         <div className='' >
             <div>Espacio para el menu </div>
-            <div className="container mt-4 bg-white rounded-4 shadow table-responsive" >
+            <div className="container mt-4 bg-white rounded-4  table-responsive" >
+                <div className='d-flex justify-content-center align-items-center'>
+                    <div className="col">
+                        <h1 className="text-center mt-3 p-2">Inventario disponible</h1>
+                    </div>
+                    <div className="col">
+                        <a className='btn btn-success' href='/admin/purchases' ><i className="bi bi-plus-square-fill"></i> Pedir Producto</a>
+
+                    </div>
+                </div>
+                <br />
                 <table className="table wrap-table" >
                     <thead>
                         <tr>
@@ -92,7 +102,6 @@ const InventoryToHand = () => {
                             <th scope="col">Precio Compra</th>
                             <th scope="col">Precio Venta</th>
                             <th scope="col">Fecha</th>
-                            <th scope="col">Editar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,8 +114,6 @@ const InventoryToHand = () => {
                                     <td>{movement.Product.Price_Buy}</td>
                                     <td>{movement.Product.Price_Sell}</td>
                                     <td>{movement.Updated_At}</td>
-                                    <td onClick={() => handleShow(movement)}><i className="edit-btn bi bi-pencil-square"></i>
-                                    </td>
                                 </tr>
                             ))
                         }

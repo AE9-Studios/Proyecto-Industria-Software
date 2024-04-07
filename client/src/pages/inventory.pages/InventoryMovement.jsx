@@ -41,7 +41,7 @@ const InventoryMovement = () => {
     return (
         <div className='' >
             <div>Espacio para el menu </div>
-            <div className="container mt-4 bg-white rounded-4 shadow table-responsive" >
+            <div className="container mt-4 bg-white rounded-4  table-responsive" >
                 <table className="table wrap-table" >
                     <thead>
                         <tr>

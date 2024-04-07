@@ -29,7 +29,7 @@ const InventoryValued = () => {
     return (
         <div className='' >
             <div>Espacio para el menu </div>
-            <div className="container mt-4 p-4 bg-white rounded-4 shadow table-responsive" >
+            <div className="container mt-4 p-4 bg-white rounded-4 table-responsive" >
                 <div className="col">
                     <div className="row">
                         <h2 className="text-center mt-3 p-2">Inventario valorado</h2>

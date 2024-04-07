@@ -25,12 +25,12 @@ router.put('/category', updateCategory);
 router.put('/purchase-quotations', updatePurchaseQuotation);
 router.put('/inventory', updateInventory);
 
-router.delete('/movement/:id', deleteInventoryMovement);
-router.delete('/product/:id', deleteProduct);
-router.delete('/supplier/:id', deleteSupplier);
-router.delete('/category/:id', deleteCategory);
-router.delete('/purchase-quotations/:id', deletePurchaseQuotation);
-router.delete('/inventory/:id', deleteInventory);
+router.delete('/movement/:Id', deleteInventoryMovement);
+router.delete('/product/:Id', deleteProduct);
+router.delete('/supplier/:Id', deleteSupplier);
+router.delete('/category/:Id', deleteCategory);
+router.delete('/purchase-quotations/:Id', deletePurchaseQuotation);
+router.delete('/inventory/:Id', deleteInventory);
 
 export default router;
 

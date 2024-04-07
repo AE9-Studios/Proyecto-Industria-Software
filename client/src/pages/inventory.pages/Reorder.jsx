@@ -66,7 +66,12 @@ const Reorder = () => {
     return (
         <div className='' >
             <div>Espacio para el menu </div>
-            <div className="container mt-4 bg-white rounded-4 shadow table-responsive" >
+            <div className="container mt-4 bg-white rounded-4  table-responsive" >
+                <div>
+                    Una vez se alcance el punto de reorden se pedira nuevo producto automaticamente al proveedor
+                    <br />
+                    <br />
+                </div>
                 <table className="table wrap-table" >
                     <thead>
                         <tr>

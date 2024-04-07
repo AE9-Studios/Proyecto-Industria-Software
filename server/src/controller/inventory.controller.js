@@ -144,7 +144,7 @@ export const updateCategory = async (req, res) => {
     try {
         const { Id, Name, Description } = req.body;
         const category = await prisma.CATEGORY.update({
-            where: { id },
+            where: { Id: parseInt(Id) },
             data: {
                 Name,
                 Description
@@ -158,11 +158,10 @@ export const updateCategory = async (req, res) => {
 
 export const createSupplier = async (req, res) => {
     try {
-        const { Name, Description, Phone, Email, Address } = req.body;
+        const { Name, Phone, Email, Address } = req.body;
         const supplier = await prisma.SUPPLIER.create({
             data: {
                 Name,
-                Description,
                 Phone,
                 Email,
                 Address
@@ -189,7 +188,7 @@ export const createInventory = async (req, res) => {
         const { Product_Fk, Quantity, State, Description } = req.body;
 
         const product = await prisma.PRODUCT.findUnique({
-            where: { Id: Product_Fk }
+            where: { Id: parseInt(Product_Fk) }
         });
 
         if (!product) {
@@ -310,7 +309,7 @@ export const updateInventoryMovement = async (req, res) => {
     try {
         const { Id, productId, State, Quantity, Description } = req.body;
         const inventoryMovement = await prisma.INVENTORY_MOVEMENT.update({
-            where: { Id },
+            where: { Id: parseInt(Id) },
             data: {
                 Product_Fk: productId,
                 Quantity,
@@ -328,7 +327,7 @@ export const updateInventory = async (req, res) => {
     try {
         const { Id, Product_Fk, Stock, Min_Stock, State, Description } = req.body;
         const inventory = await prisma.INVENTORY.update({
-            where: { Id },
+            where: { Id: parseInt(Id) },
             data: {
                 Product_Fk,
                 Stock,
@@ -393,7 +392,7 @@ export const updatePurchaseQuotation = async (req, res) => {
     try {
         const { Id, Supplier_Fk, Product_Fk, Quantity, Price, Description } = req.body;
         const purchaseQuotation = await prisma.PURCHASE_QUOTATION.update({
-            where: { Id },
+            where: { Id: parseInt(Id) },
             data: {
                 Supplier_Fk,
                 Product_Fk,
@@ -412,7 +411,7 @@ export const deletePurchaseQuotation = async (req, res) => {
     try {
         const { Id } = req.body;
         await prisma.PURCHASE_QUOTATION.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     } catch (error) {
@@ -422,9 +421,9 @@ export const deletePurchaseQuotation = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     try {
-        const { Id } = req.body;
+        const { Id } = req.params;
         await prisma.PRODUCT.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     } catch (error) {
@@ -434,9 +433,9 @@ export const deleteProduct = async (req, res) => {
 
 export const deleteSupplier = async (req, res) => {
     try {
-        const { Id } = req.body;
+        const { Id } = req.params;
         await prisma.SUPPLIER.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     } catch (error) {
@@ -446,9 +445,9 @@ export const deleteSupplier = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     try {
-        const { Id } = req.body;
+        const { Id } = req.params;
         await prisma.CATEGORY.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     } catch (error) {
@@ -458,9 +457,9 @@ export const deleteCategory = async (req, res) => {
 
 export const deleteInventoryMovement = async (req, res) => {
     try {
-        const { Id } = req.body;
+        const { Id } = req.params;
         await prisma.INVENTORY_MOVEMENT.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     }
@@ -471,9 +470,9 @@ export const deleteInventoryMovement = async (req, res) => {
 
 export const deleteInventory = async (req, res) => {
     try {
-        const { Id } = req.body;
+        const { Id } = req.params;
         await prisma.INVENTORY.delete({
-            where: { Id }
+            where: { Id: parseInt(Id) }
         });
         res.status(200).json(["Se ha eliminado el registro con éxito"]);
     } catch (error) {
