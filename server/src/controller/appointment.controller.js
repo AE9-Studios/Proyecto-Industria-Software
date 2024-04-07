@@ -20,6 +20,39 @@ export const createAppointmentSolicitation = async (req, res) => {
     }
 }
 
+export const updateAppointmentSolicitation = async (req, res) => {
+    const { id } = req.params;
+    const { state } = req.body;
+    try {
+        const appointment = await prisma.aPPOINTMENT_SOLICITATION.update({
+            where: {
+                Id: parseInt(id)
+            },
+            data: {
+                State: state
+            }
+        });
+        res.json(appointment);
+    } catch (error) {
+        return http500(error, req, res);
+
+    }
+}
+
+export const deleteAppointmentSolicitation = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const appointment = await prisma.aPPOINTMENT_SOLICITATION.delete({
+            where: {
+                Id: parseInt(id)
+            }
+        });
+        res.json(appointment);
+    } catch (error) {
+        return http500(error, req, res);
+    }
+}
+
 export const getAppointmentsSolicitation = async (req, res) => {
     try {
         const appointments = await prisma.aPPOINTMENT_SOLICITATION.findMany({
@@ -55,6 +88,7 @@ export const getAppointmentsSolicitation = async (req, res) => {
     }
 }
 
+
 export const createAppointment = async (req, res) => {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
     try {
@@ -86,6 +120,39 @@ export const createAppointment = async (req, res) => {
 
     }
 }
+
+export const updateAppointment = async (req, res) => {
+    const { id } = req.params;
+    const { state } = req.body;
+    try {
+        const appointment = await prisma.aPPOINTMENT.update({
+            where: {
+                Id: parseInt(id)
+            },
+            data: {
+                State: state
+            }
+        });
+        res.json(appointment);
+    } catch (error) {
+        return http500(error, req, res);
+    }
+}
+
+export const deleteAppointment = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const appointment = await prisma.aPPOINTMENT.delete({
+            where: {
+                Id: parseInt(id)
+            }
+        });
+        res.json(appointment);
+    } catch (error) {
+        return http500(error, req, res);
+    }
+}
+
 
 
 export const getAppointments = async (req, res) => {

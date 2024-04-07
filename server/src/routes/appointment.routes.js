@@ -1,17 +1,21 @@
 import { Router } from "express";
 
-import {createAppointment, createAppointmentSolicitation, getAppointmentToClient, getAppointmentToEmployee, getAppointments, getAppointmentsSolicitation } from "../controller/appointment.controller.js";
+import {createAppointment, createAppointmentSolicitation, deleteAppointment, deleteAppointmentSolicitation, getAppointmentToClient, getAppointmentToEmployee, getAppointments, getAppointmentsSolicitation, updateAppointment, updateAppointmentSolicitation } from "../controller/appointment.controller.js";
 
 const router = Router();
 
 router.post("/create-appointment-solicitation", createAppointmentSolicitation);
-router.post("/create-appointment", createAppointment);
+router.get("/get-appointment-solicitations", getAppointmentsSolicitation);
+router.put("/update-appointment-solicitation/:id", updateAppointmentSolicitation);
+router.delete("/delete-appointment-solicitation/:id", deleteAppointmentSolicitation);
 
+router.post("/create-appointment", createAppointment);
+router.get("/get-appointments", getAppointments);
+router.put("/update-appointment/:id", updateAppointment);
+router.delete("/delete-appointment/:id", deleteAppointment);
 router.get("/get-appointment-to-client/:id", getAppointmentToClient);
 router.get("/get-appointment-to-employee/:id", getAppointmentToEmployee);
 
-router.get("/get-appointment-solicitations", getAppointmentsSolicitation);
-router.get("/get-appointments", getAppointments);
 
 
 export default router;
