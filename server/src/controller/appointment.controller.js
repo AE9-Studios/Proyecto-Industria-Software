@@ -91,10 +91,20 @@ export const getAppointmentsSolicitation = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
+
+    const findAppointInHour = await prisma.aPPOINTMENT.findFirst({
+        where: {
+            Date: date,
+            Employee_Fk: employeeId
+        }
+    });
+
+    if (findAppointInHour) return res.status(400).json(["Ya existe una cita en esa hora"]);
+
     try {
         const newAppointment = await prisma.aPPOINTMENT.create({
             data: {
-                Date: new Date(date),
+                Date: date, // Convert the date to ISO-8601 format
                 Description: description,
                 Client_Fk: clientId,
                 Employee_Fk: employeeId,
