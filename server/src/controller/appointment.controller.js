@@ -92,9 +92,18 @@ export const getAppointmentsSolicitation = async (req, res) => {
 export const createAppointment = async (req, res) => {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
 
-    const findAppointInHour = await prisma.aPPOINTMENT.findFirst({
+    // Convertir la fecha a un objeto Date
+    const startDate = new Date(date);
+
+    // Crear una nueva fecha que sea 30 minutos después
+    const endDate = new Date(startDate.getTime() + 30 * 60 * 1000);
+
+    const findAppointInHour = await prisma.aPPOINTMENT.findMany({
         where: {
-            Date: date,
+            Date: {
+                gte: startDate,
+                lt: endDate
+            },
             Employee_Fk: employeeId
         }
     });
@@ -247,7 +256,7 @@ export const getAppointmentsSolicitationToClient = async (req, res) => {
                     }
                 }
             }
-            
+
         });
         res.json(appointments);
     } catch (error) {

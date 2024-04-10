@@ -46,6 +46,7 @@ import SalesPurchaseList from "./pages/sales.pages/SalesPurchaseList";
 import PurchaseOrderList from "./pages/sales.pages/PurchaseOrderList";
 import SalesStatisticsPage from "./pages/sales.pages/SalesStatisticsPage";
 import ClientAppointments from './pages/client.pages/ClientAppointments'
+import Appointments from './pages/admin.pages/Appointments'
 
 
 
@@ -106,6 +107,9 @@ function AdminRoutes() {
         <Route path="/sales/list" element={<SalesPurchaseList />} />
         <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
         <Route path="/sales/order-list" element={<PurchaseOrderList />} />
+
+        {/* modulo de citas  */}
+        <Route path='/appointments' element={<Appointments />} />
 
       </>}
     </Routes>
