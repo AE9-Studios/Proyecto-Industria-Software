@@ -18,9 +18,14 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
   console.log("Received background message ", payload);
 
-  const notificationTitle = payload.data.title;
-  const notificationOptions = {
-    body: payload.data.body,
-  };
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  if (payload.data && payload.data.title) {
+    const notificationTitle = payload.data.title;
+    const notificationOptions = {
+      body: payload.data.body,
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  } else {
+    console.error("Payload data or title is undefined");
+  }
 });
+

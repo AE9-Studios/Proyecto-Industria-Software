@@ -28,7 +28,7 @@ function NotificationHandler() {
       }
     }
 
-    async function subscribeToNotifications() {
+    async function subscribeToNotifications(attempt = 1) {
       try {
         const permissionGranted = await requestPermission();
         if (permissionGranted) {
@@ -40,9 +40,14 @@ function NotificationHandler() {
         }
       } catch (error) {
         console.log("Retrying subscription...");
-        subscribeToNotifications();
+        if (attempt < 100) {
+          subscribeToNotifications(attempt + 1); 
+        } else {
+          console.error("Se alcanzó el máximo de intentos de suscripción.");
+        }
       }
     }
+    
 
     async function sendTokenToBackend(token) {
       try {
