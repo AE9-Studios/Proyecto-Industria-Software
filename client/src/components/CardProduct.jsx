@@ -47,10 +47,8 @@ const CardProducts = ({
       <div className="card-body d-flex flex-column justify-content-between">
         <div>
           <h5>
-            <span className="badge bg-dark">
-              <i className="bi bi-tag"></i>
-              <i className="bi bi-currency-dollar"></i>
-              {parseFloat(price).toFixed(2)}
+            <span className="badge bg-dark">     
+              {parseFloat(price).toFixed(2)} {" "}HNL
             </span>
           </h5>
           <h5 className="card-title">{title}</h5>

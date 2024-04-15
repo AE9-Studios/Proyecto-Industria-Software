@@ -18,21 +18,44 @@ const SalesPurchaseCheckout = () => {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
   const [invoiceNumber, setInvoiceNumber] = useState(0);
+  const [valuation, setValuation] = useState(24.63);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const totalRef = useRef(0);
   const purchaseListRef = useRef(purchaseList);
 
+  const getExchangeRate = async (baseCurrency, targetCurrency) => {
+    const apiKey = "7a3bd3465dbf4fe6900b57f6526dcf33";
+    const url = `https://openexchangerates.org/api/latest.json?app_id=${apiKey}&base=${baseCurrency}&symbols=${targetCurrency}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      const exchangeRate = data.rates[targetCurrency];
+      return exchangeRate;
+    } catch (error) {
+      console.error("Error fetching exchange rate:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const rate = await getExchangeRate("USD", "HNL");
         const { data } = await getNextInvoiceIdAndCheckSeniority(user.id);
-        if (user.role === "ADMINISTRADOR") {
-          setDiscountApplied(false);
-        } else {
-          setDiscountApplied(data.isSenior);
-        }
-        setInvoiceNumber(data.nextInvoiceId);
+        const nextInvoiceId = data.nextInvoiceId;
+        const isSenior = data.isSenior;
+  
+        // Determinar el descuento aplicado según el rol del usuario
+        const discountApplied = user.role === "ADMINISTRADOR" ? false : isSenior;
+  
+        // Actualizar el estado de invoiceNumber
+        setInvoiceNumber(nextInvoiceId);
+        // Actualizar el estado de discountApplied
+        setDiscountApplied(discountApplied);
+        // Actualizar el estado de valuation
+        setValuation(rate);
       } catch (error) {
         console.error(
           "Error fetching invoice ID or checking senior citizen status:",
@@ -40,10 +63,25 @@ const SalesPurchaseCheckout = () => {
         );
       }
     };
-
+  
     fetchData();
-  }, [user.id]);
-
+  }, [user.id]); // Ejecutar el efecto cuando user.id cambie
+  
+  // Agregar efectos adicionales para verificar los cambios en cada estado individual
+  useEffect(() => {
+    console.log("Invoice number updated:", invoiceNumber);
+  }, [invoiceNumber]);
+  
+  useEffect(() => {
+    console.log("Discount applied updated:", discountApplied);
+  }, [discountApplied]);
+  
+  useEffect(() => {
+    console.log("Valuation updated:", valuation);
+  }, [valuation]);
+  
+  
+  
   const handleVendAndPrintInvoice = async () => {
     try {
       if (user.role === "ADMINISTRADOR") {
@@ -92,7 +130,7 @@ const SalesPurchaseCheckout = () => {
         });
 
         purchaseListRef.current.forEach((item) => {
-          deletePurchase(item.id);
+          deletePurchase(item.Id);
         });
         navigate("/client/thankyouorder");
       }
@@ -141,9 +179,9 @@ const SalesPurchaseCheckout = () => {
                       amount: {
                         currency_code: "USD",
                         value: (
-                          parseFloat(totalRef.current) -
+                          parseFloat(totalRef.current / valuation) -
                           (discountApplied
-                            ? parseFloat(totalRef.current) * 0.1
+                            ? parseFloat(totalRef.current / valuation) * 0.1
                             : 0)
                         ).toFixed(2),
                       },
@@ -177,7 +215,7 @@ const SalesPurchaseCheckout = () => {
                   });
 
                   purchaseListRef.current.forEach((item) => {
-                    deletePurchase(item.id);
+                    deletePurchase(item.Id);
                   });
                   navigate("/client/thankyou");
                 });
@@ -206,7 +244,7 @@ const SalesPurchaseCheckout = () => {
 
   const calculateTotal = () => {
     return purchaseList
-      .reduce((total, item) => total + item.price * item.quantity, 0)
+      .reduce((total, item) => total + item.Price_Buy * item.quantity, 0)
       .toFixed(2);
   };
 
@@ -316,14 +354,14 @@ const SalesPurchaseCheckout = () => {
           </thead>
           <tbody>
             {purchaseList.map((item) => (
-              <tr key={item.id}>
-                <td>{item.title}</td>
-                <td>${item.price.toFixed(2)}</td>
+              <tr key={item.Id}>
+                <td>{item.Name}</td>
+                <td>{item.Price_Buy.toFixed(2)} HNL</td>
                 <td className="quantity-cell">
                   <div className="d-flex align-items-center quantity-buttons">
                     <button
                       className="btn btn-outline-primary me-1"
-                      onClick={() => decreaseQuantity(item.id)}
+                      onClick={() => decreaseQuantity(item.Id)}
                     >
                       -
                     </button>
@@ -332,7 +370,7 @@ const SalesPurchaseCheckout = () => {
                     </button>
                     <button
                       className="btn btn-outline-primary"
-                      onClick={() => increaseQuantity(item.id)}
+                      onClick={() => increaseQuantity(item.Id)}
                     >
                       +
                     </button>
@@ -342,7 +380,7 @@ const SalesPurchaseCheckout = () => {
                   <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={() => deletePurchase(item.id)}
+                    onClick={() => deletePurchase(item.Id)}
                   >
                     <i className="bi bi-cart-x-fill"></i> Eliminar
                   </button>
@@ -380,9 +418,9 @@ const SalesPurchaseCheckout = () => {
 
               <td>
                 {discountApplied ? (
-                  <>${(calculateTotal() * 0.1).toFixed(2)}</>
+                  <>{(calculateTotal() * 0.1).toFixed(2)} HNL</>
                 ) : (
-                  "$0.00"
+                  "0.00 HNL"
                 )}
               </td>
             </tr>
@@ -398,20 +436,20 @@ const SalesPurchaseCheckout = () => {
 
             <tr>
               <td>
-                <b>Subotal:</b>
+                <b>Subtotal:</b>
               </td>
-              <td>${(parseFloat(calculateTotal()) / 1.15).toFixed(2)}</td>
+              <td>{(parseFloat(calculateTotal()) / 1.15).toFixed(2)} HNL</td>
             </tr>
             <tr>
               <td>
                 <b>Total:</b>
               </td>
               <td>
-                $
                 {(
                   parseFloat(calculateTotal()) -
                   (discountApplied ? calculateTotal() * 0.1 : 0)
-                ).toFixed(2)}
+                ).toFixed(2)}{" "}
+                HNL
               </td>
             </tr>
             <tr style={{ height: "20px" }}>

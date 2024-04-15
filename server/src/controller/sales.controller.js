@@ -1,9 +1,13 @@
 import prisma from "../db.js";
 import fs from "fs";
+import { sendNotification, sendNotificationToAdmin } from "../libs/sendNotification.js";
+
 import {
   sendEmailPurchaseSuccess,
   sendEmailOrderDone,
 } from "../libs/sendEmail.js";
+
+import { logActivity } from "./activity-log.controller.js";
 
 export const saveInvoice = async (req, res) => {
   const { userId, userName, email, subTotal, discount, ISV, payMethod, total } =
@@ -34,7 +38,7 @@ export const saveInvoice = async (req, res) => {
         client_Fk = user.Client[0].Id;
       }
 
-      await sendEmailPurchaseSuccess({
+      sendEmailPurchaseSuccess({
         email: user.Email,
         user: user.User_Name,
         invoice: invoiceFile,
@@ -82,9 +86,11 @@ export const saveInvoice = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      message: "Factura guardada exitosamente y correo electrónico enviado.",
-    });
+    if (newInvoiceOrder) {
+      sendNotificationToAdmin("¡Nueva compra!", `Se registró una compra de ${total} Lempiras`)
+      await logActivity("Nueva compra", `Se registró una compra de ${total} Lempiras`);
+    }
+
   } catch (error) {
     console.error("Error al guardar la factura:", error);
 
@@ -558,6 +564,7 @@ export const sendOrderReadyEmail = async (req, res) => {
               select: {
                 Email: true,
                 User_Name: true,
+                Device_Token: true
               },
             },
           },
@@ -582,6 +589,7 @@ export const sendOrderReadyEmail = async (req, res) => {
       orderFile: orderFile,
     });
 
+    sendNotification("¡Su orden está lista!", "Ya puede venir por ella", purchaseOrder.Client.User.Device_Token)
     return res.status(200).json({
       message: "Correo electrónico enviado exitosamente y estado actualizado.",
     });

@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import Cookies from 'js-cookie'
-
+import { deleteTokenFromUser } from "../api/log-activity.js";
 import { login, register, verify } from '../api/auth.js'
 import { set } from "react-hook-form";
 import { Navigate } from "react-router-dom";
@@ -63,6 +63,7 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false)
             setErrors([])
             setLoading(false)
+            await deleteTokenFromUser({ userId: user.id });
             return <Navigate to= '/home' replace/>            
         } catch (error) {
             setErrors(error.response.data)

@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect, useState } from "react";
+import { getProducts } from "../api/inventory";
 
 export const CartContext = createContext();
 
@@ -15,18 +16,18 @@ export const ShoppingCartProvider = ({ children }) => {
       case "[CART] Increase Purchase Quantity":
         return state.map((item) => {
           const cant = item.quantity + 1;
-          if (item.id === action.payload) return { ...item, quantity: cant };
+          if (item.Id === action.payload) return { ...item, quantity: cant };
           return item;
         });
       case "[CART] Decrease Purchase Quantity":
         return state.map((item) => {
           const cant = item.quantity - 1;
-          if (item.id === action.payload && item.quantity > 1)
+          if (item.Id === action.payload && item.quantity > 1)
             return { ...item, quantity: cant };
           return item;
         });
       case "[CART] Delete Purchase":
-        return state.filter((purchase) => purchase.id !== action.payload);
+        return state.filter((purchase) => purchase.Id !== action.payload);
       default:
         return state;
     }
@@ -42,24 +43,24 @@ export const ShoppingCartProvider = ({ children }) => {
     };
     dispatch(action);
   };
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (Id) => {
     const action = {
       type: "[CART] Increase Purchase Quantity",
-      payload: id,
+      payload: Id,
     };
     dispatch(action);
   };
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (Id) => {
     const action = {
       type: "[CART] Decrease Purchase Quantity",
-      payload: id,
+      payload: Id,
     };
     dispatch(action);
   };
-  const deletePurchase = (id) => {
+  const deletePurchase = (Id) => {
     const action = {
       type: "[CART] Delete Purchase",
-      payload: id,
+      payload: Id,
     };
     dispatch(action);
   };
@@ -84,9 +85,9 @@ export const ProductsProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
 
   const fetchProductos = async () => {
-    const response = await fetch("https://fakestoreapi.com/products");
-    const data = await response.json();
-    setProducts(data);
+    const response = await getProducts();
+    setProducts(response.data);
+    console.log(response.data)
   };
 
   useEffect(() => {

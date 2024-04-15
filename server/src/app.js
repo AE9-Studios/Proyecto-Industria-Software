@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes.js';
 import humanResourcesRoutes from './routes/human-resources.routes.js'
 import appointmentRoutes from './routes/appointment.routes.js';
 import salesRoutes from './routes/sales.routes.js';
+import activityLogRoutes from './routes/activity-log.routes.js'
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/human-resources', humanResourcesRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/appointment', appointmentRoutes);
+app.use('/api/activity-log', activityLogRoutes)
 
 
 export default app; // exportamos la aplicación para poder usarla en otros archivos
