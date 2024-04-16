@@ -18,7 +18,7 @@ const SalesCatalogView = () => {
   };
 
   const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    product.Name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -39,14 +39,18 @@ const SalesCatalogView = () => {
         <div className="row justify-content-center">
           {filteredProducts.map((product) => (
             <CardProducts
-              key={product.id}
-              image={product.image}
-              title={product.title}
-              description={product.description}
-              price={product.price}
+              key={product.Id}
+              image={
+                product.image
+                  ? product.image
+                  : "https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png"
+              }
+              title={product.Name}
+              description={product.Description}
+              price={product.Price_Buy}
               handleAdd={() => handleAdd(product)}
-              handleRemove={() => handleRemove(product.id)}
-              inCart={purchaseList.some((item) => item.id === product.id)}
+              handleRemove={() => handleRemove(product.Id)}
+              inCart={purchaseList.some((item) => item.Id === product.Id)}
             ></CardProducts>
           ))}
         </div>

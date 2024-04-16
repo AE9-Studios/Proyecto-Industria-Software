@@ -116,14 +116,12 @@ export const sendEmailPurchaseSuccess = async (customerData) => {
 
     await transporter.sendMail(mailOptions);
     console.log(
-
-      `Correo enviado a ${supplierData.Email}`
+      `Correo enviado a ${customerData.email} para agradecer por la compra.`
     );
-
   } catch (error) {
     console.error(
-      "Error al enviar el correo electrónico al proveedor:",
-      `Correo enviado a ${customerData.email} para agradecer por la compra.`
+      "Error al enviar el correo electrónico de agradecimiento por la compra:",
+      error
     );
     throw error;
   }
@@ -166,7 +164,6 @@ export const sendEmailOrderDone = async (customerData) => {
   } catch (error) {
     console.error(
       "Error al enviar el correo electrónico de agradecimiento por la compra:",
-
       error
     );
     throw error;

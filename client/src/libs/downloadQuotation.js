@@ -14,23 +14,23 @@ const downloadQuotation = ({
     const itemsHTML = productList
       .map((item) => {
         const itemISV = (
-          item.price * item.quantity -
-          (item.price * item.quantity) / 1.15
+          item.Price_Buy * item.quantity -
+          (item.Price_Buy * item.quantity) / 1.15
         ).toFixed(2);
 
         count += parseFloat(itemISV);
 
         return `
                     <tr class="item">
-                        <td>${item.title}</td>
+                        <td>${item.Name}</td>
                         <td>${item.quantity}</td>
-                        <td>${((item.price * item.quantity) / 1.15).toFixed(
+                        <td>${((item.Price_Buy * item.quantity) / 1.15).toFixed(
                           2
                         )}</td>
                         <td>${itemISV}</td>
-                        <td><b>$${(item.price * item.quantity).toFixed(
+                        <td><b>${(item.Price_Buy * item.quantity).toFixed(
                           2
-                        )}</b></td>
+                        )} HNL</b></td>
                     </tr>
                 `;
       })
@@ -149,7 +149,7 @@ const downloadQuotation = ({
                             </tr>
                             <tr class="item">
                                 <td colspan="4"><b>Total:</b></td>
-                                <td><b>$${total}</b></td>
+                                <td><b>${total} HNL</b></td>
                             </tr>
                         </table>
                     </div>

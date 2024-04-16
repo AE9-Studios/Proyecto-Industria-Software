@@ -119,15 +119,16 @@ enum POSITIONS {
 }
 
 model USER {
-  Id         Int        @id @default(autoincrement())
-  User_Name  String
-  Email      String     @unique
-  Password   String
-  Role       ROL
-  created_At DateTime   @default(now())
-  updated_At DateTime?  @updatedAt
-  Employee   EMPLOYEE[]
-  Client     CLIENT[]
+  Id            Int        @id @default(autoincrement())
+  User_Name     String
+  Email         String     @unique
+  Password      String
+  Role          ROL
+  Device_Token  String?
+  created_At    DateTime   @default(now())
+  updated_At    DateTime?  @updatedAt
+  Employee      EMPLOYEE[]
+  Client        CLIENT[]
 }
 
 model PERSON {

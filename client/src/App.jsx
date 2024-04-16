@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Register from './pages/client.pages/Register'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
+import NotificationHandler from './components/NotificationHandler'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
@@ -34,7 +35,7 @@ import EmployeePermissionDetails from './pages/human-resources.pages/EmployeePer
 import EmployeeVacationCreate from './pages/human-resources.pages/EmployeeVacationCreate'
 import EmployeeVacationDetails from './pages/human-resources.pages/EmployeeVacationDetails'
 
-{/** Módulo Ventas */}
+{/** Módulo Ventas */ }
 import { Cart } from "./components/ShoppingCart";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import { ProductsProvider } from "./context/ShoppingCartContext";
@@ -76,43 +77,48 @@ function AdminRoutes() {
   if (user.role !== 'ADMINISTRADOR') return <Navigate to='/' replace />
 
   return (
-    <Routes>
-      {user.role === 'ADMINISTRADOR' && <>
-        {/* // aqui se agregan las rutas para el administrador */}
-        <Route path='home' element={<PanelAdmin />} />
-        {/* Modulo inventario */}
-        <Route path='inventory' element={<InventoryPanel />} />
-        <Route path='inventory/movement' element={<InventoryMovement />} />
-        <Route path='inventory/view-inventory' element={<Inventory />} />
-        <Route path='inventory/reorder' element={<Reorder />} />
-        <Route path='inventory/inventory-valued' element={<InventoryValued />} />
-        <Route path='inventory/inventory-to-hand' element={<InventoryToHand />} />
-        {/** Módulo RRHH */}
-        <Route path='human-resources' element={<EmployeeHome/>} />
-        <Route path='human-resources/employees' element={<AdminEmployeeList />} />
-        <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} />
-        <Route path='human-resources/permissions' element={<AdminRequestList />} />
-        <Route path='human-resources/permissions/:id' element={<AdminPermissionDetails />} />
-        <Route path='human-resources/vacations/:id' element={<AdminVacationDetails />} />
-        <Route path='human-resources/create-employee' element={<AdminEmployeeCreate />} />
-        <Route path='human-resources/create-schedule' element={<AdminScheduleCreate />} />
-        <Route path='human-resources/schedules' element={<AdminScheduleList />} />
-        <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} />
-        <Route path='human-resources/calendar' element={<AdminCalendar />} />
+    <>
+      <Routes>
+        {user.role === 'ADMINISTRADOR' && <>
 
-        {/** Módulo Ventas */}
-        <Route path="sales" element={<ClientHome />} />
-        <Route path="/sales/new" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesCatalogView /></ShoppingCartProvider></ProductsProvider>}/>
-        <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesPurchaseCheckout /></ShoppingCartProvider></ProductsProvider>}/>
-        <Route path="/sales/list" element={<SalesPurchaseList />} />
-        <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
-        <Route path="/sales/order-list" element={<PurchaseOrderList />} />
+          {/* // aqui se agregan las rutas para el administrador */}
+          <Route path='home' element={<PanelAdmin />} />
 
-        {/* modulo de citas  */}
-        <Route path='/appointments' element={<Appointments />} />
+          {/* modulo de citas  */}
+          <Route path='/appointments' element={<Appointments />} />
+          {/* Modulo inventario */}
+          <Route path='inventory' element={<InventoryPanel />} />
+          <Route path='inventory/movement' element={<InventoryMovement />} />
+          <Route path='inventory/view-inventory' element={<Inventory />} />
+          <Route path='inventory/reorder' element={<Reorder />} />
+          <Route path='inventory/inventory-valued' element={<InventoryValued />} />
+          <Route path='inventory/inventory-to-hand' element={<InventoryToHand />} />
 
-      </>}
-    </Routes>
+          {/** Módulo RRHH */}
+          <Route path='human-resources' element={<EmployeeHome />} />
+          <Route path='human-resources/employees' element={<AdminEmployeeList />} />
+          <Route path='human-resources/employees/:id' element={<AdminEmployeeDetails />} />
+          <Route path='human-resources/permissions' element={<AdminRequestList />} />
+          <Route path='human-resources/permissions/:id' element={<AdminPermissionDetails />} />
+          <Route path='human-resources/vacations/:id' element={<AdminVacationDetails />} />
+          <Route path='human-resources/create-employee' element={<AdminEmployeeCreate />} />
+          <Route path='human-resources/create-schedule' element={<AdminScheduleCreate />} />
+          <Route path='human-resources/schedules' element={<AdminScheduleList />} />
+          <Route path='human-resources/schedules/:id' element={<AdminScheduleDetails />} />
+          <Route path='human-resources/calendar' element={<AdminCalendar />} />
+
+          {/** Módulo Ventas */}
+          <Route path="sales" element={<ClientHome />} />
+          <Route path="/sales/new" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesCatalogView /></ShoppingCartProvider></ProductsProvider>} />
+          <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesPurchaseCheckout /></ShoppingCartProvider></ProductsProvider>} />
+          <Route path="/sales/list" element={<SalesPurchaseList />} />
+          <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
+          <Route path="/sales/order-list" element={<PurchaseOrderList />} />
+
+        </>}
+      </Routes >
+      <NotificationHandler />
+    </>
   )
 }
 
@@ -122,9 +128,10 @@ function ClientRoutes() {
   return (
     <ProductsProvider>
       <ShoppingCartProvider>
-        <Cart/>
-          <Routes>
-            {user.role === 'CLIENTE' && <>
+        <Cart />
+        <NotificationHandler />
+        <Routes>
+          {user.role === 'CLIENTE' && <>
             // aqui se agregan las rutas para el cliente
             <Route path='home' element={<ClientHome />} />
             <Route path="/catalog" element={<SalesCatalogView />} />
@@ -135,7 +142,7 @@ function ClientRoutes() {
             <Route path="/thankyouorder" element={<ThankYouOrderPage />} />
             <Route path='/appointments' element={<ClientAppointments />} />
           </>}
-          </Routes>
+        </Routes>
       </ShoppingCartProvider>
     </ProductsProvider>
   )
@@ -146,18 +153,21 @@ function EmployeeRoutes() {
   if (user.role !== 'EMPLEADO') return <Navigate to='/' replace />
 
   return (
-    <Routes>
-      {user.role === 'EMPLEADO' && <>
-      // aqui se agregan las rutas para el empleado
-        <Route path='home' element={<EmployeeHome/>} />
-        <Route path='permission' element={<EmployeePermissionCreate />} />
-        <Route path='vacation' element={<EmployeeVacationCreate />} />
-        <Route path='permission/:id' element={<EmployeePermissionDetails />} />
-        <Route path='vacation/:id' element={<EmployeeVacationDetails />} />
-        <Route path='requests' element={<EmployeeRequestList />} />
+    <>
+      <Routes>
+        {user.role === 'EMPLEADO' && <>
+        // aqui se agregan las rutas para el empleado
+          <Route path='home' element={<EmployeeHome />} />
+          <Route path='permission' element={<EmployeePermissionCreate />} />
+          <Route path='vacation' element={<EmployeeVacationCreate />} />
+          <Route path='permission/:id' element={<EmployeePermissionDetails />} />
+          <Route path='vacation/:id' element={<EmployeeVacationDetails />} />
+          <Route path='requests' element={<EmployeeRequestList />} />
 
-      </>}
-    </Routes>
+        </>}
+      </Routes>
+      <NotificationHandler />
+    </>
   )
 }
 

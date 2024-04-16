@@ -146,9 +146,9 @@ const SalesPurchaseList = () => {
 
                 <td>{invoice.Date}</td>
                 <td>
-                  {invoice.Discount > 0 ? `$ ${invoice.Discount}` : "N/A"}
+                  {invoice.Discount > 0 ? `${invoice.Discount} HNL` : "N/A"}
                 </td>
-                <td>$ {invoice.Total}</td>
+                <td>{invoice.Total} HNL</td>
                 <td>
                   <button
                     className="btn btn-info"
