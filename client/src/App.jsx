@@ -48,6 +48,7 @@ import PurchaseOrderList from "./pages/sales.pages/PurchaseOrderList";
 import SalesStatisticsPage from "./pages/sales.pages/SalesStatisticsPage";
 import ClientAppointments from './pages/client.pages/ClientAppointments'
 import Appointments from './pages/admin.pages/Appointments'
+import AppointmentsEmployee from './pages/appointments.pages/AppointmentsEmployee'
 
 
 
@@ -163,6 +164,7 @@ function EmployeeRoutes() {
           <Route path='permission/:id' element={<EmployeePermissionDetails />} />
           <Route path='vacation/:id' element={<EmployeeVacationDetails />} />
           <Route path='requests' element={<EmployeeRequestList />} />
+          { user.employeeData.Position === 'MEDICO' ? <Route path='/appointments' element={<AppointmentsEmployee />} /> : null}
 
         </>}
       </Routes>

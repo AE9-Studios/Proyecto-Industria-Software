@@ -211,6 +211,28 @@ export const verifyToken = async (req, res) => {
                 return res.status(401).json(['No autorizado']);
             }
 
+            if (userFound.Role === 'EMPLEADO') {
+                const employee = await prisma.EMPLOYEE.findFirst({
+                    where: {
+                        User_Fk: user.id
+                    }, 
+                    include: {
+                        Person: true,
+                    }
+                });
+
+                return res.json({
+                    id: userFound.Id,
+                    email: userFound.Email,
+                    userName: userFound.User_Name,
+                    role: userFound.Role,
+                    token: token,
+                    employeeData: employee
+                });
+
+                
+            }
+
             return res.json({
                 id: userFound.Id,
                 email: userFound.Email,

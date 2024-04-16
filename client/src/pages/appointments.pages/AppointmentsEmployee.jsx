@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { createAppointment, deleteAppointment, getAppointments, getAppointmentsSolicitation, updateAppointmentSolicitation } from '../../api/appointment';
+import { createAppointment, deleteAppointment, getAppointmentToEmployee, getAppointments, getAppointmentsSolicitation, updateAppointment, updateAppointmentSolicitation } from '../../api/appointment';
 import { Button, Modal } from 'react-bootstrap';
 import { getEmployees } from '../../api/human-resources';
+import { useAuth } from '../../context/AuthContext';
 
-
-const Appointments = () => {
-
+const AppointmentsEmployee = () => {
+    const { user } = useAuth();
     const [appointmentsSolicitation, setAppointmentsSolicitation] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [employees, setEmployees] = useState([]);
@@ -21,6 +21,7 @@ const Appointments = () => {
         setDate(movement.Date.split('T')[0]);
         setDescription(movement.Description);
     };
+
     const handleCloseModal = () => {
         setShowModal(false);
         getAppointmentsSolicitationFunc();
@@ -38,20 +39,9 @@ const Appointments = () => {
 
     const getAppointmentsFunc = async () => {
         try {
-            const response = await getAppointments();
+            const response = await getAppointmentToEmployee(user.employeeData.Id);
             setAppointments(response.data);
         } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const deleteAppointmentFunc = async (id) => {
-        try {
-            const res = await deleteAppointment(id);
-            getAppointmentsSolicitationFunc();
-            alert('Cita cancelada correctamente');
-        } catch (error) {
-            alert('Error al cancelar la cita');
             console.error(error);
         }
     }
@@ -73,17 +63,6 @@ const Appointments = () => {
         }
     }
 
-    const rejectAppointmentSolicitation = async (id) => {
-        try {
-            const res = await updateAppointmentSolicitation(id, { state: 'RECHAZADO' });
-            getAppointmentsSolicitationFunc();
-            alert('Solicitud rechazada correctamente');
-        } catch (error) {
-            console.error(error);
-            alert('Error al rechazar la solicitud');
-        }
-    }
-
     const getAllEmployees = async () => {
         try {
             const res = await getEmployees();
@@ -93,6 +72,16 @@ const Appointments = () => {
         }
     }
 
+    const updateAppointmentFunc = async (id, state) => {
+        try {
+            const res = await updateAppointment(id, { state: state });
+            getAppointmentsFunc();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    console.log(user)
 
 
 
@@ -137,7 +126,7 @@ const Appointments = () => {
                             <th scope="col">Fecha</th>
                             <th scope="col">Cliente</th>
                             <th scope="col">Descripcion</th>
-                            <th scope="col">Modificar</th>
+                            <th scope="col">Aceptar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -151,8 +140,7 @@ const Appointments = () => {
                                         <td>{movement.Description}</td>
                                         <td className='d-flex'>
                                             <button className={`btn btn-success`} onClick={() => handleShowModal(movement)}  ><i className="bi bi-check-lg"></i></button>
-                                            <div className="mx-2"></div>
-                                            <button className={`btn btn-danger`} onClick={() => rejectAppointmentSolicitation(movement.Id)}  ><i className="bi bi-x-lg"></i></button>
+                                            
                                         </td>
                                     </tr>
                                     : null
@@ -184,21 +172,20 @@ const Appointments = () => {
                             <th scope="col">Fecha</th>
                             <th scope="col">Hora</th>
                             <th scope="col">Descripcion</th>
-                            <th scope="col">Doctor</th>
-                            <th scope="col">Cancelar</th>
+                            <th scope="col">Marcar Atendido</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             currentItemsA.map((movement, index) => (
                                 movement.State === 'PENDIENTE' ?
-                                    <tr key={index} className='table-secondary'>
+                                    <tr key={index} >
                                         <td>{movement.State}</td>
                                         <td>{movement.Date.split('T')[0]}</td>
                                         <td>{movement.Date.split('T')[1].split('.')[0]}</td>
                                         <td>{movement.Description}</td>
-                                        <td>{movement.Employee.Person.First_Name} {movement.Employee.Person.Last_Name}</td>
-                                        <td><button className={`btn btn-danger ${movement.State !== 'PENDIENTE' ? 'disabled' : ''}`} onClick={() => deleteAppointmentFunc(movement.Id)}  ><i className="bi bi-trash"></i></button></td>
+                                        <td><button className={`btn btn-success`} onClick={() => updateAppointmentFunc(movement.Id,'ATENDIDO')}  ><i className="bi bi-check-lg"></i></button>
+                                        </td>
                                     </tr>
                                     : null
                             ))
@@ -240,17 +227,17 @@ const Appointments = () => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="desp-a" className="form-label">Descripcion</label>
-                        <textarea type="text" className="form-control" id="desp-a" value={description} onChange={handleDesChange}/>
+                        <textarea type="text" className="form-control" id="desp-a" value={description} onChange={handleDesChange} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="employee-a" className="form-label">Doctor</label>
                         <select className="form-select" id="employee-a">
                             {
-                                employees.map((employee, index) => (
+                                user.employeeData.Position === 'RECEPCION' ? employees.map((employee, index) => (
                                     employee.Position === 'MEDICO' ?
                                         <option key={index} value={employee.Id}>{employee.Person.First_Name} {employee.Person.Last_Name}</option>
                                         : null
-                                ))
+                                )) : <option value={user.employeeData.Id} defaultChecked>{user.employeeData.Person.First_Name} {user.employeeData.Person.Last_Name}</option>
                             }
                         </select>
                     </div>
@@ -268,4 +255,4 @@ const Appointments = () => {
     )
 }
 
-export default Appointments
+export default AppointmentsEmployee

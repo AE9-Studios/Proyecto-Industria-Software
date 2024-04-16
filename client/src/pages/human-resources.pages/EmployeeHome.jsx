@@ -115,6 +115,16 @@ const HHRRHome = () => {
                 url="requests"
                 requestCount={unreadPermissionsCount}
               />
+              {
+                user.employeeData.Position === "MEDICO" ? (
+                  <CardTest
+                    title="Citas"
+                    description="Acepta atiende las citas pendiendes"
+                    icon="bi bi-file-earmark-text"
+                    url="appointments"
+                  />
+                ) : null
+              }
             </div>
           </div>
         </>
