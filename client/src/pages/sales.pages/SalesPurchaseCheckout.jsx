@@ -47,14 +47,10 @@ const SalesPurchaseCheckout = () => {
         const nextInvoiceId = data.nextInvoiceId;
         const isSenior = data.isSenior;
   
-        // Determinar el descuento aplicado según el rol del usuario
         const discountApplied = user.role === "ADMINISTRADOR" ? false : isSenior;
   
-        // Actualizar el estado de invoiceNumber
         setInvoiceNumber(nextInvoiceId);
-        // Actualizar el estado de discountApplied
         setDiscountApplied(discountApplied);
-        // Actualizar el estado de valuation
         setValuation(rate);
       } catch (error) {
         console.error(
@@ -65,22 +61,8 @@ const SalesPurchaseCheckout = () => {
     };
   
     fetchData();
-  }, [user.id]); // Ejecutar el efecto cuando user.id cambie
-  
-  // Agregar efectos adicionales para verificar los cambios en cada estado individual
-  useEffect(() => {
-    console.log("Invoice number updated:", invoiceNumber);
-  }, [invoiceNumber]);
-  
-  useEffect(() => {
-    console.log("Discount applied updated:", discountApplied);
-  }, [discountApplied]);
-  
-  useEffect(() => {
-    console.log("Valuation updated:", valuation);
-  }, [valuation]);
-  
-  
+  }, [user.id]); 
+
   
   const handleVendAndPrintInvoice = async () => {
     try {
