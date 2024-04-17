@@ -2,11 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import bcrypt from "bcryptjs";
+
 import AdminJS from 'adminjs'
 import AdminJSExpress from '@adminjs/express'
 import { Database, Resource, getModelByName } from '@adminjs/prisma'
 import { PrismaClient } from '@prisma/client'
-import bcrypt from "bcryptjs";
 
 import inventoryRoutes from './routes/inventory.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -22,14 +23,18 @@ const prisma = new PrismaClient()
 
 AdminJS.registerAdapter({ Database, Resource })
 
+
 const adminOptions = {
+    branding: {
+        companyName: 'PANEL CRUD',
+    },
     resources: [{
         resource: { model: getModelByName('USER'), client: prisma },
         options: {
             actions: {
                 new: {
                     before: async (request) => {
-                        if(request.payload.Password) {
+                        if (request.payload.Password) {
                             request.payload.Password = await bcrypt.hash(request.payload.Password, 10);
                         }
                         return request;
@@ -37,81 +42,189 @@ const adminOptions = {
                 },
                 edit: {
                     before: async (request) => {
-                        if(request.payload.Password) {
+                        if (request.payload.Password) {
                             request.payload.Password = await bcrypt.hash(request.payload.Password, 10);
                         }
                         return request;
                     },
                 },
             },
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
         },
-    },{
+    }, {
         resource: { model: getModelByName('PERSON'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('CLIENT'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('SUPPLIER'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('EMPLOYEE'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('SALARY'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                'Employee': {
+                    reference: 'EMPLOYEE'
+                },
+            },
+        },
+    }, {
         resource: { model: getModelByName('SCHEDULE'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('SCHEDULE_EMPLOYEE'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('PERMISION'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('VACATION'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('CATEGORY'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('PRODUCT'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('INVENTORY'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('APPOINTMENT'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('APPOINTMENT_SOLICITATION'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('SERVICE'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('PURCHASE_QUOTATION'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('PURCHASE_ORDER_DETAILED'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('PURCHASE_ORDER'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('INVOICE_ORDER_PRODUCT_DETAILS'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('INVOICE_ORDER_SERVICE_DETAILS'), client: prisma },
-        options: {},
-    },{
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
+    }, {
         resource: { model: getModelByName('INVOICE_ORDER'), client: prisma },
-        options: {},
+        options: {
+            properties: {
+                Id: { isVisible: { edit: false, show: true, list: true, filter: true } },
+            },
+            titleProperty: 'Id',
+        },
     },
-
-
-],
+    ],
 };
 
 const admin = new AdminJS(adminOptions)

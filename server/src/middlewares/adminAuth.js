@@ -3,7 +3,6 @@ import 'dotenv/config'
 import prisma from "../db.js";
 
 export const adminAuth = async (req, res, next) => {
-    console.log(req.cookies)
     const { token } = req.cookies
 
     if (!token) return res.status(401).send('Autorizacion denegada')
