@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import app from "./app.js";
-import ngrok from 'ngrok';
 
 
 // sin https
