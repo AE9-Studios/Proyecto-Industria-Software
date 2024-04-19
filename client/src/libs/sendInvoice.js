@@ -272,8 +272,8 @@ const sendInvoice = async ({
               </tr>
               <tr class="item">
                 <td class="tdtest" colspan="4"><b>Total:</b></td>
-                <td><b${total} HNL</b></td>
-              </tr>
+                <td><b>${total} HNL</b></td>
+                </tr>
             </table>
           </div>
         </div>
@@ -308,6 +308,7 @@ const sendInvoice = async ({
 
     const formData = new FormData();
     formData.append("invoice", pdfBlob, "factura.pdf");
+    formData.append("purchaseList", JSON.stringify(purchaseList));
     formData.append("userId", userId);
     formData.append("userName", userName);
     formData.append("email", email);

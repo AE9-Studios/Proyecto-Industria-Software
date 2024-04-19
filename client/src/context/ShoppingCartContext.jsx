@@ -1,5 +1,5 @@
 import { createContext, useReducer, useEffect, useState } from "react";
-import { getProducts } from "../api/inventory";
+import { getProducts } from "../api/sales";
 
 export const CartContext = createContext();
 
@@ -87,7 +87,6 @@ export const ProductsProvider = ({ children }) => {
   const fetchProductos = async () => {
     const response = await getProducts();
     setProducts(response.data);
-    console.log(response.data)
   };
 
   useEffect(() => {

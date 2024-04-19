@@ -14,6 +14,7 @@ import authRoutes from './routes/auth.routes.js';
 import humanResourcesRoutes from './routes/human-resources.routes.js'
 import appointmentRoutes from './routes/appointment.routes.js';
 import salesRoutes from './routes/sales.routes.js';
+import purchasesRoutes from './routes/purchases.routes.js'
 import activityLogRoutes from './routes/activity-log.routes.js'
 import { adminAuth } from './middlewares/adminAuth.js';
 
@@ -242,6 +243,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/human-resources', humanResourcesRoutes);
 app.use('/api/sales', salesRoutes);
+app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 

@@ -1,6 +1,9 @@
 import prisma from "../db.js";
 import fs from "fs";
-import { sendNotification, sendNotificationToAdmin } from "../libs/sendNotification.js";
+import {
+  sendNotification,
+  sendNotificationToAdmin,
+} from "../libs/sendNotification.js";
 
 import {
   sendEmailPurchaseSuccess,
@@ -10,8 +13,19 @@ import {
 import { logActivity } from "./activity-log.controller.js";
 
 export const saveInvoice = async (req, res) => {
-  const { userId, userName, email, subTotal, discount, ISV, payMethod, total } =
-    req.body;
+  const {
+    userId,
+    purchaseList,
+    userName,
+    email,
+    subTotal,
+    discount,
+    ISV,
+    payMethod,
+    total,
+  } = req.body;
+
+  const parsedPurchaseList = JSON.parse(purchaseList);
   const { filename: invoiceFile } = req.file;
 
   try {
@@ -76,6 +90,9 @@ export const saveInvoice = async (req, res) => {
         ISV: parseFloat(ISV),
         Total: parseFloat(total),
       },
+      include: {
+        INVOICE_ORDER_PRODUCT_DETAILS: true,
+      },
     });
 
     if (client_Fk === null && validateEmail(email) && userName) {
@@ -87,10 +104,56 @@ export const saveInvoice = async (req, res) => {
     }
 
     if (newInvoiceOrder) {
-      sendNotificationToAdmin("¡Nueva compra!", `Se registró una compra de ${total} Lempiras`)
-      await logActivity("Nueva compra", `Se registró una compra de ${total} Lempiras`);
+      sendNotificationToAdmin(
+        "¡Nueva compra!",
+        `Se registró una compra de ${total} Lempiras`
+      );
+      await logActivity(
+        "Nueva compra",
+        `Se registró una compra de ${total} Lempiras`
+      );
+
+      await Promise.all(
+        parsedPurchaseList.map(async (product) => {
+          const invoiceOrderProductDetail =
+            await prisma.INVOICE_ORDER_PRODUCT_DETAILS.create({
+              data: {
+                Quantity: product.quantity,
+                Product_Fk: product.Id,
+                Description: product.Description,
+                Invoice_Order_Fk: newInvoiceOrder.Id,
+              },
+              include: {
+                Product: true,
+              },
+            });
+
+          const inventory = await prisma.INVENTORY.findFirst({
+            where: {
+              Product_Fk: product.Id,
+            },
+          });
+
+          if (inventory) {
+            const updatedStock = inventory.Stock - product.quantity;
+            const updatedValuedInventory =
+              updatedStock * invoiceOrderProductDetail.Product.Price_Sell;
+
+            await prisma.INVENTORY.updateMany({
+              where: {
+                Product_Fk: product.Id,
+              },
+              data: {
+                Stock: updatedStock,
+                Valued_Inventory: updatedValuedInventory,
+              },
+            });
+          }
+        })
+      );
     }
 
+    res.status(200).json({ message: "Factura guardada correctamente." });
   } catch (error) {
     console.error("Error al guardar la factura:", error);
 
@@ -138,13 +201,8 @@ export const getInvoiceOrdersByClientId = async (req, res) => {
     });
 
     if (invoiceOrders.length === 0) {
-      console.log(
-        "No se encontraron facturas para el cliente con el Client_Id:",
-        clientId
-      );
-      res.status(404).json({
-        error: "No se encontraron facturas para el cliente proporcionado.",
-      });
+      console.log("No se encontraron facturas para el cliente");
+      res.status(200).json([]);
       return;
     }
 
@@ -168,11 +226,11 @@ export const getInvoiceAttachedFile = async (req, res) => {
     });
 
     if (!invoice) {
-      return res.status(404).json({ error: "Invoice not found" });
+      return res.status(200).json("Invoice not found" );
     }
 
     if (!invoice.Invoice_File) {
-      return res.status(404).json({ error: "Invoice file not found" });
+      return res.status(200).json("Invoice file not found");
     }
 
     const filePath = `src/assets/invoices/${invoice.Invoice_File}`;
@@ -202,7 +260,7 @@ export const getAllInvoiceOrders = async (req, res) => {
     });
 
     if (invoiceOrders.length === 0) {
-      res.status(404).json({ error: "No se encontraron facturas." });
+      res.status(200).json("No se encontraron facturas." );
       return;
     }
 
@@ -281,7 +339,7 @@ export const getNextInvoiceIdAndCheckSeniority = async (req, res) => {
   }
 };
 
-export const savePurchaseOrder = async (req, res) => {
+export const saveSaleOrder = async (req, res) => {
   const { userId, subTotal, discount, ISV, total } = req.body;
   const { filename: orderFile } = req.file;
 
@@ -323,7 +381,7 @@ export const savePurchaseOrder = async (req, res) => {
       return;
     }
 
-    const newPurchaseOrder = await prisma.PURCHASE_ORDER.create({
+    const newPurchaseOrder = await prisma.SALE_ORDER.create({
       data: {
         Client_Fk: client.Id,
         Employee_Fk: employee.Id,
@@ -371,7 +429,7 @@ export const getPurchaseOrdersByClientId = async (req, res) => {
       return;
     }
 
-    const purchaseOrders = await prisma.PURCHASE_ORDER.findMany({
+    const purchaseOrders = await prisma.SALE_ORDER.findMany({
       where: {
         Client_Fk: user.Client[0].Id,
       },
@@ -381,14 +439,8 @@ export const getPurchaseOrdersByClientId = async (req, res) => {
     });
 
     if (purchaseOrders.length === 0) {
-      console.log(
-        "No se encontraron órdenes de compra para el cliente con el Client_Id:",
-        clientId
-      );
-      res.status(404).json({
-        error:
-          "No se encontraron órdenes de compra para el cliente proporcionado.",
-      });
+      console.log("No se encontraron órdenes de compra para el cliente");
+      res.status(200).json([]);
       return;
     }
 
@@ -406,7 +458,7 @@ export const getOrderAttachedFile = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const order = await prisma.PURCHASE_ORDER.findUnique({
+    const order = await prisma.SALE_ORDER.findUnique({
       where: { Id: parseInt(id) },
       select: { Order_File: true },
     });
@@ -436,7 +488,7 @@ export const getOrderAttachedFile = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    const purchaseOrders = await prisma.PURCHASE_ORDER.findMany({
+    const purchaseOrders = await prisma.SALE_ORDER.findMany({
       include: {
         Client: true,
         Employee: true,
@@ -444,7 +496,7 @@ export const getAllOrders = async (req, res) => {
     });
 
     if (purchaseOrders.length === 0) {
-      res.status(404).json({ error: "No orders found." });
+      res.status(200).json("No orders found." );
       return;
     }
 
@@ -460,7 +512,7 @@ export const getPurchaseOrdersWithReadFalse = async (req, res) => {
     let purchaseOrders;
 
     if (req.params.flag === "ADMINISTRADOR") {
-      purchaseOrders = await prisma.PURCHASE_ORDER.findMany({
+      purchaseOrders = await prisma.SALE_ORDER.findMany({
         where: {
           Read: false,
         },
@@ -481,7 +533,7 @@ export const getPurchaseOrdersWithReadFalse = async (req, res) => {
 
       const clientId = user.Client[0].Id;
 
-      purchaseOrders = await prisma.PURCHASE_ORDER.findMany({
+      purchaseOrders = await prisma.SALE_ORDER.findMany({
         where: {
           ReadClient: false,
           Client_Fk: clientId,
@@ -509,7 +561,7 @@ export const updateReadClientToFalseById = async (req, res) => {
     let updatedItem;
 
     if (flag == "ADMINISTRADOR") {
-      updatedItem = await prisma.PURCHASE_ORDER.update({
+      updatedItem = await prisma.SALE_ORDER.update({
         where: {
           Id: parseInt(id),
         },
@@ -518,7 +570,7 @@ export const updateReadClientToFalseById = async (req, res) => {
         },
       });
     } else {
-      updatedItem = await prisma.PURCHASE_ORDER.update({
+      updatedItem = await prisma.SALE_ORDER.update({
         where: {
           Id: parseInt(id),
         },
@@ -548,7 +600,7 @@ export const sendOrderReadyEmail = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const purchaseOrder = await prisma.PURCHASE_ORDER.update({
+    const purchaseOrder = await prisma.SALE_ORDER.update({
       where: {
         Id: parseInt(id),
       },
@@ -564,7 +616,7 @@ export const sendOrderReadyEmail = async (req, res) => {
               select: {
                 Email: true,
                 User_Name: true,
-                Device_Token: true
+                Device_Token: true,
               },
             },
           },
@@ -589,7 +641,11 @@ export const sendOrderReadyEmail = async (req, res) => {
       orderFile: orderFile,
     });
 
-    sendNotification("¡Su orden está lista!", "Ya puede venir por ella", purchaseOrder.Client.User.Device_Token)
+    sendNotification(
+      "¡Su orden está lista!",
+      "Ya puede venir por ella",
+      purchaseOrder.Client.User.Device_Token
+    );
     return res.status(200).json({
       message: "Correo electrónico enviado exitosamente y estado actualizado.",
     });
@@ -602,5 +658,41 @@ export const sendOrderReadyEmail = async (req, res) => {
     return res.status(500).json({
       error: "Error al enviar el correo electrónico y actualizar el estado.",
     });
+  }
+};
+
+export const getProducts = async (req, res) => {
+  try {
+    const products = await prisma.PRODUCT.findMany({
+      include: {
+        Supplier: true,
+        Category: true,
+      },
+    });
+
+    const productsWithStock = await Promise.all(
+      products.map(async (product) => {
+        const inventory = await prisma.INVENTORY.findFirst({
+          where: {
+            Product_Fk: product.Id,
+          },
+          select: {
+            Stock: true,
+          },
+        });
+        return {
+          ...product,
+          Stock: inventory ? inventory.Stock : 0,
+        };
+      })
+    );
+
+    const productsWithAvailableStock = productsWithStock.filter(
+      (product) => product.Stock > 0
+    );
+
+    res.status(200).json(productsWithAvailableStock);
+  } catch (error) {
+    http500(error, req, res);
   }
 };

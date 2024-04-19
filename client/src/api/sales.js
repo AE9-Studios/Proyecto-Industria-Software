@@ -12,12 +12,14 @@ export const saveInvoice = (formData) => {
 };
 
 export const saveOrder = (formData) => {
-  return axios.post(`/sales/save-order`, formData, {
+  return axios.post(`/sales/save-sale-order`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 };
+
+export const getProducts = () => axios.get(`/sales/products`);
 
 export const getNextInvoiceIdAndCheckSeniority = (userId) =>
   axios.get(`/sales/invoice-details/${userId}`);
@@ -29,6 +31,7 @@ export const getInvoiceAttachedFile = (invoiceId) =>
   axios.get(`sales/invoice-file/${invoiceId}`, {
     responseType: "blob",
   });
+  
 export const getAllInvoiceOrders = () => axios.get(`/sales/all-invoice-order/`);
 
 export const getAllPurchaseOrders = () =>

@@ -30,7 +30,7 @@ const SalesPurchaseList = () => {
         setInvoices(sortedInvoices);
         setFilteredInvoices(sortedInvoices);
       } catch (error) {
-        console.error("Error al obtener las facturas:", error);
+        console.log("no ha realizado compras");
       }
     };
 

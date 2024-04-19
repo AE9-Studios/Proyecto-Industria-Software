@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const storageDocument = multer.diskStorage({
   destination: function (req, file, cb) {
-    const allowedPDFExtensions = ['.pdf', '.png', '.jpg'];
+    const allowedPDFExtensions = ['.pdf'];
     const fileExtension = path.extname(file.originalname).toLowerCase();
     if (!allowedPDFExtensions.includes(fileExtension)) {
       return cb('El archivo debe tener una de las siguientes extensiones: ' + allowedPDFExtensions.join(', '), null);
@@ -87,7 +87,35 @@ export const deleteOrder = (file) => {
   }
 };
 
+const storageReceipt = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const allowedPDFExtensions = ['.pdf', '.png', '.jpg'];
+    const fileExtension = path.extname(file.originalname).toLowerCase();
+    if (!allowedPDFExtensions.includes(fileExtension)) {
+      return cb('El archivo debe tener una de las siguientes extensiones: ' + allowedPDFExtensions.join(', '), null);
+    }
+    cb(null, 'src/assets/receipts');
+  },
+  filename: function (req, file, cb) {
+    const filename = uuid() + '-' + Date.now() + path.extname(file.originalname);
+    cb(null, filename);
+  },
+});
+
+export const deleteReceipt = (file) => {
+  const fileDelete = `src/assets/receipts/${file}`;
+  console.log(fileDelete);
+
+  if (fs.existsSync(fileDelete)) {
+    fs.unlink(fileDelete, (err) => {
+      if (err) {
+        console.error('Error al eliminar el archivo:', err);
+      }
+    });
+  }
+};
 
 export const uploadRequest = multer({ storage: storageDocument });
 export const uploadInvoice = multer({ storage: storageInvoice });
 export const uploadOrder = multer({ storage: storageOrder });
+export const uploadReceipt = multer({ storage: storageReceipt });
