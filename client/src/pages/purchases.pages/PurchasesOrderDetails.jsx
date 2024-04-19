@@ -14,7 +14,7 @@ const PurchasesOrderDetails = () => {
   const params = useParams();
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [fileAttached, setFileAttached] = useState(false);
-  const [valuation, setValuation] = useState(0);
+  const [valuation, setValuation] = useState(24.71);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const attachedFileRef = useRef();
