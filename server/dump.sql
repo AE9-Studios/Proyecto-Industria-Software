@@ -283,7 +283,8 @@ CREATE TYPE public."POSITIONS" AS ENUM (
     'ENFERMERO',
     'ADMINISTRATIVO',
     'LIMPIEZA',
-    'SEGURIDAD'
+    'SEGURIDAD',
+    'RECEPCION'
 );
 
 
@@ -934,7 +935,8 @@ CREATE TABLE public."PRODUCT" (
     "Supplier_Fk" integer NOT NULL,
     "Category_Fk" integer NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
+    "Image" text
 );
 
 
@@ -1288,8 +1290,9 @@ CREATE TABLE public."USER" (
     "Email" text NOT NULL,
     "Password" text NOT NULL,
     "Role" public."ROL" NOT NULL,
-    "created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_At" timestamp(3) without time zone
+    "Device_Token" text,
+    "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "Updated_At" timestamp(3) without time zone
 );
 
 
@@ -1627,7 +1630,7 @@ COPY public."CATEGORY" ("Id", "Name", description, "Created_At", "Updated_At") F
 --
 
 COPY public."CLIENT" ("Id", "Person_Fk", "User_Fk", "Created_At", "Updated_At") FROM stdin;
-1	1	1	2024-02-28 00:19:14.299	2024-02-28 00:19:14.299
+1	1	1	2024-02-29 00:19:14	2024-02-28 00:19:14.299
 \.
 
 
@@ -1734,18 +1737,18 @@ COPY public."PERSON" ("Id", "DNI", "First_Name", "Last_Name", "Birth_Date", "Pho
 -- Data for Name: PRODUCT; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."PRODUCT" ("Id", "Name", "Description", "Brand", "Price_Buy", "Price_Sell", "Supplier_Fk", "Category_Fk", "Created_At", "Updated_At") FROM stdin;
-19	Laptop	High-performance laptop	BrandA	1200	1500	5	7	2024-03-02 11:00:00	2024-03-27 22:07:38.889
-20	Smartphone	Latest smartphone model	BrandB	800	1000	5	7	2024-03-02 11:30:00	2024-03-27 22:07:38.889
-21	T-shirt	Comfortable cotton t-shirt	BrandC	20	30	6	8	2024-03-02 12:00:00	2024-03-27 22:07:38.889
-22	Desktop PC	Powerful desktop computer	BrandA	1000	1300	6	8	2024-03-02 12:30:00	2024-03-27 22:07:38.889
-23	Jeans	Classic denim jeans	BrandB	40	60	6	9	2024-03-02 13:00:00	2024-03-27 22:07:38.889
-24	Headphones	Noise-cancelling headphones	BrandC	50	80	6	7	2024-03-02 13:30:00	2024-03-27 22:07:38.889
-25	Backpack	Durable backpack for daily use	BrandA	30	50	6	8	2024-03-02 14:00:00	2024-03-27 22:07:38.889
-26	Tablet	Portable tablet device	BrandB	200	250	6	9	2024-03-02 14:30:00	2024-03-27 22:07:38.889
-27	Sweater	Warm knitted sweater	BrandC	35	55	5	9	2024-03-02 15:00:00	2024-03-27 22:07:38.889
-28	Mouse	Ergonomic computer mouse	BrandA	15	25	5	7	2024-03-02 15:30:00	2024-03-27 22:07:38.889
-29	Lentes de millor	lentes aro rojo	MK	234	344	6	12	2024-04-06 23:33:52.735	2024-04-06 23:33:52.735
+COPY public."PRODUCT" ("Id", "Name", "Description", "Brand", "Price_Buy", "Price_Sell", "Supplier_Fk", "Category_Fk", "Created_At", "Updated_At", "Image") FROM stdin;
+19	Laptop	High-performance laptop	BrandA	1200	1500	5	7	2024-03-02 11:00:00	2024-03-27 22:07:38.889	\N
+20	Smartphone	Latest smartphone model	BrandB	800	1000	5	7	2024-03-02 11:30:00	2024-03-27 22:07:38.889	\N
+21	T-shirt	Comfortable cotton t-shirt	BrandC	20	30	6	8	2024-03-02 12:00:00	2024-03-27 22:07:38.889	\N
+22	Desktop PC	Powerful desktop computer	BrandA	1000	1300	6	8	2024-03-02 12:30:00	2024-03-27 22:07:38.889	\N
+23	Jeans	Classic denim jeans	BrandB	40	60	6	9	2024-03-02 13:00:00	2024-03-27 22:07:38.889	\N
+24	Headphones	Noise-cancelling headphones	BrandC	50	80	6	7	2024-03-02 13:30:00	2024-03-27 22:07:38.889	\N
+25	Backpack	Durable backpack for daily use	BrandA	30	50	6	8	2024-03-02 14:00:00	2024-03-27 22:07:38.889	\N
+26	Tablet	Portable tablet device	BrandB	200	250	6	9	2024-03-02 14:30:00	2024-03-27 22:07:38.889	\N
+27	Sweater	Warm knitted sweater	BrandC	35	55	5	9	2024-03-02 15:00:00	2024-03-27 22:07:38.889	\N
+28	Mouse	Ergonomic computer mouse	BrandA	15	25	5	7	2024-03-02 15:30:00	2024-03-27 22:07:38.889	\N
+29	Lentes de millor	lentes aro rojo	MK	234	344	6	12	2024-04-06 23:33:52.735	2024-04-06 23:33:52.735	\N
 \.
 
 
@@ -1825,11 +1828,12 @@ COPY public."SUPPLIER" ("Id", "Name", "Email", "Phone", "Address", "Created_At",
 -- Data for Name: USER; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "created_At", "updated_At") FROM stdin;
-1	JOCSAN ELY.RUEDA LOPEZ	je@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	CLIENTE	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
-2	JUAN.RODRIGUEZ	juan@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	EMPLEADO	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
-3	PEDRO.ARDIMALES	pedro@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	ADMINISTRADOR	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
-8	Alhanis Espinal	alhanis@gmail.com	$2a$10$mhAZYnjwOl7anXlSLBQ0jOCFcov5vVgsmayz8DhI6Q/iFE4/v588G	CLIENTE	2024-04-17 06:00:00	2024-04-17 06:00:00
+COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "Device_Token", "Created_At", "Updated_At") FROM stdin;
+1	JOCSAN ELY RUEDA LOPEZ	je@example.com	$2a$10$0STJkdLft0GLQAogZN68F.9k0/NqrWRqOl/aPshxnANp6NY0ad.B2	CLIENTE	\N	2024-04-19 02:02:40.623	\N
+2	JUAN RODRIGUEZ	juan@example.com	$2a$10$7rI9XQxfJLWjbceeNyzqWuOrJj8/RZWRDDutGWTVt5UIHvC2kh0Nm	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
+3	PEDRO ARDIMALES	pedro@example.com	$2a$10$5ttFaYsH7kNch3HCbkGIMucESf4H6DMulW1pqr94Lf4DqswVN.Oiy	ADMINISTRADOR	\N	2024-04-19 02:02:40.623	\N
+8	Alhanis Espinal 	alhanis@gmail.com	$2a$10$gx5vmDuSLVVViV2B.wl7Fu7YDB3dZ6.n2rsPULZuoRISw4Q9k1w0O	CLIENTE	\N	2024-04-19 02:02:40.623	\N
+9	TOMAS ZAPATA	tomas@gmail.com	$2a$10$BjMcOzQUkjvDTM32la7fYeh5PMKvwYiu8xJ8UHhp9EoowsgbUBSWy	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
 \.
 
 
@@ -1857,6 +1861,8 @@ c5dc4bf7-0f3f-456f-b927-0e09622a0e6e	10a8941f419871d75aacba31949c0a4095ddf30c8cd
 226ec1ba-ea18-49ee-8644-1548211a9003	86aaf980ac63cfac482f366170294ff03d8d660739561ea691a13fdc6d82ab56	2024-03-27 21:52:21.562323+00	20240316221809_init	\N	\N	2024-03-27 21:52:21.262756+00	1
 95991119-a153-4161-b4be-526b1f04a390	7247b90508397ab897f84a9ae86dd65131ffd34979bf79ef05bcb7a25b1f1933	2024-04-06 23:56:56.121106+00	20240401163215_init	\N	\N	2024-04-06 23:56:55.669302+00	1
 385d539c-9169-4dcc-a885-1760a2356bd3	90aefbe78d73e1c88185a39734799f3aa94fe773ff14f9f6d44fe0e5c0c8eb4a	2024-04-06 23:57:15.721564+00	20240406235715_init	\N	\N	2024-04-06 23:57:15.599193+00	1
+9d2ff405-cc6c-46be-b637-32a3eceb3b70	f0c0b0efe02be37de057c6d8837936ceaa70cbb46828fc0d8e2c65722b7b0ac7	2024-04-19 02:01:54.951219+00	20240414041925_init	\N	\N	2024-04-19 02:01:54.631273+00	1
+765b846c-7887-45e6-a052-f32434575f94	93938d0d0ddc46d1500a2700e0fccb0e9eb4efb0432bb9d69b6a88d5de532969	2024-04-19 02:02:40.820735+00	20240419020240_	\N	\N	2024-04-19 02:02:40.574906+00	1
 \.
 
 
@@ -1962,7 +1968,7 @@ SELECT pg_catalog.setval('public."PERMISION_Id_seq"', 1, false);
 -- Name: PERSON_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."PERSON_Id_seq"', 2, true);
+SELECT pg_catalog.setval('public."PERSON_Id_seq"', 3, true);
 
 
 --
@@ -2032,7 +2038,7 @@ SELECT pg_catalog.setval('public."SUPPLIER_Id_seq"', 8, true);
 -- Name: USER_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."USER_Id_seq"', 8, true);
+SELECT pg_catalog.setval('public."USER_Id_seq"', 9, true);
 
 
 --

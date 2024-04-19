@@ -126,8 +126,8 @@ model USER {
   Password      String
   Role          ROL
   Device_Token  String?
-  created_At    DateTime   @default(now())
-  updated_At    DateTime?  @updatedAt
+  Created_At    DateTime   @default(now())
+  Updated_At    DateTime?  @updatedAt
   Employee      EMPLOYEE[]
   Client        CLIENT[]
 }
@@ -271,6 +271,7 @@ model PRODUCT {
   Brand                         String
   Price_Buy                     Float
   Price_Sell                    Float
+  Image                         String?
   Supplier_Fk                   Int
   Category_Fk                   Int
   Created_At                    DateTime                        @default(now())
