@@ -45,3 +45,8 @@ client/Dockerfile
 #general
 docker-compose.yml
 
+#conf para despliegue
+docker-compose.yml
+server/Dockerfile
+client/Dockerfile
+nginx
