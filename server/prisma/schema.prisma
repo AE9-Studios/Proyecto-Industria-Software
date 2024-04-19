@@ -174,7 +174,7 @@ model EMPLOYEE {
   Vacation          VACATION[]
   Salary            SALARY[]
   APPOINTMENT       APPOINTMENT[]
-  PURCHASE_ORDER    PURCHASE_ORDER[]
+  SALE_ORDER        SALE_ORDER[]
   INVOICE_ORDER     INVOICE_ORDER[]
 }
 
@@ -238,7 +238,7 @@ model CLIENT {
   Created_At               DateTime                   @default(now())
   Updated_At               DateTime?                  @default(now()) @updatedAt
   APPOINTMENT              APPOINTMENT[]
-  PURCHASE_ORDER           PURCHASE_ORDER[]
+  SALE_ORDER               SALE_ORDER[]
   INVOICE_ORDER            INVOICE_ORDER[]
   APPOINTMENT_SOLICITATION APPOINTMENT_SOLICITATION[]
 }
@@ -253,6 +253,7 @@ model SUPPLIER {
   Updated_At         DateTime?            @default(now()) @updatedAt
   Product            PRODUCT[]
   PURCHASE_QUOTATION PURCHASE_QUOTATION[]
+  PURCHASE_ORDER     PURCHASE_ORDER[]
 }
 
 model CATEGORY {
@@ -347,7 +348,6 @@ model PURCHASE_ORDER_DETAILED {
   Id                Int            @id @default(autoincrement())
   Date              DateTime
   Quantity          Int
-  Discount          Float?
   Description       String?
   Product_Fk        Int
   Purchase_Order_Fk Int
@@ -358,6 +358,19 @@ model PURCHASE_ORDER_DETAILED {
 }
 
 model PURCHASE_ORDER {
+  Id                      Int                       @id @default(autoincrement())
+  Date                    DateTime
+  Invoice_File            String?
+  State                   REQUEST_STATE
+  Total                   Float
+  Supplier_Fk             Int                       
+  Created_At              DateTime                  @default(now())
+  Updated_At              DateTime?                 @default(now()) @updatedAt
+  Supplier                SUPPLIER                  @relation(fields: [Supplier_Fk], references: [Id])
+  PURCHASE_ORDER_DETAILED PURCHASE_ORDER_DETAILED[]
+}
+
+model SALE_ORDER {
   Id                      Int                       @id @default(autoincrement())
   Date                    DateTime
   Client_Fk               Int
@@ -374,36 +387,12 @@ model PURCHASE_ORDER {
   Updated_At              DateTime?                 @default(now()) @updatedAt
   Client                  CLIENT                    @relation(fields: [Client_Fk], references: [Id])
   Employee                EMPLOYEE                  @relation(fields: [Employee_Fk], references: [Id])
-  PURCHASE_ORDER_DETAILED PURCHASE_ORDER_DETAILED[]
-}
-
-model ACCOUNT_PLAYABLE {
-  Id          Int       @id @default(autoincrement())
-  Date        DateTime
-  Amount      Float
-  Creditor    String
-  Description String?
-  State       Boolean
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
-}
-
-model ACCOUNT_RECEIVABLE {
-  Id          Int       @id @default(autoincrement())
-  Date        DateTime
-  Amount      Float
-  Debtor      String
-  Description String?
-  State       Boolean
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
 }
 
 model INVOICE_ORDER_PRODUCT_DETAILS {
   Id               Int           @id @default(autoincrement())
   Quantity         Int
   Product_Fk       Int
-  Discount         Float?
   Description      String?
   Invoice_Order_Fk Int
   Created_At       DateTime      @default(now())

@@ -24,7 +24,7 @@ const SalesCatalogView = () => {
   return (
     <>
       <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4 shadow text-center">
-        <h1 className="text-center">Productos de prueba dx</h1>
+        <h1 className="text-center">Catálogo de Classic Vision</h1>
 
         <input
           type="text"

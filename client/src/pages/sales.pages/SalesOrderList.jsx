@@ -10,7 +10,7 @@ import {
 } from "../../api/sales";
 import { useAuth } from "../../context/AuthContext";
 
-const PurchaseOrderList = () => {
+const SalesOrderList = () => {
   const { user } = useAuth();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState([]);
@@ -18,7 +18,7 @@ const PurchaseOrderList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState([]);
 
   useEffect(() => {
     const fetchPurchaseOrders = async () => {
@@ -45,7 +45,7 @@ const PurchaseOrderList = () => {
         setPurchaseOrders(sortedPurchaseOrders);
         setFilteredPurchaseOrders(sortedPurchaseOrders);
       } catch (error) {
-        console.error("Error al obtener las órdenes de compra:", error);
+        console.log("No tiene ordenes de venta")
       }
     };
 
@@ -272,4 +272,4 @@ const PurchaseOrderList = () => {
   );
 };
 
-export default PurchaseOrderList;
+export default SalesOrderList;

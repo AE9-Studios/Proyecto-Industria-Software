@@ -44,14 +44,19 @@ import { ThankYouOrderPage } from "./pages/client.pages/ThankYouPage";
 import SalesCatalogView from "./pages/sales.pages/SalesCatalogView";
 import SalesPurchaseCheckout from "./pages/sales.pages/SalesPurchaseCheckout";
 import SalesPurchaseList from "./pages/sales.pages/SalesPurchaseList";
-import PurchaseOrderList from "./pages/sales.pages/PurchaseOrderList";
+import SalesOrderList from "./pages/sales.pages/SalesOrderList";
 import SalesStatisticsPage from "./pages/sales.pages/SalesStatisticsPage";
 import ClientAppointments from './pages/client.pages/ClientAppointments'
 import Appointments from './pages/admin.pages/Appointments'
 import AppointmentsEmployee from './pages/appointments.pages/AppointmentsEmployee'
 
-
-
+{/** Módulo Compras */ }
+import PurchasesPanel from './pages/purchases.pages/PurchasesPanel'
+import PurchasesOrder from './pages/purchases.pages/PurchasesOrder'
+import PurchasesQuotation from './pages/purchases.pages/PurchasesQuotation'
+import PurchasesOrderList from './pages/purchases.pages/PurchasesOrderList'
+import PurchasesOrderDetails from './pages/purchases.pages/PurchasesOrderDetails'
+import PurchasesReceiptList from './pages/purchases.pages/PurchasesReceiptList'
 
 
 function App() {
@@ -114,7 +119,15 @@ function AdminRoutes() {
           <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesPurchaseCheckout /></ShoppingCartProvider></ProductsProvider>} />
           <Route path="/sales/list" element={<SalesPurchaseList />} />
           <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
-          <Route path="/sales/order-list" element={<PurchaseOrderList />} />
+          <Route path="/sales/order-list" element={<SalesOrderList />} />
+
+          {/** Módulo Compras */}
+          <Route path="purchases" element={<PurchasesPanel />} />
+          <Route path="/purchases/new" element={<PurchasesOrder />} />
+          <Route path="/purchases/quotation" element={<PurchasesQuotation />} />
+          <Route path="/purchases/list" element={<PurchasesOrderList />} />
+          <Route path="/purchases/list/:id" element={<PurchasesOrderDetails />} />
+          <Route path="/purchases/receipts" element={<PurchasesReceiptList />} />
 
         </>}
       </Routes >
@@ -138,7 +151,7 @@ function ClientRoutes() {
             <Route path="/catalog" element={<SalesCatalogView />} />
             <Route path="/checkout" element={<SalesPurchaseCheckout />} />
             <Route path="/purchases" element={<SalesPurchaseList />} />
-            <Route path="/orders" element={<PurchaseOrderList />} />
+            <Route path="/orders" element={<SalesOrderList />} />
             <Route path="/thankyou" element={<ThankYouPage />} />
             <Route path="/thankyouorder" element={<ThankYouOrderPage />} />
             <Route path='/appointments' element={<ClientAppointments />} />

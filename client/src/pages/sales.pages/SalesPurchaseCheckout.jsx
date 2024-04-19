@@ -17,9 +17,11 @@ const SalesPurchaseCheckout = () => {
   const [clientEmail, setClientEmail] = useState("");
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [discountApplied, setDiscountApplied] = useState(false);
-  const [invoiceNumber, setInvoiceNumber] = useState(0);
-  const [valuation, setValuation] = useState(24.63);
+
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+
+  const invoiceNumberRef = useRef(0);
+  const valuationRef = useRef(24.71);
 
   const totalRef = useRef(0);
   const purchaseListRef = useRef(purchaseList);
@@ -46,12 +48,13 @@ const SalesPurchaseCheckout = () => {
         const { data } = await getNextInvoiceIdAndCheckSeniority(user.id);
         const nextInvoiceId = data.nextInvoiceId;
         const isSenior = data.isSenior;
-  
-        const discountApplied = user.role === "ADMINISTRADOR" ? false : isSenior;
-  
-        setInvoiceNumber(nextInvoiceId);
+
+        const discountApplied =
+          user.role === "ADMINISTRADOR" ? false : isSenior;
+
+        invoiceNumberRef.current = nextInvoiceId;
         setDiscountApplied(discountApplied);
-        setValuation(rate);
+        valuationRef.current = rate;
       } catch (error) {
         console.error(
           "Error fetching invoice ID or checking senior citizen status:",
@@ -59,11 +62,10 @@ const SalesPurchaseCheckout = () => {
         );
       }
     };
-  
-    fetchData();
-  }, [user.id]); 
 
-  
+    fetchData();
+  }, [user.id, user.role]);
+
   const handleVendAndPrintInvoice = async () => {
     try {
       if (user.role === "ADMINISTRADOR") {
@@ -82,7 +84,7 @@ const SalesPurchaseCheckout = () => {
                 2
               )} (10% Tercera Edad)`
             : "0.00",
-          invoiceNumber: invoiceNumber,
+          invoiceNumber: invoiceNumberRef.current,
           payMethod: "CAJA",
           typeIO: "INVOICE",
         });
@@ -106,7 +108,7 @@ const SalesPurchaseCheckout = () => {
                 2
               )} (10% Tercera Edad)`
             : "0.00",
-          invoiceNumber: invoiceNumber,
+          invoiceNumber: invoiceNumberRef.current,
           payMethod: "CAJA",
           typeIO: "ORDER",
         });
@@ -145,7 +147,10 @@ const SalesPurchaseCheckout = () => {
         const paypalButtonContainer = document.getElementById(
           "paypal-button-container"
         );
+
         if (paypalButtonContainer) {
+          paypalButtonContainer.innerHTML = "";
+
           window.paypal
             .Buttons({
               style: {
@@ -161,9 +166,11 @@ const SalesPurchaseCheckout = () => {
                       amount: {
                         currency_code: "USD",
                         value: (
-                          parseFloat(totalRef.current / valuation) -
+                          parseFloat(totalRef.current / valuationRef.current) -
                           (discountApplied
-                            ? parseFloat(totalRef.current / valuation) * 0.1
+                            ? parseFloat(
+                                totalRef.current / valuationRef.current
+                              ) * 0.1
                             : 0)
                         ).toFixed(2),
                       },
@@ -191,7 +198,7 @@ const SalesPurchaseCheckout = () => {
                           2
                         )} (10% Tercera Edad)`
                       : "0.00",
-                    invoiceNumber: invoiceNumber,
+                    invoiceNumber: invoiceNumberRef.current,
                     payMethod: "LINEA",
                     typeIO: "INVOICE",
                   });
@@ -353,6 +360,7 @@ const SalesPurchaseCheckout = () => {
                     <button
                       className="btn btn-outline-primary"
                       onClick={() => increaseQuantity(item.Id)}
+                      disabled={item.quantity >= item.Stock}
                     >
                       +
                     </button>
@@ -367,6 +375,14 @@ const SalesPurchaseCheckout = () => {
                     <i className="bi bi-cart-x-fill"></i> Eliminar
                   </button>
                 </td>
+                {item.quantity >= item.Stock && (
+                  <span
+                    className="badge bg-danger mt-4"
+                    style={{ color: "white" }}
+                  >
+                    Ya no hay más stock disponible de {item.Name}.
+                  </span>
+                )}
               </tr>
             ))}
 
@@ -449,9 +465,6 @@ const SalesPurchaseCheckout = () => {
           </tbody>
         </table>
 
-        <p style={{ color: "red" }}>
-          código y cálculos pendientes de revisión ╥﹏╥
-        </p>
         <div className="d-flex justify-content-center">
           {user.role === "ADMINISTRADOR" ? (
             <button
