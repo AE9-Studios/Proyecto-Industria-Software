@@ -15,10 +15,14 @@ const PanelAdmin = () => {
           <CardModules title="Inventario" description="Controla y supervisa el inventario disponible." icon="bi bi-archive" url="inventory" />
           <CardModules title="Citas" description="Organiza y gestiona citas y eventos." icon="bi bi-file-earmark-text" url="appointments" />
           <CardModules title="Recursos Humanos" description="Gestiona el personal y recursos humanos." icon="bi bi-people" url="human-resources" />
+          <CardModules title="CRUD" description="Administra los registros de la Base de datos" icon="bi bi-database"
+            // url="https://classic-vision.alhanisespinal.tech/admin/resources/USER" //para deploy
+            url="http://localhost:3000/admin/resources/USER" //para dev
+          />
         </div>
         <br />
       </div>
-        <button onClick={logoutUser} className='btn btn-danger py-2'>Cerrar Sesión</button>
+      <button onClick={logoutUser} className='btn btn-danger py-2'>Cerrar Sesión</button>
     </div>
 
   )
