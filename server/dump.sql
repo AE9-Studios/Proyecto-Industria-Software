@@ -1630,7 +1630,7 @@ COPY public."CATEGORY" ("Id", "Name", description, "Created_At", "Updated_At") F
 --
 
 COPY public."CLIENT" ("Id", "Person_Fk", "User_Fk", "Created_At", "Updated_At") FROM stdin;
-1	1	1	2024-02-29 00:19:14	2024-02-28 00:19:14.299
+1	1	1	2024-02-29 00:19:14	2024-04-19 02:11:56.616
 \.
 
 
@@ -1727,9 +1727,9 @@ COPY public."PERMISION" ("Id", "Employee_Fk", "Reason", "Description", "Attached
 --
 
 COPY public."PERSON" ("Id", "DNI", "First_Name", "Last_Name", "Birth_Date", "Phone_Number", "Address", "Gender", "Created_At", "Updated_At") FROM stdin;
-1	0801200013100	Jocsan Ely	Rueda Lopez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
 2	0801200013101	Juan	Rodriguez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
 3	0801200013102	Pedro 	Ardimales	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
+1	0801200013111	Jocsan Ely	Rueda Lopez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-04-19 02:09:22.248
 \.
 
 
@@ -1818,9 +1818,9 @@ COPY public."SERVICE" ("Id", "Name", "Description", "Price", "Created_At", "Upda
 --
 
 COPY public."SUPPLIER" ("Id", "Name", "Email", "Phone", "Address", "Created_At", "Updated_At") FROM stdin;
-5	ABC Suppliers	alh9cef@gmail.com	123-456-7890	123 Main St, City, Country	2024-03-02 10:00:00	2024-03-27 22:04:16.887
 6	XYZ Distributors	andenglego@gmail.com	987-654-3210	456 Elm St, Town, Country	2024-03-02 10:30:00	2024-03-27 22:04:16.887
 8	WSD Distribuciones	aws@gmail.com	23242525	sdasdas	2024-04-07 00:00:14.002	2024-04-07 00:00:14.002
+5	ABC Suppliers	alh9cef@gmail.com	123-456-7891	123 Main St, City, Country	2024-03-02 10:00:00	2024-04-19 02:12:04.506
 \.
 
 
@@ -1832,8 +1832,8 @@ COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "Device_Toke
 1	JOCSAN ELY RUEDA LOPEZ	je@example.com	$2a$10$0STJkdLft0GLQAogZN68F.9k0/NqrWRqOl/aPshxnANp6NY0ad.B2	CLIENTE	\N	2024-04-19 02:02:40.623	\N
 2	JUAN RODRIGUEZ	juan@example.com	$2a$10$7rI9XQxfJLWjbceeNyzqWuOrJj8/RZWRDDutGWTVt5UIHvC2kh0Nm	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
 3	PEDRO ARDIMALES	pedro@example.com	$2a$10$5ttFaYsH7kNch3HCbkGIMucESf4H6DMulW1pqr94Lf4DqswVN.Oiy	ADMINISTRADOR	\N	2024-04-19 02:02:40.623	\N
-8	Alhanis Espinal 	alhanis@gmail.com	$2a$10$gx5vmDuSLVVViV2B.wl7Fu7YDB3dZ6.n2rsPULZuoRISw4Q9k1w0O	CLIENTE	\N	2024-04-19 02:02:40.623	\N
 9	TOMAS ZAPATA	tomas@gmail.com	$2a$10$BjMcOzQUkjvDTM32la7fYeh5PMKvwYiu8xJ8UHhp9EoowsgbUBSWy	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
+8	Alhanis Espinal 	alhanis@gmail.com	$2a$10$cFARtAZH2N6Uv.OtvsvGvuJPEDnRPcZt/K9ZddGKVE6z30O207/Jy	CLIENTE		2024-04-19 02:02:40.623	2024-04-19 02:05:25.806
 \.
 
 
