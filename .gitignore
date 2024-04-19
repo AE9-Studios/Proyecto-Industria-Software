@@ -36,3 +36,8 @@ client/*.sw?
 #aws
 aws
 
+#conf para despliegue
+docker-compose.yml
+server/Dockerfile
+client/Dockerfile
+nginx
