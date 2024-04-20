@@ -64,7 +64,7 @@ const dashboard = () => {
               fontWeight: 'bold',
               textAlign: 'center',
               textJustify: 'center',
-            }}>Volver al panel </h5>
+            }}>Volver al Home </h5>
             <p>Click aquí para volver al panel anterior para ver todas las funciones del administrador</p>
           </div>
         </a>

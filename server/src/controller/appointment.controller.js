@@ -5,11 +5,18 @@ import { http500 } from "../libs/handleErrors.js";
 export const createAppointmentSolicitation = async (req, res) => {
     const { date, description, clientId } = req.body;
     try {
+        const findClient = await prisma.cLIENT.findUnique({
+            where: {
+                Id: parseInt(clientId)
+            }
+        });
+        if (!findClient) return res.status(400).json(["El cliente no existe"]);
+
         const newAppointment = await prisma.aPPOINTMENT_SOLICITATION.create({
             data: {
                 Date: new Date(date),
                 Description: description,
-                Client_Fk: clientId,
+                Client_Fk: parseInt(findClient.Id),
                 State: 'PENDIENTE'
             }
         });
@@ -98,7 +105,7 @@ export const createAppointment = async (req, res) => {
     // Crear una nueva fecha que sea 30 minutos después
     const endDate = new Date(startDate.getTime() + 30 * 60 * 1000);
 
-    const findAppointInHour = await prisma.aPPOINTMENT.findMany({
+    const findAppointInHour = await prisma.aPPOINTMENT.findFirst({
         where: {
             Date: {
                 gte: startDate,
@@ -107,6 +114,8 @@ export const createAppointment = async (req, res) => {
             Employee_Fk: employeeId
         }
     });
+
+    console.log(findAppointInHour);
 
     if (findAppointInHour) return res.status(400).json(["Ya existe una cita en esa hora"]);
 

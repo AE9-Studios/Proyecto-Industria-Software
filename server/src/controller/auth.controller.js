@@ -39,7 +39,7 @@ export const registerClient = async (req, res) => {
 
         const passwordHash = await bcrypt.hash(password, 10);
 
-        
+
         const newPerson = await prisma.PERSON.create({
             data: {
                 DNI: dni,
@@ -135,6 +135,37 @@ export const login = async (req, res) => {
             }
         }
 
+        if (user.Role === 'EMPLEADO') {
+            const employee = await prisma.EMPLOYEE.findFirst({
+                where: {
+                    User_Fk: user.id
+                },
+                include: {
+                    Person: true,
+                }
+            });
+
+            //crear token si es correcto
+            const token = await createAccessToken({
+                id: user.Id,
+                role: user.Role,
+                name: user.User_Name
+            });
+
+            res.cookie('token', token)
+
+            return res.json({
+                id: user.Id,
+                email: user.Email,
+                userName: user.User_Name,
+                role: user.Role,
+                token: token,
+                employeeData: employee
+            });
+
+
+        }
+
         //crear token si es correcto
         const token = await createAccessToken({
             id: user.Id,
@@ -180,7 +211,7 @@ export const getUser = async (req, res) => {
 
 export const verifyToken = async (req, res) => {
     try {
-        const {token} = req.body;
+        const { token } = req.body;
         if (!token) {
             return res.status(401).json(['No autorizado']);
         }
@@ -215,7 +246,7 @@ export const verifyToken = async (req, res) => {
                 const employee = await prisma.EMPLOYEE.findFirst({
                     where: {
                         User_Fk: user.id
-                    }, 
+                    },
                     include: {
                         Person: true,
                     }
@@ -230,7 +261,7 @@ export const verifyToken = async (req, res) => {
                     employeeData: employee
                 });
 
-                
+
             }
 
             return res.json({
