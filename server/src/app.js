@@ -13,7 +13,7 @@ import salesRoutes from './routes/sales.routes.js';
 import purchasesRoutes from './routes/purchases.routes.js'
 import activityLogRoutes from './routes/activity-log.routes.js'
 import { adminAuth } from './middlewares/adminAuth.js';
-import { admin, adminRouter } from './libs/adminjs.js';
+import { admin, adminRouter } from './adminjs.js';
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -40,6 +40,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const imagesProducts = path.join(__dirname, 'img', 'products');
 app.use('/api/img/products', express.static(imagesProducts));
+app.use(express.static(path.join(__dirname, "/public")));
 
 console.log(`AdminJS started on http://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
 

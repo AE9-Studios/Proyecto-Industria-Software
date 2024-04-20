@@ -13,7 +13,7 @@ const storageDocument = multer.diskStorage({
     cb(null, 'src/assets/requests');
   },
   filename: function (req, file, cb) {
-    const filename = uuid() + '-' + Date.now() + path.extname(file.originalname);
+    const filename = `${uuid()}-${Date.now()}${path.extname(file.originalname)}`;
     cb(null, filename);
   },
 });

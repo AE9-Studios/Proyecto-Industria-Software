@@ -246,3 +246,12 @@ export const verifyToken = async (req, res) => {
         return http500(error, req, res);
     }
 }
+
+export const logout = async (req, res) => {
+    try {
+        res.clearCookie('token');
+        res.json('Sesión cerrada');
+    } catch (error) {
+        return http500(error, req, res);
+    }
+}
