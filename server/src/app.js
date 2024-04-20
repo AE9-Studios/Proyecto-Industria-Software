@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import path, { dirname } from "path";
 
 
 import inventoryRoutes from './routes/inventory.routes.js';
@@ -13,6 +14,7 @@ import purchasesRoutes from './routes/purchases.routes.js'
 import activityLogRoutes from './routes/activity-log.routes.js'
 import { adminAuth } from './middlewares/adminAuth.js';
 import { admin, adminRouter } from './libs/adminjs.js';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -32,6 +34,12 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
+
+// archivos estaticos 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const imagesProducts = path.join(__dirname, 'img', 'products');
+app.use('/api/img/products', express.static(imagesProducts));
 
 console.log(`AdminJS started on http://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
 

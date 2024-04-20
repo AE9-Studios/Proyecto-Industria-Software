@@ -201,43 +201,6 @@ COMMENT ON SCHEMA public IS '';
 
 
 --
--- Name: APPOINTMENT_SOLICITATION_STATE; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."APPOINTMENT_SOLICITATION_STATE" AS ENUM (
-    'PENDIENTE',
-    'APROBADO',
-    'RECHAZADO'
-);
-
-
-ALTER TYPE public."APPOINTMENT_SOLICITATION_STATE" OWNER TO postgres;
-
---
--- Name: APPOINTMENT_STATE; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."APPOINTMENT_STATE" AS ENUM (
-    'PENDIENTE',
-    'ATENDIDO'
-);
-
-
-ALTER TYPE public."APPOINTMENT_STATE" OWNER TO postgres;
-
---
--- Name: EMPLOYEE_STATE; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."EMPLOYEE_STATE" AS ENUM (
-    'ENABLED',
-    'DISABLED'
-);
-
-
-ALTER TYPE public."EMPLOYEE_STATE" OWNER TO postgres;
-
---
 -- Name: GENDER; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -250,31 +213,6 @@ CREATE TYPE public."GENDER" AS ENUM (
 ALTER TYPE public."GENDER" OWNER TO postgres;
 
 --
--- Name: INVENTORY_MOVEMENT_TYPE; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."INVENTORY_MOVEMENT_TYPE" AS ENUM (
-    'ENTRADA',
-    'SALIDA',
-    'PEDIDO'
-);
-
-
-ALTER TYPE public."INVENTORY_MOVEMENT_TYPE" OWNER TO postgres;
-
---
--- Name: PAY_METHOD; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."PAY_METHOD" AS ENUM (
-    'LINEA',
-    'CAJA'
-);
-
-
-ALTER TYPE public."PAY_METHOD" OWNER TO postgres;
-
---
 -- Name: POSITIONS; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -283,25 +221,11 @@ CREATE TYPE public."POSITIONS" AS ENUM (
     'ENFERMERO',
     'ADMINISTRATIVO',
     'LIMPIEZA',
-    'SEGURIDAD',
-    'RECEPCION'
+    'SEGURIDAD'
 );
 
 
 ALTER TYPE public."POSITIONS" OWNER TO postgres;
-
---
--- Name: REQUEST_STATE; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public."REQUEST_STATE" AS ENUM (
-    'PENDIENTE',
-    'APROBADO',
-    'RECHAZADO'
-);
-
-
-ALTER TYPE public."REQUEST_STATE" OWNER TO postgres;
 
 --
 -- Name: ROL; Type: TYPE; Schema: public; Owner: postgres
@@ -401,44 +325,6 @@ ALTER SEQUENCE public."ACCOUNT_RECEIVABLE_Id_seq" OWNED BY public."ACCOUNT_RECEI
 
 
 --
--- Name: ACTIVITY_LOG; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."ACTIVITY_LOG" (
-    "Id" integer NOT NULL,
-    "Date" timestamp(3) without time zone NOT NULL,
-    name text NOT NULL,
-    "Description" text NOT NULL,
-    "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE public."ACTIVITY_LOG" OWNER TO postgres;
-
---
--- Name: ACTIVITY_LOG_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."ACTIVITY_LOG_Id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."ACTIVITY_LOG_Id_seq" OWNER TO postgres;
-
---
--- Name: ACTIVITY_LOG_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."ACTIVITY_LOG_Id_seq" OWNED BY public."ACTIVITY_LOG"."Id";
-
-
---
 -- Name: APPOINTMENT; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -448,9 +334,9 @@ CREATE TABLE public."APPOINTMENT" (
     "Description" text,
     "Client_Fk" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
+    "State" boolean NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "State" public."APPOINTMENT_STATE" NOT NULL
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -476,45 +362,6 @@ ALTER SEQUENCE public."APPOINTMENT_Id_seq" OWNER TO postgres;
 --
 
 ALTER SEQUENCE public."APPOINTMENT_Id_seq" OWNED BY public."APPOINTMENT"."Id";
-
-
---
--- Name: APPOINTMENT_SOLICITATION; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."APPOINTMENT_SOLICITATION" (
-    "Id" integer NOT NULL,
-    "Date" timestamp(3) without time zone NOT NULL,
-    "Client_Fk" integer NOT NULL,
-    "Description" text NOT NULL,
-    "State" public."APPOINTMENT_SOLICITATION_STATE" NOT NULL,
-    "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE public."APPOINTMENT_SOLICITATION" OWNER TO postgres;
-
---
--- Name: APPOINTMENT_SOLICITATION_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."APPOINTMENT_SOLICITATION_Id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."APPOINTMENT_SOLICITATION_Id_seq" OWNER TO postgres;
-
---
--- Name: APPOINTMENT_SOLICITATION_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."APPOINTMENT_SOLICITATION_Id_seq" OWNED BY public."APPOINTMENT_SOLICITATION"."Id";
 
 
 --
@@ -597,15 +444,14 @@ ALTER SEQUENCE public."CLIENT_Id_seq" OWNED BY public."CLIENT"."Id";
 
 CREATE TABLE public."EMPLOYEE" (
     "Id" integer NOT NULL,
+    "Phone" text,
     "Email" text NOT NULL,
     "Person_Fk" integer NOT NULL,
     "User_Fk" integer NOT NULL,
     "Position" public."POSITIONS" NOT NULL,
     "Start_Date" timestamp(3) without time zone NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "State" public."EMPLOYEE_STATE" DEFAULT 'ENABLED'::public."EMPLOYEE_STATE" NOT NULL,
-    "Days_Spent" integer DEFAULT 0
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -673,61 +519,21 @@ ALTER SEQUENCE public."INVENTORY_Id_seq" OWNED BY public."INVENTORY"."Id";
 
 
 --
--- Name: INVENTORY_MOVEMENT; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."INVENTORY_MOVEMENT" (
-    "Id" integer NOT NULL,
-    "Quantity" integer NOT NULL,
-    "Description" text NOT NULL,
-    "State" public."INVENTORY_MOVEMENT_TYPE" NOT NULL,
-    "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Product_Fk" integer NOT NULL
-);
-
-
-ALTER TABLE public."INVENTORY_MOVEMENT" OWNER TO postgres;
-
---
--- Name: INVENTORY_MOVEMENT_Id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."INVENTORY_MOVEMENT_Id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public."INVENTORY_MOVEMENT_Id_seq" OWNER TO postgres;
-
---
--- Name: INVENTORY_MOVEMENT_Id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."INVENTORY_MOVEMENT_Id_seq" OWNED BY public."INVENTORY_MOVEMENT"."Id";
-
-
---
 -- Name: INVOICE_ORDER; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."INVOICE_ORDER" (
     "Id" integer NOT NULL,
-    "Client_Fk" integer,
+    "Client_Fk" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
     "Date" timestamp(3) without time zone NOT NULL,
+    "Description" text,
     "Subtotal" double precision NOT NULL,
     "Discount" double precision,
     "ISV" double precision NOT NULL,
     "Total" double precision NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Invoice_File" text,
-    "PayMethod" public."PAY_METHOD" DEFAULT 'CAJA'::public."PAY_METHOD" NOT NULL
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -842,16 +648,12 @@ CREATE TABLE public."PERMISION" (
     "Id" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
     "Reason" text NOT NULL,
+    "Discount" boolean NOT NULL,
     "Description" text NOT NULL,
     "Attached_File" text,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Answer" text,
-    "End_Date" text NOT NULL,
-    "Read" boolean NOT NULL,
-    "ReadEmployee" boolean NOT NULL,
-    "Start_Date" text NOT NULL,
-    "State" public."REQUEST_STATE" NOT NULL
+    "Role" public."ROL"[]
 );
 
 
@@ -935,8 +737,7 @@ CREATE TABLE public."PRODUCT" (
     "Supplier_Fk" integer NOT NULL,
     "Category_Fk" integer NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Image" text
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -973,16 +774,13 @@ CREATE TABLE public."PURCHASE_ORDER" (
     "Date" timestamp(3) without time zone NOT NULL,
     "Client_Fk" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
+    "Description" text,
     "Subtotal" double precision NOT NULL,
     "Discount" double precision,
     "ISV" double precision NOT NULL,
     "Total" double precision NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Order_File" text,
-    "Read" boolean NOT NULL,
-    "ReadClient" boolean NOT NULL,
-    "State" public."REQUEST_STATE" NOT NULL
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -1135,10 +933,10 @@ ALTER SEQUENCE public."SALARY_Id_seq" OWNED BY public."SALARY"."Id";
 
 CREATE TABLE public."SCHEDULE" (
     "Id" integer NOT NULL,
+    "Start_Date" timestamp(3) without time zone NOT NULL,
+    "End_Date" timestamp(3) without time zone NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Schedule" jsonb NOT NULL,
-    "ScheduleName" text NOT NULL
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -1152,6 +950,7 @@ CREATE TABLE public."SCHEDULE_EMPLOYEE" (
     "Id" integer NOT NULL,
     "Schedule_Fk" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
+    description text,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
@@ -1290,9 +1089,8 @@ CREATE TABLE public."USER" (
     "Email" text NOT NULL,
     "Password" text NOT NULL,
     "Role" public."ROL" NOT NULL,
-    "Device_Token" text,
-    "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone
+    "created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_At" timestamp(3) without time zone
 );
 
 
@@ -1327,14 +1125,10 @@ ALTER SEQUENCE public."USER_Id_seq" OWNED BY public."USER"."Id";
 CREATE TABLE public."VACATION" (
     "Id" integer NOT NULL,
     "Employee_Fk" integer NOT NULL,
-    "Start_Date" text NOT NULL,
-    "End_Date" text NOT NULL,
+    "Start_Date" timestamp(3) without time zone NOT NULL,
+    "End_Date" timestamp(3) without time zone NOT NULL,
     "Created_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP,
-    "Answer" text,
-    "Read" boolean NOT NULL,
-    "ReadEmployee" boolean NOT NULL,
-    "State" public."REQUEST_STATE" NOT NULL
+    "Updated_At" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -1395,24 +1189,10 @@ ALTER TABLE ONLY public."ACCOUNT_RECEIVABLE" ALTER COLUMN "Id" SET DEFAULT nextv
 
 
 --
--- Name: ACTIVITY_LOG Id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."ACTIVITY_LOG" ALTER COLUMN "Id" SET DEFAULT nextval('public."ACTIVITY_LOG_Id_seq"'::regclass);
-
-
---
 -- Name: APPOINTMENT Id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."APPOINTMENT" ALTER COLUMN "Id" SET DEFAULT nextval('public."APPOINTMENT_Id_seq"'::regclass);
-
-
---
--- Name: APPOINTMENT_SOLICITATION Id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."APPOINTMENT_SOLICITATION" ALTER COLUMN "Id" SET DEFAULT nextval('public."APPOINTMENT_SOLICITATION_Id_seq"'::regclass);
 
 
 --
@@ -1441,13 +1221,6 @@ ALTER TABLE ONLY public."EMPLOYEE" ALTER COLUMN "Id" SET DEFAULT nextval('public
 --
 
 ALTER TABLE ONLY public."INVENTORY" ALTER COLUMN "Id" SET DEFAULT nextval('public."INVENTORY_Id_seq"'::regclass);
-
-
---
--- Name: INVENTORY_MOVEMENT Id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."INVENTORY_MOVEMENT" ALTER COLUMN "Id" SET DEFAULT nextval('public."INVENTORY_MOVEMENT_Id_seq"'::regclass);
 
 
 --
@@ -1579,37 +1352,10 @@ COPY public."ACCOUNT_RECEIVABLE" ("Id", "Date", "Amount", "Debtor", "Description
 
 
 --
--- Data for Name: ACTIVITY_LOG; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."ACTIVITY_LOG" ("Id", "Date", name, "Description", "Created_At", "Updated_At") FROM stdin;
-\.
-
-
---
 -- Data for Name: APPOINTMENT; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."APPOINTMENT" ("Id", "Date", "Description", "Client_Fk", "Employee_Fk", "Created_At", "Updated_At", "State") FROM stdin;
-5	2024-04-07 22:53:00	aprobada su cita	1	1	2024-04-09 01:49:23.224	2024-04-09 01:49:23.224	PENDIENTE
-6	2024-04-25 22:53:00	ssdsdsa	1	1	2024-04-09 01:53:12.252	2024-04-09 01:53:12.252	PENDIENTE
-7	2024-04-25 22:54:00		1	1	2024-04-09 01:54:11.388	2024-04-09 01:54:11.388	PENDIENTE
-4	2024-04-25 04:30:00	preferible a la hora 1 pm aprobada a las 4	1	1	2024-04-09 01:48:52.375	2024-04-16 17:22:58.814	ATENDIDO
-2	1970-01-01 00:00:00	examen	1	2	2024-04-07 22:15:40.766	2024-04-16 17:24:27.067	PENDIENTE
-\.
-
-
---
--- Data for Name: APPOINTMENT_SOLICITATION; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."APPOINTMENT_SOLICITATION" ("Id", "Date", "Client_Fk", "Description", "State", "Created_At", "Updated_At") FROM stdin;
-1	2024-04-09 00:00:00	1	Examen de la vista	APROBADO	2024-04-07 21:26:47.381	2024-04-07 21:32:36.399
-5	2024-04-25 00:00:00	1	preferible a la hora 1 pm	APROBADO	2024-04-07 22:15:12.88	2024-04-09 01:48:52.445
-4	2024-04-07 00:00:00	1	necesito cita	APROBADO	2024-04-07 21:55:52.267	2024-04-09 01:49:23.3
-6	2024-04-25 00:00:00	1	ssdsdsa	APROBADO	2024-04-09 01:52:11.217	2024-04-09 01:53:12.29
-7	2024-04-25 00:00:00	1		APROBADO	2024-04-09 01:53:43.302	2024-04-09 01:54:11.438
-8	2024-04-08 00:00:00	1	hola soy una solicitud de cita	PENDIENTE	2024-04-09 01:59:28.519	2024-04-16 17:13:11.458
+COPY public."APPOINTMENT" ("Id", "Date", "Description", "Client_Fk", "Employee_Fk", "State", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1618,10 +1364,6 @@ COPY public."APPOINTMENT_SOLICITATION" ("Id", "Date", "Client_Fk", "Description"
 --
 
 COPY public."CATEGORY" ("Id", "Name", description, "Created_At", "Updated_At") FROM stdin;
-7	Electronics	Category for electronic products	2024-03-02 08:00:00	2024-03-27 22:04:12.184
-8	Clothing	Category for clothing items	2024-03-02 08:30:00	2024-03-27 22:04:12.184
-9	Books	Category for books	2024-03-02 09:00:00	2024-03-27 22:04:12.184
-12	Lentes de sol	Lentes de sol	2024-04-06 22:53:15.003	2024-04-06 22:53:15.003
 \.
 
 
@@ -1630,7 +1372,7 @@ COPY public."CATEGORY" ("Id", "Name", description, "Created_At", "Updated_At") F
 --
 
 COPY public."CLIENT" ("Id", "Person_Fk", "User_Fk", "Created_At", "Updated_At") FROM stdin;
-1	1	1	2024-02-29 00:19:14	2024-04-19 02:11:56.616
+1	1	1	2024-02-28 00:19:14.299	2024-02-28 00:19:14.299
 \.
 
 
@@ -1638,9 +1380,9 @@ COPY public."CLIENT" ("Id", "Person_Fk", "User_Fk", "Created_At", "Updated_At") 
 -- Data for Name: EMPLOYEE; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."EMPLOYEE" ("Id", "Email", "Person_Fk", "User_Fk", "Position", "Start_Date", "Created_At", "Updated_At", "State", "Days_Spent") FROM stdin;
-1	juan@gmail.com	2	2	MEDICO	2021-08-02 00:00:00	2024-02-27 18:37:19.679	2024-02-27 18:37:19.679	ENABLED	0
-2	pedro@gmail.com	3	3	ADMINISTRATIVO	2021-08-02 00:00:00	2024-02-27 18:37:19.679	2024-02-27 18:37:19.679	ENABLED	0
+COPY public."EMPLOYEE" ("Id", "Phone", "Email", "Person_Fk", "User_Fk", "Position", "Start_Date", "Created_At", "Updated_At") FROM stdin;
+1	88680242	juan@gmail.com	2	2	MEDICO	2021-08-02 00:00:00	2024-02-27 18:37:19.679	2024-02-27 18:37:19.679
+2	88680242	pedro@gmail.com	3	3	ADMINISTRATIVO	2021-08-02 00:00:00	2024-02-27 18:37:19.679	2024-02-27 18:37:19.679
 \.
 
 
@@ -1649,44 +1391,6 @@ COPY public."EMPLOYEE" ("Id", "Email", "Person_Fk", "User_Fk", "Position", "Star
 --
 
 COPY public."INVENTORY" ("Id", "Product_Fk", "Stock", "Min_Stock", "Valued_Inventory", "Created_At", "Updated_At") FROM stdin;
-7	24	90	15	7200	2024-03-02 18:30:00	2024-03-27 18:30:14.764
-8	25	70	12	3500	2024-03-02 19:00:00	2024-03-27 18:30:14.764
-9	26	40	8	10000	2024-03-02 19:30:00	2024-03-27 18:30:14.764
-10	27	60	18	3300	2024-03-02 20:00:00	2024-03-27 18:30:14.764
-11	28	110	15	2750	2024-03-02 20:30:00	2024-03-28 22:21:10.433
-3	20	150	13	150000	2024-03-02 16:30:00	2024-03-28 22:21:55.996
-5	22	80	12	104000	2024-03-02 17:30:00	2024-03-28 22:22:39.218
-2	19	100	24	150000	2024-03-02 16:00:00	2024-03-28 22:35:44.248
-4	21	10	40	6000	2024-03-02 17:00:00	2024-03-28 22:52:30.371
-6	23	120	12	7200	2024-03-02 18:00:00	2024-03-29 00:59:20.162
-\.
-
-
---
--- Data for Name: INVENTORY_MOVEMENT; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."INVENTORY_MOVEMENT" ("Id", "Quantity", "Description", "State", "Created_At", "Updated_At", "Product_Fk") FROM stdin;
-1	10	Received new stock	ENTRADA	2024-03-02 21:00:00	2024-03-27 22:09:41.137	19
-2	15	Received new stock	ENTRADA	2024-03-02 21:30:00	2024-03-27 22:09:41.137	20
-3	20	Received new stock	ENTRADA	2024-03-02 22:00:00	2024-03-27 22:09:41.137	21
-4	8	Received new stock	ENTRADA	2024-03-02 22:30:00	2024-03-27 22:09:41.137	22
-5	12	Received new stock	ENTRADA	2024-03-02 23:00:00	2024-03-27 22:09:41.137	23
-6	5	Received new stock	ENTRADA	2024-03-02 23:30:00	2024-03-27 22:09:41.137	24
-7	7	Received new stock	ENTRADA	2024-03-03 00:00:00	2024-03-27 22:09:41.137	25
-8	4	Received new stock	ENTRADA	2024-03-03 00:30:00	2024-03-27 22:09:41.137	26
-9	6	Received new stock	ENTRADA	2024-03-03 01:00:00	2024-03-27 22:09:41.137	27
-10	6	Received new stock	ENTRADA	2024-03-03 01:00:00	2024-03-27 22:09:41.137	28
-11	5	Sold product	SALIDA	2024-03-03 02:00:00	2024-03-27 22:10:37.924	19
-12	8	Sold product	SALIDA	2024-03-03 02:30:00	2024-03-27 22:10:37.924	20
-13	12	Sold product	SALIDA	2024-03-03 03:00:00	2024-03-27 22:10:37.924	21
-14	6	Sold product	SALIDA	2024-03-03 03:30:00	2024-03-27 22:10:37.924	22
-15	10	Sold product	SALIDA	2024-03-03 04:00:00	2024-03-27 22:10:37.924	23
-16	5	Received new stock	ENTRADA	2024-03-02 23:30:00	2024-03-27 22:10:37.924	24
-17	7	Received new stock	ENTRADA	2024-03-03 00:00:00	2024-03-27 22:10:37.924	25
-18	4	Received new stock	ENTRADA	2024-03-03 00:30:00	2024-03-27 22:10:37.924	26
-19	6	Received new stock	ENTRADA	2024-03-03 01:00:00	2024-03-27 22:10:37.924	27
-20	6	Received new stock	ENTRADA	2024-03-03 01:00:00	2024-03-27 22:10:37.924	28
 \.
 
 
@@ -1694,7 +1398,7 @@ COPY public."INVENTORY_MOVEMENT" ("Id", "Quantity", "Description", "State", "Cre
 -- Data for Name: INVOICE_ORDER; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."INVOICE_ORDER" ("Id", "Client_Fk", "Employee_Fk", "Date", "Subtotal", "Discount", "ISV", "Total", "Created_At", "Updated_At", "Invoice_File", "PayMethod") FROM stdin;
+COPY public."INVOICE_ORDER" ("Id", "Client_Fk", "Employee_Fk", "Date", "Description", "Subtotal", "Discount", "ISV", "Total", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1718,7 +1422,7 @@ COPY public."INVOICE_ORDER_SERVICE_DETAILS" ("Id", "Service_Fk", "Discount", "De
 -- Data for Name: PERMISION; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."PERMISION" ("Id", "Employee_Fk", "Reason", "Description", "Attached_File", "Created_At", "Updated_At", "Answer", "End_Date", "Read", "ReadEmployee", "Start_Date", "State") FROM stdin;
+COPY public."PERMISION" ("Id", "Employee_Fk", "Reason", "Discount", "Description", "Attached_File", "Created_At", "Updated_At", "Role") FROM stdin;
 \.
 
 
@@ -1727,9 +1431,9 @@ COPY public."PERMISION" ("Id", "Employee_Fk", "Reason", "Description", "Attached
 --
 
 COPY public."PERSON" ("Id", "DNI", "First_Name", "Last_Name", "Birth_Date", "Phone_Number", "Address", "Gender", "Created_At", "Updated_At") FROM stdin;
+1	0801200013100	Jocsan Ely	Rueda Lopez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
 2	0801200013101	Juan	Rodriguez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
 3	0801200013102	Pedro 	Ardimales	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-02-28 00:19:13.791
-1	0801200013111	Jocsan Ely	Rueda Lopez	2024-02-27	98162158	Tegucigalpa, D.C	MASCULINO	2024-02-28 00:19:13.791	2024-04-19 02:09:22.248
 \.
 
 
@@ -1737,18 +1441,7 @@ COPY public."PERSON" ("Id", "DNI", "First_Name", "Last_Name", "Birth_Date", "Pho
 -- Data for Name: PRODUCT; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."PRODUCT" ("Id", "Name", "Description", "Brand", "Price_Buy", "Price_Sell", "Supplier_Fk", "Category_Fk", "Created_At", "Updated_At", "Image") FROM stdin;
-19	Laptop	High-performance laptop	BrandA	1200	1500	5	7	2024-03-02 11:00:00	2024-03-27 22:07:38.889	\N
-20	Smartphone	Latest smartphone model	BrandB	800	1000	5	7	2024-03-02 11:30:00	2024-03-27 22:07:38.889	\N
-21	T-shirt	Comfortable cotton t-shirt	BrandC	20	30	6	8	2024-03-02 12:00:00	2024-03-27 22:07:38.889	\N
-22	Desktop PC	Powerful desktop computer	BrandA	1000	1300	6	8	2024-03-02 12:30:00	2024-03-27 22:07:38.889	\N
-23	Jeans	Classic denim jeans	BrandB	40	60	6	9	2024-03-02 13:00:00	2024-03-27 22:07:38.889	\N
-24	Headphones	Noise-cancelling headphones	BrandC	50	80	6	7	2024-03-02 13:30:00	2024-03-27 22:07:38.889	\N
-25	Backpack	Durable backpack for daily use	BrandA	30	50	6	8	2024-03-02 14:00:00	2024-03-27 22:07:38.889	\N
-26	Tablet	Portable tablet device	BrandB	200	250	6	9	2024-03-02 14:30:00	2024-03-27 22:07:38.889	\N
-27	Sweater	Warm knitted sweater	BrandC	35	55	5	9	2024-03-02 15:00:00	2024-03-27 22:07:38.889	\N
-28	Mouse	Ergonomic computer mouse	BrandA	15	25	5	7	2024-03-02 15:30:00	2024-03-27 22:07:38.889	\N
-29	Lentes de millor	lentes aro rojo	MK	234	344	6	12	2024-04-06 23:33:52.735	2024-04-06 23:33:52.735	\N
+COPY public."PRODUCT" ("Id", "Name", "Description", "Brand", "Price_Buy", "Price_Sell", "Supplier_Fk", "Category_Fk", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1756,7 +1449,7 @@ COPY public."PRODUCT" ("Id", "Name", "Description", "Brand", "Price_Buy", "Price
 -- Data for Name: PURCHASE_ORDER; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."PURCHASE_ORDER" ("Id", "Date", "Client_Fk", "Employee_Fk", "Subtotal", "Discount", "ISV", "Total", "Created_At", "Updated_At", "Order_File", "Read", "ReadClient", "State") FROM stdin;
+COPY public."PURCHASE_ORDER" ("Id", "Date", "Client_Fk", "Employee_Fk", "Description", "Subtotal", "Discount", "ISV", "Total", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1773,11 +1466,6 @@ COPY public."PURCHASE_ORDER_DETAILED" ("Id", "Date", "Quantity", "Discount", "De
 --
 
 COPY public."PURCHASE_QUOTATION" ("Id", "Date", "Description", "State", "Product_Fk", "Supplier_Fk", "Created_At", "Updated_At") FROM stdin;
-2	2024-03-06 14:00:00	Quotation for product E	t	23	5	2024-03-06 14:00:00	2024-03-27 16:44:31.853
-3	2024-03-02 10:00:00	Quotation for product A	t	19	5	2024-03-02 10:00:00	2024-03-27 16:45:30.229
-4	2024-03-03 11:00:00	Quotation for product B	f	20	6	2024-03-03 11:00:00	2024-03-27 16:45:30.229
-5	2024-03-04 12:00:00	Quotation for product C	t	21	5	2024-03-04 12:00:00	2024-03-27 16:45:30.229
-6	2024-03-05 13:00:00	Quotation for product D	f	22	6	2024-03-05 13:00:00	2024-03-27 16:45:30.229
 \.
 
 
@@ -1793,7 +1481,7 @@ COPY public."SALARY" ("Id", "Employee_Fk", "Amount", "State", "Created_At", "Upd
 -- Data for Name: SCHEDULE; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."SCHEDULE" ("Id", "Created_At", "Updated_At", "Schedule", "ScheduleName") FROM stdin;
+COPY public."SCHEDULE" ("Id", "Start_Date", "End_Date", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1801,7 +1489,7 @@ COPY public."SCHEDULE" ("Id", "Created_At", "Updated_At", "Schedule", "ScheduleN
 -- Data for Name: SCHEDULE_EMPLOYEE; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."SCHEDULE_EMPLOYEE" ("Id", "Schedule_Fk", "Employee_Fk", "Created_At", "Updated_At") FROM stdin;
+COPY public."SCHEDULE_EMPLOYEE" ("Id", "Schedule_Fk", "Employee_Fk", description, "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1818,9 +1506,6 @@ COPY public."SERVICE" ("Id", "Name", "Description", "Price", "Created_At", "Upda
 --
 
 COPY public."SUPPLIER" ("Id", "Name", "Email", "Phone", "Address", "Created_At", "Updated_At") FROM stdin;
-6	XYZ Distributors	andenglego@gmail.com	987-654-3210	456 Elm St, Town, Country	2024-03-02 10:30:00	2024-03-27 22:04:16.887
-8	WSD Distribuciones	aws@gmail.com	23242525	sdasdas	2024-04-07 00:00:14.002	2024-04-07 00:00:14.002
-5	ABC Suppliers	alh9cef@gmail.com	123-456-7891	123 Main St, City, Country	2024-03-02 10:00:00	2024-04-19 02:12:04.506
 \.
 
 
@@ -1828,12 +1513,10 @@ COPY public."SUPPLIER" ("Id", "Name", "Email", "Phone", "Address", "Created_At",
 -- Data for Name: USER; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "Device_Token", "Created_At", "Updated_At") FROM stdin;
-1	JOCSAN ELY RUEDA LOPEZ	je@example.com	$2a$10$0STJkdLft0GLQAogZN68F.9k0/NqrWRqOl/aPshxnANp6NY0ad.B2	CLIENTE	\N	2024-04-19 02:02:40.623	\N
-2	JUAN RODRIGUEZ	juan@example.com	$2a$10$7rI9XQxfJLWjbceeNyzqWuOrJj8/RZWRDDutGWTVt5UIHvC2kh0Nm	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
-3	PEDRO ARDIMALES	pedro@example.com	$2a$10$5ttFaYsH7kNch3HCbkGIMucESf4H6DMulW1pqr94Lf4DqswVN.Oiy	ADMINISTRADOR	\N	2024-04-19 02:02:40.623	\N
-9	TOMAS ZAPATA	tomas@gmail.com	$2a$10$BjMcOzQUkjvDTM32la7fYeh5PMKvwYiu8xJ8UHhp9EoowsgbUBSWy	EMPLEADO	\N	2024-04-19 02:02:40.623	\N
-8	Alhanis Espinal 	alhanis@gmail.com	$2a$10$cFARtAZH2N6Uv.OtvsvGvuJPEDnRPcZt/K9ZddGKVE6z30O207/Jy	CLIENTE		2024-04-19 02:02:40.623	2024-04-19 02:05:25.806
+COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "created_At", "updated_At") FROM stdin;
+1	JOCSAN ELY.RUEDA LOPEZ	je@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	CLIENTE	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
+2	JUAN.RODRIGUEZ	juan@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	EMPLEADO	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
+3	PEDRO.ARDIMALES	pedro@example.com	$2b$10$.l7pWDYIyDRKks9Mbkf4n.NWB.TNHYAGJE.w8bxD7mIM2Af9Gbz4.	ADMINISTRADOR	2024-02-28 00:19:14.087	2024-02-28 00:19:14.087
 \.
 
 
@@ -1841,7 +1524,7 @@ COPY public."USER" ("Id", "User_Name", "Email", "Password", "Role", "Device_Toke
 -- Data for Name: VACATION; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."VACATION" ("Id", "Employee_Fk", "Start_Date", "End_Date", "Created_At", "Updated_At", "Answer", "Read", "ReadEmployee", "State") FROM stdin;
+COPY public."VACATION" ("Id", "Employee_Fk", "Start_Date", "End_Date", "Created_At", "Updated_At") FROM stdin;
 \.
 
 
@@ -1852,17 +1535,6 @@ COPY public."VACATION" ("Id", "Employee_Fk", "Start_Date", "End_Date", "Created_
 COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
 fd6e9a40-064e-4c5b-8170-baeef12ee4c1	4bd57f43d3018d29c6a4632462bcd716f3a37f47ae3340606627dc5399509ffa	2024-02-27 18:48:03.932618+00	20240227184800_init	\N	\N	2024-02-27 18:48:00.404491+00	1
 a5d84c4e-9cca-4fa5-baf1-0d138307395a	f12f4658050abfd0e151fe2010058dc2c8761f1bf6fad912a1c2633073523d64	2024-02-28 00:35:06.219735+00	20240228003506_init	\N	\N	2024-02-28 00:35:06.11652+00	1
-a749cc1b-50eb-4a5e-bcce-1b3f0b524755	2eba3532f6cf22ee1168420f52233c73ed2eeb775ad0f640810816fd3b4f2397	2024-03-27 21:52:20.162543+00	20240228161527_init	\N	\N	2024-03-27 21:52:19.926433+00	1
-906800f6-7b4c-4d60-94cf-0ecc4b45a5e6	4841fd4523ededf2640f581483ef968ecbb3bd8aae5661e70bd362aed395a5ee	2024-03-27 21:52:20.650676+00	20240302212451_init	\N	\N	2024-03-27 21:52:20.195381+00	1
-756f1edf-dadd-446c-8999-fc6c61f3a96d	0018c88cd2f0fa9eb61b9f9c2df2ff90982b36df089b542e3b1abaab74c8f045	2024-03-27 21:52:20.783912+00	20240302214708_init	\N	\N	2024-03-27 21:52:20.685154+00	1
-02d75881-3330-46b3-8c13-f7868030bf99	dd0bacbb1178f3621ebd55f8e13f05f88cc7a1f9d4276d16e1308b4a1858a6f0	2024-03-27 21:52:20.917489+00	20240302214805_init	\N	\N	2024-03-27 21:52:20.818156+00	1
-c5dc4bf7-0f3f-456f-b927-0e09622a0e6e	10a8941f419871d75aacba31949c0a4095ddf30c8cd3ba5c1b1fec1cb5247266	2024-03-27 21:52:21.050579+00	20240303014415_init	\N	\N	2024-03-27 21:52:20.951552+00	1
-83c0715d-35c7-4d4e-9dac-9472e325efef	cab1718dbbbfe355d0897a4985ea5bad8f6db98858a57c1d02dfa525c7b3ef82	2024-03-27 21:52:21.228425+00	20240305164855_	\N	\N	2024-03-27 21:52:21.084931+00	1
-226ec1ba-ea18-49ee-8644-1548211a9003	86aaf980ac63cfac482f366170294ff03d8d660739561ea691a13fdc6d82ab56	2024-03-27 21:52:21.562323+00	20240316221809_init	\N	\N	2024-03-27 21:52:21.262756+00	1
-95991119-a153-4161-b4be-526b1f04a390	7247b90508397ab897f84a9ae86dd65131ffd34979bf79ef05bcb7a25b1f1933	2024-04-06 23:56:56.121106+00	20240401163215_init	\N	\N	2024-04-06 23:56:55.669302+00	1
-385d539c-9169-4dcc-a885-1760a2356bd3	90aefbe78d73e1c88185a39734799f3aa94fe773ff14f9f6d44fe0e5c0c8eb4a	2024-04-06 23:57:15.721564+00	20240406235715_init	\N	\N	2024-04-06 23:57:15.599193+00	1
-9d2ff405-cc6c-46be-b637-32a3eceb3b70	f0c0b0efe02be37de057c6d8837936ceaa70cbb46828fc0d8e2c65722b7b0ac7	2024-04-19 02:01:54.951219+00	20240414041925_init	\N	\N	2024-04-19 02:01:54.631273+00	1
-765b846c-7887-45e6-a052-f32434575f94	93938d0d0ddc46d1500a2700e0fccb0e9eb4efb0432bb9d69b6a88d5de532969	2024-04-19 02:02:40.820735+00	20240419020240_	\N	\N	2024-04-19 02:02:40.574906+00	1
 \.
 
 
@@ -1881,31 +1553,17 @@ SELECT pg_catalog.setval('public."ACCOUNT_RECEIVABLE_Id_seq"', 1, false);
 
 
 --
--- Name: ACTIVITY_LOG_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."ACTIVITY_LOG_Id_seq"', 1, false);
-
-
---
 -- Name: APPOINTMENT_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."APPOINTMENT_Id_seq"', 7, true);
-
-
---
--- Name: APPOINTMENT_SOLICITATION_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."APPOINTMENT_SOLICITATION_Id_seq"', 8, true);
+SELECT pg_catalog.setval('public."APPOINTMENT_Id_seq"', 1, false);
 
 
 --
 -- Name: CATEGORY_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."CATEGORY_Id_seq"', 12, true);
+SELECT pg_catalog.setval('public."CATEGORY_Id_seq"', 1, false);
 
 
 --
@@ -1926,14 +1584,7 @@ SELECT pg_catalog.setval('public."EMPLOYEE_Id_seq"', 3, true);
 -- Name: INVENTORY_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."INVENTORY_Id_seq"', 11, true);
-
-
---
--- Name: INVENTORY_MOVEMENT_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."INVENTORY_MOVEMENT_Id_seq"', 20, true);
+SELECT pg_catalog.setval('public."INVENTORY_Id_seq"', 1, false);
 
 
 --
@@ -1968,14 +1619,14 @@ SELECT pg_catalog.setval('public."PERMISION_Id_seq"', 1, false);
 -- Name: PERSON_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."PERSON_Id_seq"', 3, true);
+SELECT pg_catalog.setval('public."PERSON_Id_seq"', 2, true);
 
 
 --
 -- Name: PRODUCT_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."PRODUCT_Id_seq"', 30, true);
+SELECT pg_catalog.setval('public."PRODUCT_Id_seq"', 1, false);
 
 
 --
@@ -1996,7 +1647,7 @@ SELECT pg_catalog.setval('public."PURCHASE_ORDER_Id_seq"', 1, false);
 -- Name: PURCHASE_QUOTATION_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."PURCHASE_QUOTATION_Id_seq"', 7, true);
+SELECT pg_catalog.setval('public."PURCHASE_QUOTATION_Id_seq"', 1, false);
 
 
 --
@@ -2031,14 +1682,14 @@ SELECT pg_catalog.setval('public."SERVICE_Id_seq"', 1, false);
 -- Name: SUPPLIER_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."SUPPLIER_Id_seq"', 8, true);
+SELECT pg_catalog.setval('public."SUPPLIER_Id_seq"', 1, false);
 
 
 --
 -- Name: USER_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."USER_Id_seq"', 9, true);
+SELECT pg_catalog.setval('public."USER_Id_seq"', 1, true);
 
 
 --
@@ -2062,22 +1713,6 @@ ALTER TABLE ONLY public."ACCOUNT_PLAYABLE"
 
 ALTER TABLE ONLY public."ACCOUNT_RECEIVABLE"
     ADD CONSTRAINT "ACCOUNT_RECEIVABLE_pkey" PRIMARY KEY ("Id");
-
-
---
--- Name: ACTIVITY_LOG ACTIVITY_LOG_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."ACTIVITY_LOG"
-    ADD CONSTRAINT "ACTIVITY_LOG_pkey" PRIMARY KEY ("Id");
-
-
---
--- Name: APPOINTMENT_SOLICITATION APPOINTMENT_SOLICITATION_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."APPOINTMENT_SOLICITATION"
-    ADD CONSTRAINT "APPOINTMENT_SOLICITATION_pkey" PRIMARY KEY ("Id");
 
 
 --
@@ -2110,14 +1745,6 @@ ALTER TABLE ONLY public."CLIENT"
 
 ALTER TABLE ONLY public."EMPLOYEE"
     ADD CONSTRAINT "EMPLOYEE_pkey" PRIMARY KEY ("Id");
-
-
---
--- Name: INVENTORY_MOVEMENT INVENTORY_MOVEMENT_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."INVENTORY_MOVEMENT"
-    ADD CONSTRAINT "INVENTORY_MOVEMENT_pkey" PRIMARY KEY ("Id");
 
 
 --
@@ -2309,14 +1936,6 @@ ALTER TABLE ONLY public."APPOINTMENT"
 
 
 --
--- Name: APPOINTMENT_SOLICITATION APPOINTMENT_SOLICITATION_Client_Fk_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."APPOINTMENT_SOLICITATION"
-    ADD CONSTRAINT "APPOINTMENT_SOLICITATION_Client_Fk_fkey" FOREIGN KEY ("Client_Fk") REFERENCES public."CLIENT"("Id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: CLIENT CLIENT_Person_Fk_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2349,14 +1968,6 @@ ALTER TABLE ONLY public."EMPLOYEE"
 
 
 --
--- Name: INVENTORY_MOVEMENT INVENTORY_MOVEMENT_Product_Fk_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."INVENTORY_MOVEMENT"
-    ADD CONSTRAINT "INVENTORY_MOVEMENT_Product_Fk_fkey" FOREIGN KEY ("Product_Fk") REFERENCES public."PRODUCT"("Id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
 -- Name: INVENTORY INVENTORY_Product_Fk_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2369,7 +1980,7 @@ ALTER TABLE ONLY public."INVENTORY"
 --
 
 ALTER TABLE ONLY public."INVOICE_ORDER"
-    ADD CONSTRAINT "INVOICE_ORDER_Client_Fk_fkey" FOREIGN KEY ("Client_Fk") REFERENCES public."CLIENT"("Id") ON UPDATE CASCADE ON DELETE SET NULL;
+    ADD CONSTRAINT "INVOICE_ORDER_Client_Fk_fkey" FOREIGN KEY ("Client_Fk") REFERENCES public."CLIENT"("Id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

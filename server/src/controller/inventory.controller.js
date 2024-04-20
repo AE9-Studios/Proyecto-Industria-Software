@@ -1,6 +1,8 @@
+import { parse } from "path";
 import prisma from "../db.js";
 import { http500 } from "../libs/handleErrors.js";
 import { sendEmailSupplier } from "../libs/sendEmail.js";
+import fs from "fs";
 
 export const getProducts = async (req, res) => {
     try {
@@ -255,10 +257,11 @@ export const createProduct = async (req, res) => {
                 Name,
                 Description,
                 Brand,
-                Price_Buy,
-                Price_Sell,
-                Supplier_Fk,
-                Category_Fk
+                Price_Buy: parseFloat(Price_Buy),
+                Price_Sell: parseFloat(Price_Sell),
+                Supplier_Fk: parseInt(Supplier_Fk),
+                Category_Fk: parseInt(Category_Fk),
+                Image: req.file.filename
             }
         });
         res.status(200).json(product);

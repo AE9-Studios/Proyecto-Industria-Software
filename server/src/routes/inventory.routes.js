@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { createCategory, createInventory, createInventoryMovement, createProduct, createPurchaseQuotation, createSupplier, deleteCategory, deleteInventory, deleteInventoryMovement, deleteProduct, deletePurchaseQuotation, deleteSupplier, getCategory, getInventory, getInventoryMovements, getProducts, getPurchaseQuotations, getSuppliers, updateCategory, updateInventory, updateInventoryMovement, updateProduct, updatePurchaseQuotation, updateSupplier } from "../controller/inventory.controller.js";
+import { uploadImg } from "../libs/uploadImage.js";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.get('/inventory', getInventory)
 router.post('/movement', createInventoryMovement);
 router.post('/category', createCategory);
 router.post('/supplier', createSupplier);
-router.post('/product', createProduct);
+router.post('/product', uploadImg.single('file'), createProduct);
 router.post('/purchase-quotations', createPurchaseQuotation);
 router.post('/inventory', createInventory);
 
