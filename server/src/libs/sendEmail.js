@@ -169,3 +169,44 @@ export const sendEmailOrderDone = async (customerData) => {
     throw error;
   }
 };
+
+export const sendEmailRecoveryPassword = async (
+  userData,
+  name,
+  url,
+  expire
+) => {
+  try {
+    const mailOptions = {
+      from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',
+      to: userData.Email,
+      subject: "Solicitud de cambio de contraseña",
+      html: `
+      <p>Hola <strong>${name}</strong>,</p>
+      <p>Se ha solicitado un restablecimiento de contraseña.</p>
+      <p>Por favor, ingrese al siguiente enlace para proceder con el restablecimiento de su contraseña: <br> <a href="${url}" >Haga clic aquí.</a></p>
+      <br>
+      <p>Este enlace expirará en <strong> ${expire} minutos </strong>. Por su seguridad, le recomendamos no compartir este enlace con terceros.</p>
+      <img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">
+      `,
+      attachments: [
+        {
+          filename: "signature.jpg",
+          path: path.join(__dirname, "../assets/signature.jpg"),
+          cid: "signature",
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(
+      `Correo enviado a ${userData.Email} para notificar el cambio de contraseña.`
+    );
+  } catch (error) {
+    console.error(
+      "Error al enviar el correo electrónico de notificación de cambio de contraseña:",
+      error
+    );
+    throw error;
+  }
+};

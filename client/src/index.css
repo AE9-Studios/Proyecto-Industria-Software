@@ -135,4 +135,36 @@
     text-shadow: 0px 0px 1px #007bff;
 }
 
-
+.emulator-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background-color: #f0f0f0; 
+    animation: changeBackground 100s infinite alternate; 
+}
+  
+@keyframes changeBackground {
+    0% {
+      background-color: #f0f0f0; 
+    }
+    25% {
+      background-color: #ffe4e1; 
+    }
+    50% {
+      background-color: #add8e6; 
+    }
+    75% {
+      background-color: #ffb6c1; 
+    }
+    100% {
+      background-color: #f0f0f0; 
+    }
+}
+  
+.emulator-container > div {
+    max-width: 80%; 
+    width: 100%;
+    max-height: 80vh; 
+    overflow: auto; 
+}

@@ -1,6 +1,6 @@
 import admin from "firebase-admin";
 import prisma from "../db.js";
-import 'dotenv/config'
+import "dotenv/config";
 
 const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
 
@@ -8,23 +8,27 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-
 /**
  * Aún en fase de prueba (◞‸◟；)
  * Función para enviar una notificación push con un título y un mensaje a un usuario específico.
  * @param {string} title El título de la notificación.
  * @param {string} description La descripción o cuerpo del mensaje de la notificación.
+ * @param {string} url La url relativa de a donde se rediccionará al presionar la notificación.
  * @param {string} token El token del dispositivo al que se enviará la notificación.
  * @returns {Promise<string>} Una promesa que resuelve con un mensaje de éxito o se rechaza con un error.
  */
-export async function sendNotification(title, description, token) {
+export async function sendNotification(title, description, url, token) {
   try {
-
     const message = {
       token: token,
       notification: {
         title: title,
         body: description,
+      },
+      webpush: {
+        fcm_options: {
+          link: url,
+        },
       },
     };
 
@@ -35,7 +39,6 @@ export async function sendNotification(title, description, token) {
     return response;
   } catch (error) {
     console.error("Error al enviar las notificaciones:", error);
-
   }
 }
 
@@ -44,12 +47,11 @@ export async function sendNotification(title, description, token) {
  * Función para enviar una notificación push con un título y un mensaje.
  * @param {string} title El título de la notificación.
  * @param {string} message El cuerpo del mensaje de la notificación.
- * @param {string} token El token del dispositivo al que se enviará la notificación.
+ * @param {string} url La url relativa de a donde se rediccionará al presionar la notificación.
  * @returns {Promise<string>} Una promesa que resuelve con un mensaje de éxito o se rechaza con un error.
  */
-export async function sendNotificationToAdmin(title, message) {
+export async function sendNotificationToAdmin(title, message, url) {
   try {
-
     const administrators = await prisma.USER.findMany({
       where: {
         Role: "ADMINISTRADOR",
@@ -64,6 +66,11 @@ export async function sendNotificationToAdmin(title, message) {
       notification: {
         title: title,
         body: message,
+      },
+      webpush: {
+        fcm_options: {
+          link: url,
+        },
       },
     }));
 

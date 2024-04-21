@@ -6,7 +6,9 @@ const Footer = () => {
         <div className='bg-white'>
             <div className='div-container-footer mt-5 p-3  bg-white d-flex flex-wrap '>
                 <div className="d-flex justify-content-center align-items-center">
-                    <img width='100px' src={logo} alt="" />
+                    <a href="/dontlookatme">
+                         <img width='100px' src={logo} alt="" />
+                    </a>
                     <blockquote className="blockquote mb-0">
                         <p className='ps-4 fs-4 fw-bolder'>Óptica Classic Vision</p>
                         <footer className="ps-3 fst-normal fw-light fs-6 blockquote-footer">Estilo y Elegancia as su Alcance</footer>

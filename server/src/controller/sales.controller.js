@@ -106,7 +106,8 @@ export const saveInvoice = async (req, res) => {
     if (newInvoiceOrder) {
       sendNotificationToAdmin(
         "¡Nueva compra!",
-        `Se registró una compra de ${total} Lempiras`
+        `Se registró una compra de ${total} Lempiras`,
+        '/admin/sales'
       );
       await logActivity(
         "Nueva compra",
@@ -259,10 +260,6 @@ export const getAllInvoiceOrders = async (req, res) => {
       },
     });
 
-    if (invoiceOrders.length === 0) {
-      res.status(200).json("No se encontraron facturas." );
-      return;
-    }
 
     res.status(200).json({ invoiceOrders });
   } catch (error) {
@@ -644,6 +641,7 @@ export const sendOrderReadyEmail = async (req, res) => {
     sendNotification(
       "¡Su orden está lista!",
       "Ya puede venir por ella",
+      "/client/orders",
       purchaseOrder.Client.User.Device_Token
     );
     return res.status(200).json({

@@ -6,6 +6,8 @@ import Register from './pages/client.pages/Register'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import NotificationHandler from './components/NotificationHandler'
+import Emulator from './components/Warning'
+import {AccountRecovery, ResetPasswordPage } from './pages/PasswordRecovery'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
@@ -67,6 +69,9 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/forgot-password' element={<AccountRecovery />} />
+          <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
+          <Route path='/dontlookatme' element={<Emulator />} />
           <Route element={<ProtectedRoute />}>
             <Route path='/admin/*' element={<AdminRoutes />} />
             <Route path='/client/*' element={<ClientRoutes />} />
