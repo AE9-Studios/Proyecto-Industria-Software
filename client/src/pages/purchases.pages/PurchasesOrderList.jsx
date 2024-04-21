@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import { getAllPurchaseOrdersWithDetails } from "../../api/purchases";
 import { useNavigate } from "react-router-dom";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const PurchasesOrderList = () => {
+  const list = [
+    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
+  ]
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,8 +66,8 @@ const PurchasesOrderList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container mt-4 bg-white rounded-4 shadow">
-      <div>
+    <div className="mt-4 bg-white rounded-4 ">
+      <div className="container">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Órdenes de Compra
         </h2>
@@ -163,6 +168,7 @@ const PurchasesOrderList = () => {
           </nav>
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

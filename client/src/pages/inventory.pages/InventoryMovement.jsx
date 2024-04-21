@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext';
 import { getMovement } from '../../api/inventory';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const InventoryMovement = () => {
     const { user } = useAuth();
     const [inventoryMovement, setInventoryMovement] = useState([]);
     const [error, setError] = useState([]);
+
+    const list = [
+        {
+            title: 'Volver',
+            url: '/admin/inventory',
+            icon: 'bi bi-arrow-left-circle-fill',
+        },
+        {
+            title: 'Panel',
+            url: '/admin/home',
+            icon: 'bi bi-house-fill',
+        },
+    ]
 
 
     const getInventoryMovement = async () => {
@@ -40,7 +54,6 @@ const InventoryMovement = () => {
 
     return (
         <div className='' >
-            <div>Espacio para el menu </div>
             <div className="container mt-4 bg-white rounded-4  table-responsive" >
                 <table className="table wrap-table" >
                     <thead>
@@ -87,6 +100,7 @@ const InventoryMovement = () => {
 
                 </div>
             </div>
+            <BottomNavigation list={list} />
         </div>
     );
 }

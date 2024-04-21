@@ -6,12 +6,28 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { getNextInvoiceIdAndCheckSeniority } from "../../api/sales.js";
 import sendInvoice from "../../libs/sendInvoice.js";
 import downloadQuotation from "../../libs/downloadQuotation.js";
+import BottomNavigation from "../../components/BottomNavigation.jsx";
 
 const SalesPurchaseCheckout = () => {
+  
   const navigate = useNavigate();
   const { user } = useAuth();
   const { purchaseList, increaseQuantity, decreaseQuantity, deletePurchase } =
     useContext(CartContext);
+  
+    let list = []
+    if (user.role === "ADMINISTRADOR") {
+      list = [
+        {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+        { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+      ];
+    } else {
+      list = [
+        { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+        { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+        { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+      ];
+    }
 
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
@@ -81,8 +97,8 @@ const SalesPurchaseCheckout = () => {
           email: user.role === "ADMINISTRADOR" ? clientEmail : user.email,
           discount: discountApplied
             ? `${(parseFloat(totalRef.current) * 0.1).toFixed(
-                2
-              )} (10% Tercera Edad)`
+              2
+            )} (10% Tercera Edad)`
             : "0.00",
           invoiceNumber: invoiceNumberRef.current,
           payMethod: "CAJA",
@@ -105,8 +121,8 @@ const SalesPurchaseCheckout = () => {
           email: user.role === "ADMINISTRADOR" ? clientEmail : user.email,
           discount: discountApplied
             ? `${(parseFloat(totalRef.current) * 0.1).toFixed(
-                2
-              )} (10% Tercera Edad)`
+              2
+            )} (10% Tercera Edad)`
             : "0.00",
           invoiceNumber: invoiceNumberRef.current,
           payMethod: "CAJA",
@@ -169,8 +185,8 @@ const SalesPurchaseCheckout = () => {
                           parseFloat(totalRef.current / valuationRef.current) -
                           (discountApplied
                             ? parseFloat(
-                                totalRef.current / valuationRef.current
-                              ) * 0.1
+                              totalRef.current / valuationRef.current
+                            ) * 0.1
                             : 0)
                         ).toFixed(2),
                       },
@@ -195,8 +211,8 @@ const SalesPurchaseCheckout = () => {
                     email: user.email,
                     discount: discountApplied
                       ? `${(parseFloat(totalRef.current) * 0.1).toFixed(
-                          2
-                        )} (10% Tercera Edad)`
+                        2
+                      )} (10% Tercera Edad)`
                       : "0.00",
                     invoiceNumber: invoiceNumberRef.current,
                     payMethod: "LINEA",
@@ -238,7 +254,8 @@ const SalesPurchaseCheckout = () => {
   };
 
   return (
-    <div className="container mt-4 mb-4 bg-white rounded-4 shadow">
+    <div className=" mt-4 mb-4 bg-white rounded-4 ">
+
       <h2 className="card-title text-center fw-bold p-4">
         {user.role === "ADMINISTRADOR" ? "Nueva Venta" : "Carrito de Compras"}
       </h2>
@@ -491,6 +508,7 @@ const SalesPurchaseCheckout = () => {
             </>
           )}
         </div>
+
       </div>
       {/* Update Modal */}
       <Modal show={showUpdateModal} onHide={handleCloseUpdateModal}>
@@ -509,6 +527,7 @@ const SalesPurchaseCheckout = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
     </div>
   );
 };

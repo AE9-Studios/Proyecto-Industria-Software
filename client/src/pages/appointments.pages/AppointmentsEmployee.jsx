@@ -3,8 +3,14 @@ import { createAppointment, deleteAppointment, getAppointmentToEmployee, getAppo
 import { Button, Modal } from 'react-bootstrap';
 import { getEmployees } from '../../api/human-resources';
 import { useAuth } from '../../context/AuthContext';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const AppointmentsEmployee = () => {
+    const list = [
+        { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+        {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
+        {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+      ];
     const { user } = useAuth();
     const [appointmentsSolicitation, setAppointmentsSolicitation] = useState([]);
     const [appointments, setAppointments] = useState([]);
@@ -251,6 +257,7 @@ const AppointmentsEmployee = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <BottomNavigation list={list} />
         </div>
     )
 }

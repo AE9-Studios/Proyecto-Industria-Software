@@ -5,8 +5,14 @@ import {
 } from "../../api/human-resources";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const EmployeePermissionDetails = () => {
+  const list = [
+    { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+    {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
+    {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+  ];
   const [fileUrl, setFileUrl] = useState("");
   const [permission, setPermission] = useState("");
   const params = useParams();
@@ -47,17 +53,10 @@ const EmployeePermissionDetails = () => {
   return (
     <div className="container-sm mb-3">
       <div
-        className="mx-auto shadow mt-3 mx-auto rounded-4 bg-white"
+        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
         style={{ maxWidth: "700px" }}
       >
-        <div className="px-4 pt-3">
-          <a
-            href="/employee/requests"
-            className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-          >
-            <i className="bi bi-escape"></i>
-          </a>
-        </div>
+
         <div className=" pt-3 pb-5">
           <div className="d-flex flex-column align-items-center p-5">
             <h2 className="text-center mb-3">Detalles del Permiso</h2>
@@ -148,6 +147,7 @@ const EmployeePermissionDetails = () => {
           </div>
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

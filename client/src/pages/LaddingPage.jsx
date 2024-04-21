@@ -10,7 +10,7 @@ import ServiceCardHome from '../components/ServiceCardHome'
 
 const LaddingPage = () => {
     return (
-        <div><div className='shadow'>
+        <div><div className=''>
             <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                 <div className="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
@@ -66,14 +66,14 @@ const LaddingPage = () => {
 
             <div className="container  mb-5">
                 <h2 className='fs-1 text-center pb-3 pt-5'>Servicios Ofrecidos</h2>
-                <div className="d-flex align-items-center justify-content-center flex-wrap shadow bg-white rounded-4 py-5">
+                <div className="d-flex align-items-center justify-content-center flex-wrap  bg-white rounded-4 py-5">
                     <ServiceCardHome title='Reparación' description='Reparaciones rápidas' icon="bi bi-wrench" />
                     <ServiceCardHome title='Examen de la vista' description='Examen de la vista gratis' icon='bi bi-eyeglasses' />
                     <ServiceCardHome title='Personalización' description='Ajustes de lentes gratis' icon='bi bi-person-fill' />
                 </div>
             </div>
 
-            <div className='bg-white shadow'>
+            <div className='bg-white '>
                 <div className="container-appointment-home container d-flex flex-column justify-content-center pb-5 p-4">
                     <h1 className='text-center'>Esperiencia de compras conveniente y rápida</h1>
                     <p className="text-center fs-5">

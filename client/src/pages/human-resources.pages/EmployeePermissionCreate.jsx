@@ -2,8 +2,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { savePermissionRequest } from "../../api/human-resources";
 import { useAuth } from "../../context/AuthContext";
+import BottomNavigation from "../../components/BottomNavigation";
 
 export const EmployeePermissionCreate = () => {
+  const list = [
+    { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+    {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
+    {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+  ];
   const {
     register,
     handleSubmit,
@@ -61,22 +67,13 @@ export const EmployeePermissionCreate = () => {
   });
 
   return (
-    <div className="container-sm mb-3">
+    <div className="mb-3">
       <form
-        className="mx-auto shadow mt-3 mx-auto rounded-4 bg-white"
+        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
         style={{ maxWidth: "700px" }}
         onSubmit={onSubmit}
         encType="multipart/form-data"
       >
-        <div className="px-4 pt-3">
-          <a
-            href="/employee/home"
-            className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-          >
-            <i className="bi bi-escape"></i>
-          </a>{" "}
-        </div>
-
         <div className=" pt-3 pb-5">
           <div className="d-flex flex-column align-items-center p-5">
             <h2 className="text-center mb-3">Solicitud de Permiso</h2>
@@ -193,6 +190,7 @@ export const EmployeePermissionCreate = () => {
           </div>
         </div>
       </form>
+      <BottomNavigation list={list} />
     </div>
   );
 };

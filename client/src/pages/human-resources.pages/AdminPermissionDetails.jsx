@@ -6,8 +6,10 @@ import {
 } from "../../api/human-resources";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const AdminPermissionDetails = () => {
+  
   const [fileUrl, setFileUrl] = useState(null);
   const [permission, setPermission] = useState(null);
   const [person, setPerson] = useState(null);
@@ -18,6 +20,20 @@ const AdminPermissionDetails = () => {
   const [responseSent, setResponseSent] = useState(false);
   const params = useParams();
   const { user } = useAuth();
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
 
   useEffect(() => {
     const loadFile = async () => {
@@ -93,17 +109,10 @@ const AdminPermissionDetails = () => {
   return (
     <div className="container-sm mb-3">
       <div
-        className="mx-auto shadow mt-3 mx-auto rounded-4 bg-white"
+        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
         style={{ maxWidth: "700px" }}
       >
-        <div className="px-4 pt-3">
-          <a
-            href="/admin/human-resources/permissions"
-            className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-          >
-            <i className="bi bi-escape"></i>
-          </a>
-        </div>
+
 
         <div className=" pt-3 pb-5">
           <div className="d-flex flex-column align-items-center p-5">
@@ -263,6 +272,7 @@ const AdminPermissionDetails = () => {
           </div>
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

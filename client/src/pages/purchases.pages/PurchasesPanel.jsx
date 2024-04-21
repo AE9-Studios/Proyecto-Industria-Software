@@ -1,6 +1,11 @@
+import BottomNavigation from "../../components/BottomNavigation";
 import CardTest from "../../components/CardTest";
 
 const PurchasesPanel = () => {
+  const list = [
+    { title: "Volver", url: "/admin/home", icon: "bi bi-arrow-left-circle-fill" },
+    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill"}
+  ]
   return (
     <div>
       <div className="col">
@@ -31,6 +36,7 @@ const PurchasesPanel = () => {
           />
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

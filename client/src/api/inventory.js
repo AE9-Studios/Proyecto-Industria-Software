@@ -10,9 +10,23 @@ export const getInventory = () => axios.get(`/inventory/inventory`);
 export const createMovement = (movement) => axios.post(`/inventory/movement`, movement);
 export const createCategory = (category) => axios.post(`/inventory/category`, category);
 export const createSupplier = (supplier) => axios.post(`/inventory/supplier`, supplier);
-export const createProduct = (product) => axios.post(`/inventory/product`, product);
+export const createProduct = (product) => {
+    const formData = new FormData();
+    for (const key in product) {
+        if (key === 'file') {
+            formData.append(key, product[key]);
+            console.log(product[key]);
+        } else {
+            formData.append(key, product[key]);
+            console.log(product[key]);
+
+        }
+    }
+    console.log(formData);
+    return axios.post(`/inventory/product`, formData);
+}
 export const createPurchaseQuotation = (purchaseQuotation) => axios.post(`/inventory/purchase-quotations`, purchaseQuotation);
-export const createInventory = (inventory) => axios.post(`/inventory/inventory`, inventory);
+export const createInventory = (inventory) => axios.post(`/inventory/inventory`, formData);
 
 export const updateMovement = (movement) => axios.put(`/inventory/movement`, movement);
 export const updateProduct = (product) => axios.put(`/inventory/product`, product);

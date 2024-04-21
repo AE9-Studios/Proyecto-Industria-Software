@@ -9,8 +9,11 @@ import {
   getSalaryByEmployeeId,
   getAllSchedules,
 } from "../../api/human-resources.js";
+import BottomNavigation from "../../components/BottomNavigation.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminEmployeeDetails = () => {
+
   const params = useParams();
   const [employee, setEmployee] = useState(null);
   const [editableEmployee, setEditableEmployee] = useState(null);
@@ -23,8 +26,22 @@ const AdminEmployeeDetails = () => {
   const [scheduleName, setScheduleName] = useState("");
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [previousSalaries, setPreviousSalaries] = useState([]);
-
+  const {user} = useAuth();
   const navigate = useNavigate();
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
 
   useEffect(() => {
     const loadEmployee = async (Id) => {
@@ -199,17 +216,10 @@ const AdminEmployeeDetails = () => {
 
   return (
     <div
-      className="mx-auto shadow mt-3 mx-auto mb-4 rounded-4 bg-white"
+      className="mx-auto  mt-3 mx-auto mb-4 rounded-4 bg-white"
       style={{ maxWidth: "700px" }}
     >
-      <div className="px-5 pt-3">
-        <a
-          href="/admin/human-resources/employees"
-          className="py-2 px-5 rounded-3 btn btn-primary text-decoration-none text-white"
-        >
-          <i className="bi bi-escape"></i>
-        </a>
-      </div>
+
 
       <h2 className="card-title text-center fw-bold mb-4">
         Detalles del Empleado
@@ -614,6 +624,7 @@ const AdminEmployeeDetails = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <BottomNavigation list={list} />
     </div>
   );
 };

@@ -2,8 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { getInventory, updateInventory } from '../../api/inventory';
 import { Button, Modal } from 'react-bootstrap';
 import { get } from 'react-hook-form';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const Reorder = () => {
+
+    const list = [
+        {
+            title: 'Volver',
+            url: '/admin/inventory',
+            icon: 'bi bi-arrow-left-circle-fill',
+        },
+        {
+            title: 'Panel',
+            url: '/admin/home',
+            icon: 'bi bi-house-fill',
+        },
+    ]
 
     const [inventory, setInvetory] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -28,11 +42,11 @@ const Reorder = () => {
 
     const edit_reorder = async () => {
         try {
-            const res = await updateInventory(                {
+            const res = await updateInventory({
                 Id: movement.Id,
                 Product_Fk: movement.Product_Fk,
                 Stock: movement.Stock,
-                Min_Stock: document.getElementById('min_stock').value ? parseInt(document.getElementById('min_stock').value): movement.Min_Stock,
+                Min_Stock: document.getElementById('min_stock').value ? parseInt(document.getElementById('min_stock').value) : movement.Min_Stock,
                 State: movement.State,
                 Description: movement.Description,
             });
@@ -41,6 +55,7 @@ const Reorder = () => {
             getInventoryFunc();
         } catch (error) {
             alert('Error al actualizar el punto de reorden');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -65,7 +80,6 @@ const Reorder = () => {
 
     return (
         <div className='' >
-            <div>Espacio para el menu </div>
             <div className="container mt-4 bg-white rounded-4  table-responsive" >
                 <div>
                     Una vez se alcance el punto de reorden se pedira nuevo producto automaticamente al proveedor
@@ -129,7 +143,7 @@ const Reorder = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            <BottomNavigation list={list} />
         </div>
     )
 }

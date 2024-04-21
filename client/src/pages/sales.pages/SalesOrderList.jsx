@@ -9,8 +9,10 @@ import {
   sendOrderReadyEmail,
 } from "../../api/sales";
 import { useAuth } from "../../context/AuthContext";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const SalesOrderList = () => {
+
   const { user } = useAuth();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState([]);
@@ -19,6 +21,20 @@ const SalesOrderList = () => {
   const [itemsPerPage] = useState(10);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState([]);
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+      { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+      { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+    ];
+  }
 
   useEffect(() => {
     const fetchPurchaseOrders = async () => {
@@ -128,13 +144,8 @@ const SalesOrderList = () => {
   };
 
   return (
-    <div className="container mt-4 mb-4 bg-white rounded-4 shadow">
-      <a
-        href="/admin/sales"
-        className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-      >
-        <i className="bi bi-escape"></i>
-      </a>
+    <div className="container mt-4 mb-4 bg-white rounded-4 ">
+
       <h2 className="card-title text-center fw-bold pt-4 mb-4">
         {user.role === "ADMINISTRADOR"
           ? "Historial de Órdenes de Venta"
@@ -268,6 +279,7 @@ const SalesOrderList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <BottomNavigation list={list} />
     </div>
   );
 };

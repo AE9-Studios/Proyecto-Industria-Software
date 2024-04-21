@@ -4,8 +4,11 @@ import {
   getAllVacations,
 } from "../../api/human-resources.js";
 import { useNavigate } from "react-router-dom";
+import BottomNavigation from "../../components/BottomNavigation.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminRequestList = () => {
+  const { user } = useAuth();
   const [permissions, setPermissions] = useState([]);
   const [vacations, setVacations] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -13,6 +16,20 @@ const AdminRequestList = () => {
   const [itemsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,8 +66,8 @@ const AdminRequestList = () => {
         const readStatus = item.Read ? "leído" : "no leído";
         const days = Math.ceil(
           (new Date(item.End_Date) - new Date(item.Start_Date)) /
-            (1000 * 60 * 60 * 24) +
-            1
+          (1000 * 60 * 60 * 24) +
+          1
         );
         const type = isPermission ? "Permiso" : "Vacaciones";
 
@@ -115,140 +132,133 @@ const AdminRequestList = () => {
   };
 
   return (
-    <div className="container mt-4 mb-4 bg-white rounded-4 shadow">
-      <div className="px-4 pt-3">
-        <a
-          href="/admin/human-resources"
-          className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-        >
-          <i className="bi bi-escape"></i>
-        </a>
-      </div>
-      <h2 className="card-title text-center fw-bold mb-4">
-        Lista de Permisos y Vacaciones
-      </h2>
+    <div className=" mt-4 mb-4 bg-white rounded-4 ">
 
-      <div className="mb-3">
-        <input
-          type="text"
-          placeholder="Buscar permisos y vacaciones..."
-          className="form-control"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </div>
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Solicitud</th>
-              <th>Empleado</th>
-              <th>Días</th>
-              <th>Estado</th>
-              <th>
-                <i className="bi bi-bookmarks-fill"></i>
-              </th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {itemsToShow.map((item) => (
-              <tr key={item.Id} className={item.Read ? "" : "table-danger"}>
-                <td>
-                  {"Reason" in item ? (
-                    <span className="badge bg-info text-dark">Permiso</span>
-                  ) : (
-                    <span className="badge bg-dark">Vacaciones</span>
-                  )}
-                </td>
-                <td>
-                  {"Person" in item.Employee &&
-                    `${item.Employee.Person.First_Name} ${item.Employee.Person.Last_Name}`}
-                </td>
+      <div className="container m-auto">
+        <h2 className="card-title text-center fw-bold mb-4">
+          Lista de Permisos y Vacaciones
+        </h2>
 
-                <td>
-                  {"Reason" in item
-                    ? "Start_Date" in item &&
+        <div className="mb-3">
+          <input
+            type="text"
+            placeholder="Buscar permisos y vacaciones..."
+            className="form-control"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <div className="table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Solicitud</th>
+                <th>Empleado</th>
+                <th>Días</th>
+                <th>Estado</th>
+                <th>
+                  <i className="bi bi-bookmarks-fill"></i>
+                </th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {itemsToShow.map((item) => (
+                <tr key={item.Id} className={item.Read ? "" : "table-danger"}>
+                  <td>
+                    {"Reason" in item ? (
+                      <span className="badge bg-info text-dark">Permiso</span>
+                    ) : (
+                      <span className="badge bg-dark">Vacaciones</span>
+                    )}
+                  </td>
+                  <td>
+                    {"Person" in item.Employee &&
+                      `${item.Employee.Person.First_Name} ${item.Employee.Person.Last_Name}`}
+                  </td>
+
+                  <td>
+                    {"Reason" in item
+                      ? "Start_Date" in item &&
                       Math.ceil(
                         (new Date(item.End_Date) - new Date(item.Start_Date)) /
-                          (1000 * 60 * 60 * 24) +
-                          1
+                        (1000 * 60 * 60 * 24) +
+                        1
                       )
-                    : calculateDaysWithoutWeekends(
+                      : calculateDaysWithoutWeekends(
                         item.Start_Date,
                         item.End_Date
                       )}
-                </td>
+                  </td>
 
-                <td>
-                  {"State" in item && (
-                    <span className={`badge ${getBadgeColor(item.State)}`}>
-                      {item.State}
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {"Read" in item ? (item.Read ? "Leído" : "No leído") : ""}
-                </td>
-                <td>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    onClick={() =>
-                      navigate(
-                        `/admin/human-resources/${
-                          "Reason" in item ? "permissions" : "vacations"
-                        }/${item.Id}`
-                      )
-                    }
-                  >
-                    Gestionar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <nav aria-label="Page navigation example">
-          <ul className="pagination">
-            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={() => paginate(currentPage - 1)}
-              >
-                Anterior
-              </button>
-            </li>
-            {Array.from(
-              { length: Math.ceil(filteredItems.length / itemsPerPage) },
-              (_, i) => (
-                <li
-                  className={`page-item ${
-                    currentPage === i + 1 ? "active" : ""
-                  }`}
-                  key={i}
-                  onClick={() => paginate(i + 1)}
+                  <td>
+                    {"State" in item && (
+                      <span className={`badge ${getBadgeColor(item.State)}`}>
+                        {item.State}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {"Read" in item ? (item.Read ? "Leído" : "No leído") : ""}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() =>
+                        navigate(
+                          `/admin/human-resources/${"Reason" in item ? "permissions" : "vacations"
+                          }/${item.Id}`
+                        )
+                      }
+                    >
+                      Gestionar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <nav aria-label="Page navigation example">
+            <ul className="pagination">
+              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage - 1)}
                 >
-                  <button className="page-link">{i + 1}</button>
-                </li>
-              )
-            )}
-            <li
-              className={`page-item ${
-                currentPage === Math.ceil(filteredItems.length / itemsPerPage)
-                  ? "disabled"
-                  : ""
-              }`}
-            >
-              <button
-                className="page-link"
-                onClick={() => paginate(currentPage + 1)}
+                  Anterior
+                </button>
+              </li>
+              {Array.from(
+                { length: Math.ceil(filteredItems.length / itemsPerPage) },
+                (_, i) => (
+                  <li
+                    className={`page-item ${currentPage === i + 1 ? "active" : ""
+                      }`}
+                    key={i}
+                    onClick={() => paginate(i + 1)}
+                  >
+                    <button className="page-link">{i + 1}</button>
+                  </li>
+                )
+              )}
+              <li
+                className={`page-item ${currentPage === Math.ceil(filteredItems.length / itemsPerPage)
+                    ? "disabled"
+                    : ""
+                  }`}
               >
-                Siguiente
-              </button>
-            </li>
-          </ul>
-        </nav>
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage + 1)}
+                >
+                  Siguiente
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

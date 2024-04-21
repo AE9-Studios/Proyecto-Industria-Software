@@ -3,11 +3,29 @@ import { Bar, Doughnut } from "react-chartjs-2";
 import { getAllInvoiceOrders } from "../../api/sales";
 import Chart from "chart.js/auto";
 import "chartjs-adapter-moment";
+import BottomNavigation from "../../components/BottomNavigation";
+import { useAuth } from "../../context/AuthContext";
 
 const SalesStatisticsPage = () => {
   const [invoices, setInvoices] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const { user } = useAuth();
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+      { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+      { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+    ];
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -179,13 +197,8 @@ const SalesStatisticsPage = () => {
     Object.values(getSalesData()).reduce((a, b) => a + b, 0) || 0;
 
   return (
-    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4 shadow text-center">
-      <a
-        href="/admin/sales"
-        className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-      >
-        <i className="bi bi-escape"></i>
-      </a>
+    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
+
       <div className="container mt-4 mb-4">
         <h2 className="text-center mb-4">Estadísticas de Ventas</h2>
         <br />
@@ -273,6 +286,7 @@ const SalesStatisticsPage = () => {
           </div>
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

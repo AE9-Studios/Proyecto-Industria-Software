@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { createCategory, createProduct, createSupplier, deleteCategory, deleteProduct, deleteSupplier, getCategory, getInventory, getProducts, getSuppliers } from '../../api/inventory';
 import { Button, Modal } from 'react-bootstrap';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const Inventory = () => {
+
+    const list = [
+        {
+            title: 'Volver',
+            url: '/admin/home',
+            icon: 'bi bi-arrow-left-circle-fill',
+        },
+        {
+            title: 'Panel',
+            url: '/admin/home',
+            icon: 'bi bi-house-fill',
+        },
+    ]
 
     const [inventory, setInvetory] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
@@ -43,13 +57,17 @@ const Inventory = () => {
                 Price_Sell: parseInt(document.getElementById('price-sell-prod').value),
                 Stock: parseInt(document.getElementById('stock-prod').value),
                 Category_Fk: parseInt(document.getElementById('category-prod').value),
-                Supplier_Fk: parseInt(document.getElementById('supplier-prod').value)
+                Supplier_Fk: parseInt(document.getElementById('supplier-prod').value),
+                file: document.getElementById('file').files[0]
             });
+            console.log(document.getElementById('file').files[0]);
+            console.log(res);
             setShowModalProd(false);
             alert('Producto creado');
             getProductFunc();
         } catch (error) {
             alert('Error al crear el producto');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -72,6 +90,7 @@ const Inventory = () => {
             getProductFunc();
         } catch (error) {
             alert('Error al eliminar el producto');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -99,6 +118,7 @@ const Inventory = () => {
             setShowModalSup(false);
         } catch (error) {
             alert('Error al crear el proveedor');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -110,6 +130,7 @@ const Inventory = () => {
             getSuppliersFunc();
         } catch (error) {
             alert('Error al eliminar el proveedor');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -136,6 +157,7 @@ const Inventory = () => {
             getCategoryFunc();
         } catch (error) {
             alert('Error al crear la categoria');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -147,6 +169,7 @@ const Inventory = () => {
             getCategoryFunc();
         } catch (error) {
             alert('Error al eliminar la categoria');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -418,6 +441,9 @@ const Inventory = () => {
                     <p>Precio de venta</p>
                     <input id='price-sell-prod' type="number" className="form-control" placeholder={`Ingrese el precio de venta`} />
                     <br />
+                    <p>Imagen</p>
+                    <input id='file' type="file" className="form-control" />
+                    <br />
                     <p>Cantidad</p>
                     <input id='stock-prod' type="number" className="form-control" placeholder={`Ingrese la cantidad`} />
                     <br />
@@ -448,7 +474,7 @@ const Inventory = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+        <BottomNavigation list={list} />
         </div>
     )
 }

@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import BottomNavigation from "../../components/BottomNavigation";
 
 export const ThankYouPage = () => {
+  const list = [
+    { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+    { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+    { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+  ]
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(7);
 
@@ -19,7 +25,7 @@ export const ThankYouPage = () => {
   }, [countdown]);
 
   return (
-    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4 shadow text-center">
+    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
       <h1 className="card-title text-center fw-bold pt-4 mb-4">
         ¡Muchas gracias por tu compra!
       </h1>
@@ -36,11 +42,17 @@ export const ThankYouPage = () => {
           compras en {countdown}...
         </p>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };
 
 export const ThankYouOrderPage = () => {
+  const list = [
+    { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+    { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+    { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+  ]
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(7);
 
@@ -58,7 +70,7 @@ export const ThankYouOrderPage = () => {
   }, [countdown]);
 
   return (
-    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4 shadow text-center">
+    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
       <h1 className="card-title text-center fw-bold pt-4 mb-4">
         ¡Tu orden de venta fue enviada exitosamente!
       </h1>
@@ -74,6 +86,7 @@ export const ThankYouOrderPage = () => {
           serás redireccionado a tu lista de órdenes de venta en {countdown}...
         </p>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

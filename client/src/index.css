@@ -2,11 +2,11 @@
     background-color: #DDE6EE;
 } */
 
-.container-cardProductsCategories{
+.container-cardProductsCategories {
     max-width: 190px;
 }
 
-.div-container-productCategoryHome{
+.div-container-productCategoryHome {
     justify-content: space-between;
 }
 
@@ -21,8 +21,8 @@
 
 .wrap-table td,
 .wrap-table th {
-  white-space: normal !important;
-  word-wrap: break-word;
+    white-space: normal !important;
+    word-wrap: break-word;
 }
 
 /* .edit-btn:hover{
@@ -41,13 +41,14 @@
 }
 
 @media (min-width: 1200px) {
-    .container-cardProductsCategories{
+    .container-cardProductsCategories {
         max-width: 290px;
     }
 
     .container-cardServices {
         max-width: 230px;
     }
+
     .container-appointment-home {
         max-width: 50%;
     }
@@ -58,31 +59,80 @@
     display: block;
     width: 100%;
     padding: 0.25rem 0.5rem;
-    font-size: 1rem; 
-    font-weight: 700; 
-    line-height: 1.5; 
-    color: #fff; 
-    background-color: #007bff; 
-    border-radius: 0.25rem; 
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 0.25rem;
 }
 
 .badge-detail-gold {
     display: block;
     width: 100%;
     padding: 0.25rem 0.5rem;
-    font-size: 1rem; 
-    font-weight: 700; 
-    line-height: 1.5; 
-    color: #fff; 
-    background-color: #3a3737; 
-    border-radius: 0.25rem; 
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #3a3737;
+    border-radius: 0.25rem;
 }
 
 .quantity-cell {
-    white-space: nowrap; 
-  }
-  
+    white-space: nowrap;
+}
+
 .quantity-buttons {
-    display: flex; 
+    display: flex;
     flex-wrap: nowrap;
-  }
+}
+
+.bottom-navigation-space {
+    margin-bottom: 100px;
+}
+
+.bottom-navigation {
+    background-color: #fff;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    box-shadow: 0px 0px 1px 0px #3a3737;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-navigation-item {
+    text-decoration: none;
+    color: #3a3737;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+
+.bottom-navigation-item.active {
+    color: #32b8cf;
+}
+
+.bottom-navigation-item:hover .bottom-navigation-item-icon {
+    color: #007bff;
+    position: relative;
+    top: -20px;
+    text-shadow: 0px 0px 1px #000000;
+    font-weight: bold;
+}
+
+
+.bottom-navigation-item:hover .bottom-navigation-item-text{
+    color: #007bff;
+    text-shadow: 0px 0px 1px #007bff;
+}
+
+

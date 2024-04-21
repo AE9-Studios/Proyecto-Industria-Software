@@ -2,9 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { createAppointment, deleteAppointment, getAppointments, getAppointmentsSolicitation, updateAppointmentSolicitation } from '../../api/appointment';
 import { Button, Modal } from 'react-bootstrap';
 import { getEmployees } from '../../api/human-resources';
+import BottomNavigation from '../../components/BottomNavigation';
+
 
 
 const Appointments = () => {
+
+    const list = [
+        { title: 'Volver', url: '/admin/home', icon: 'bi bi-arrow-left-circle-fill' },
+        { title: 'Panel', url: '/admin/home', icon: 'bi bi-house-fill' },
+    ]
 
     const [appointmentsSolicitation, setAppointmentsSolicitation] = useState([]);
     const [appointments, setAppointments] = useState([]);
@@ -33,6 +40,7 @@ const Appointments = () => {
             setAppointmentsSolicitation(response.data);
         } catch (error) {
             console.error(error);
+            error.response.data.map((err) => alert(err));
         }
     }
 
@@ -42,6 +50,7 @@ const Appointments = () => {
             setAppointments(response.data);
         } catch (error) {
             console.error(error);
+            error.response.data.map((err) => alert(err));
         }
     }
 
@@ -49,9 +58,11 @@ const Appointments = () => {
         try {
             const res = await deleteAppointment(id);
             getAppointmentsSolicitationFunc();
+            getAppointmentsFunc();
             alert('Cita cancelada correctamente');
         } catch (error) {
             alert('Error al cancelar la cita');
+            error.response.data.map((err) => alert(err));
             console.error(error);
         }
     }
@@ -67,9 +78,12 @@ const Appointments = () => {
                 date: `${document.getElementById('date-a').value}T${document.getElementById('time-a').value}:00.000Z`,
             });
             getAppointmentsSolicitationFunc();
+            getAppointmentsFunc();
+            alert('Cita aceptada correctamente');
             handleCloseModal();
         } catch (error) {
             console.error(error);
+            error.response.data.map((err) => alert(err));
         }
     }
 
@@ -81,6 +95,7 @@ const Appointments = () => {
         } catch (error) {
             console.error(error);
             alert('Error al rechazar la solicitud');
+            error.response.data.map((err) => alert(err));
         }
     }
 
@@ -90,6 +105,7 @@ const Appointments = () => {
             setEmployees(res.data);
         } catch (error) {
             console.error(error);
+            error.response.data.map((err) => alert(err));
         }
     }
 
@@ -147,7 +163,7 @@ const Appointments = () => {
                                     <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-secondary' : movement.State === 'RECHAZADO' ? 'table-danger' : movement.State === 'APROBADO' ? 'table-success' : ''}>
 
                                         <td>{movement.Date.split('T')[0]}</td>
-                                        <td>{movement.Client.Person.Last_Name} {movement.Client.Person.Last_Name}</td>
+                                        <td>{movement.Client.Person.First_Name} {movement.Client.Person.Last_Name}</td>
                                         <td>{movement.Description}</td>
                                         <td className='d-flex'>
                                             <button className={`btn btn-success`} onClick={() => handleShowModal(movement)}  ><i className="bi bi-check-lg"></i></button>
@@ -240,7 +256,7 @@ const Appointments = () => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="desp-a" className="form-label">Descripcion</label>
-                        <textarea type="text" className="form-control" id="desp-a" value={description} onChange={handleDesChange}/>
+                        <textarea type="text" className="form-control" id="desp-a" value={description} onChange={handleDesChange} />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="employee-a" className="form-label">Doctor</label>
@@ -264,6 +280,7 @@ const Appointments = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <BottomNavigation list={list} />
         </div>
     )
 }

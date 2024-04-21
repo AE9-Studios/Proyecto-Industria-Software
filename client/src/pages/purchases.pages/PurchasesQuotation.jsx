@@ -3,8 +3,13 @@ import { getSuppliers } from "../../api/inventory";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { requestQuotation } from "../../api/purchases";
+import BottomNavigation from "../../components/BottomNavigation";
 
 function PurchaseQuotation() {
+  const list = [
+    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
+  ]
   const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -65,110 +70,112 @@ function PurchaseQuotation() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Solicitar Cotización</h2>
-      <div className="row mb-3">
-        <div className="col">
-          <label
-            htmlFor="supplierSelect"
-            className="form-label me-2 mb-0 fw-bold"
-          >
-            Seleccionar Proveedor:
-          </label>
-          <select
-            id="supplierSelect"
-            className="form-select me-3"
-            value={selectedSupplier ? selectedSupplier.Id : ""}
-            onChange={(e) => {
-              const supplierId = parseInt(e.target.value);
-              const selectedSupplier = suppliers.find(
-                (supplier) => supplier.Id === supplierId
-              );
-              setSelectedSupplier(selectedSupplier);
-            }}
-          >
-            <option value="">Seleccionar Proveedor</option>
-            {suppliers.map((supplier) => (
-              <option key={supplier.Id} value={supplier.Id}>
-                {supplier.Name}
-              </option>
-            ))}
-          </select>
+    <div className=" mt-4">
+      <div className="container mx-2">
+        <h2 className="mb-4">Solicitar Cotización</h2>
+        <div className="row mb-3">
+          <div className="col">
+            <label
+              htmlFor="supplierSelect"
+              className="form-label me-2 mb-0 fw-bold"
+            >
+              Seleccionar Proveedor:
+            </label>
+            <select
+              id="supplierSelect"
+              className="form-select me-3"
+              value={selectedSupplier ? selectedSupplier.Id : ""}
+              onChange={(e) => {
+                const supplierId = parseInt(e.target.value);
+                const selectedSupplier = suppliers.find(
+                  (supplier) => supplier.Id === supplierId
+                );
+                setSelectedSupplier(selectedSupplier);
+              }}
+            >
+              <option value="">Seleccionar Proveedor</option>
+              {suppliers.map((supplier) => (
+                <option key={supplier.Id} value={supplier.Id}>
+                  {supplier.Name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
-      <div className="row mb-3">
-        <div className="col d-flex align-items-center">
-          <label
-            htmlFor="productNameInput"
-            className="form-label me-2 mb-0 fw-bold"
-          >
-            Producto:
-          </label>
-          <input
-            id="productNameInput"
-            type="text"
-            className="form-control me-3"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-          />
-          <label
-            htmlFor="quantityInput"
-            className="form-label me-2 mb-0 fw-bold"
-          >
-            Cantidad:
-          </label>
-          <input
-            id="quantityInput"
-            type="number"
-            className="form-control me-3"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            min={1}
-          />
-          <button className="btn btn-primary" onClick={handleAddItem}>
-            Añadir
-          </button>
+        <div className="row mb-3">
+          <div className="col d-flex align-items-center">
+            <label
+              htmlFor="productNameInput"
+              className="form-label me-2 mb-0 fw-bold"
+            >
+              Producto:
+            </label>
+            <input
+              id="productNameInput"
+              type="text"
+              className="form-control me-3"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+            />
+            <label
+              htmlFor="quantityInput"
+              className="form-label me-2 mb-0 fw-bold"
+            >
+              Cantidad:
+            </label>
+            <input
+              id="quantityInput"
+              type="number"
+              className="form-control me-3"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              min={1}
+            />
+            <button className="btn btn-primary" onClick={handleAddItem}>
+              Añadir
+            </button>
+          </div>
         </div>
-      </div>
-      <br />
-      <hr />
-      <br />
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Proveedor</th>
-              <th>Nombre del Producto</th>
-              <th>Cantidad</th>
-              <th>Eliminar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderItems.map((item, index) => (
-              <tr key={index}>
-                <td>{item.supplier.Name}</td>
-                <td>{item.productName}</td>
-                <td>{item.quantity}</td>
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleRemoveItem(index)}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </td>
+        <br />
+        <hr />
+        <br />
+        <div className="table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Proveedor</th>
+                <th>Nombre del Producto</th>
+                <th>Cantidad</th>
+                <th>Eliminar</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orderItems.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.supplier.Name}</td>
+                  <td>{item.productName}</td>
+                  <td>{item.quantity}</td>
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleRemoveItem(index)}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <button
+          className="btn btn-success"
+          onClick={openModal}
+          disabled={orderItems.length === 0 || sendingRequest}
+        >
+          Solicitar Cotización
+        </button>
       </div>
-      <button
-        className="btn btn-success"
-        onClick={openModal}
-        disabled={orderItems.length === 0 || sendingRequest}
-      >
-        Solicitar Cotización
-      </button>
 
       <Modal show={showModal} onHide={closeModal}>
         <Modal.Header closeButton>
@@ -213,6 +220,7 @@ function PurchaseQuotation() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <BottomNavigation list={list} />
     </div>
   );
 }

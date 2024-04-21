@@ -128,7 +128,6 @@ function AdminRoutes() {
           <Route path="/purchases/list" element={<PurchasesOrderList />} />
           <Route path="/purchases/list/:id" element={<PurchasesOrderDetails />} />
           <Route path="/purchases/receipts" element={<PurchasesReceiptList />} />
-
         </>}
       </Routes >
       <NotificationHandler />

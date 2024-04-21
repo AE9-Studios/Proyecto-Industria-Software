@@ -2,10 +2,24 @@ import { useAuth } from "../../context/AuthContext";
 import { useState, useEffect } from "react";
 import CardTest from "../../components/CardTest";
 import { getRequestWithReadFalse } from "../../api/human-resources";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const HHRRHome = () => {
+  let list = []
   const { user, logoutUser } = useAuth();
   const [unreadPermissionsCount, setUnreadPermissionsCount] = useState(0);
+
+  if(user.role === "ADMINISTRADOR"){
+    list = [
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+     list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
+      {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+    ];
+  }
 
   useEffect(() => {
     const fetchUnreadPermissionsCount = async () => {
@@ -28,11 +42,8 @@ const HHRRHome = () => {
     <>
       {user.role === "ADMINISTRADOR" ? (
         <>
-          <div className="d-flex flex-column align-items-center">
+          <div className="d-flex flex-column p-4 align-items-center">
             <h2>Bienvenido, Administrador</h2>
-            <button onClick={logoutUser} className="btn btn-danger py-2">
-              Cerrar Sesión
-            </button>
           </div>
 
           <div className="container d-flex justify-content-center">
@@ -80,14 +91,12 @@ const HHRRHome = () => {
               />
             </div>
           </div>
+          <BottomNavigation list={list} />
         </>
       ) : (
         <>
-          <div className="d-flex flex-column align-items-center">
+          <div className="d-flex flex-column align-items-center p-2 my-4">
             <h2>Bienvenido, Empleado</h2>
-            <button onClick={logoutUser} className="btn btn-danger py-2">
-              Cerrar Sesión
-            </button>
           </div>
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">
@@ -127,6 +136,7 @@ const HHRRHome = () => {
               }
             </div>
           </div>
+          <BottomNavigation list={list} />
         </>
       )}
     </>

@@ -1,8 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { saveSchedule } from "../../api/human-resources";
+import BottomNavigation from "../../components/BottomNavigation";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminScheduleCreate = () => {
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -23,6 +26,8 @@ const AdminScheduleCreate = () => {
         (endHour === startHour && endMinute > startMinute)
       );
     };
+
+
 
     const days = [
       "Lunes",
@@ -67,21 +72,28 @@ const AdminScheduleCreate = () => {
     }
   });
 
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
+
   return (
-    <div className="container-sm mb-3">
+    <div className=" mb-3">
       <form
-        className="mx-auto shadow mt-3 mx-auto rounded-4 bg-white"
+        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
         style={{ maxWidth: "700px" }}
         onSubmit={onSubmit}
       >
-        <div className="px-4 pt-3">
-          <a
-            href="/admin/human-resources"
-            className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-          >
-            <i className="bi bi-escape"></i>
-          </a>
-        </div>
+
 
         <div className=" pt-3 pb-5">
           <div className="d-flex flex-column align-items-center p-5">
@@ -183,6 +195,7 @@ const AdminScheduleCreate = () => {
           </div>
         </div>
       </form>
+      <BottomNavigation list={list} />
     </div>
   );
 };

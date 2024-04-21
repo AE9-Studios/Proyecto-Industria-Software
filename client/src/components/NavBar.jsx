@@ -25,27 +25,8 @@ const NavBar = () => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarText">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a className={`nav-link ${location === "/" ? "active" : ""}`} aria-current="page" href="/">
-                                    <i className="bi bi-house-door-fill px-2 fs-4"></i>
-                                    Inicio
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a className={`nav-link ${location === "/products" ? "active" : ""}`} href="/products">
-                                    <i className="bi bi-search px-2 fs-4"></i>
-                                    Productos
-                                </a>
-                            </li>
-                            <li className="nav-item">
-                                <a className={`nav-link ${location === "/services" ? "active" : ""}`} href="/services">
-                                    <i className="bi bi-briefcase-fill px-2 fs-4"></i>
-                                    Servicios
-                                </a>
-                            </li>
-                        </ul>
-                        <span className='nav-item'>
+                        <div className='p-4'></div>
+                        <div className='nav-item'>
                             {
                                 isAuthenticated && <span className="nav-item">
                                     <a className="nav-link me-4" href={`/${user?.role === 'CLIENTE' ? 'client/home' : user?.role === 'ADMINISTRADOR' ? 'admin/home' : user?.role === 'EMPLEADO' ? 'employee/home' : 'login'}`}>
@@ -65,7 +46,7 @@ const NavBar = () => {
                                     </a>
                                 </span>
                             }
-                        </span>
+                        </div>
                     </div>
                 </div>
             </nav>

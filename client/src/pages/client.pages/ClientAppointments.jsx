@@ -4,8 +4,15 @@ import { useAuth } from '../../context/AuthContext';
 import { createAppointmentSolicitation, deleteAppointmentSolicitation, getAppointmentToClient, getAppointmentsSolicitationToClient } from '../../api/appointment';
 
 import { Button, Modal } from 'react-bootstrap';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const ClientAppointments = () => {
+
+  const list = [
+    { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
+    { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
+    { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
+  ]
 
   const { user } = useAuth();
   const [appointmentsSolicitation, setAppointmentsSolicitation] = useState([]);
@@ -41,6 +48,7 @@ const ClientAppointments = () => {
       alert('Cita cancelada correctamente');
     } catch (error) {
       alert('Error al cancelar la cita');
+      error.response.data.map((err) => alert(err));
       console.error(error);
     }
   }
@@ -57,6 +65,7 @@ const ClientAppointments = () => {
       alert('Cita creada correctamente');
     } catch (error) {
       alert('Error al crear la cita');
+      error.response.data.map((err) => alert(err));
       console.error(error);
     }
   }
@@ -67,7 +76,7 @@ const ClientAppointments = () => {
     getAppointmentsSolicitation();
     getAppointments();
   }, [user])
-  
+
 
   const [currentPageAS, setCurrentPageAS] = useState(1);
   const [itemsPerPageAS, setItemsPerPageAS] = useState(10);
@@ -84,7 +93,7 @@ const ClientAppointments = () => {
   const paginateA = (pageNumber) => setCurrentPageA(pageNumber);
 
   return (
-    <div className='pb-4' >
+    <div >
       <div className="container mt-4 bg-white rounded-4 table-responsive" >
         <div className='d-flex justify-content-center align-items-center'>
           <button className='btn btn-primary' onClick={handleShowModal}><i className="bi bi-plus-square-fill"></i> Solicitar Cita</button>
@@ -104,12 +113,12 @@ const ClientAppointments = () => {
           <tbody>
             {
               currentItemsAS.map((movement, index) => (
-                <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-secondary' : movement.State === 'RECHAZADO' ? 'table-danger' : movement.State === 'APROBADO' ? 'table-success' : '' }>
+                <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-secondary' : movement.State === 'RECHAZADO' ? 'table-danger' : movement.State === 'APROBADO' ? 'table-success' : ''}>
 
                   <td>{movement.Date.split('T')[0]}</td>
                   <td>{movement.Description}</td>
                   <td>{movement.State}</td>
-                  <td><button className={`btn btn-danger ${movement.State !== 'PENDIENTE' ? 'disabled' : ''}`} onClick={()=> deleteAppointment(movement.Id)}  ><i className="bi bi-trash"></i></button></td>
+                  <td><button className={`btn btn-danger ${movement.State !== 'PENDIENTE' ? 'disabled' : ''}`} onClick={() => deleteAppointment(movement.Id)}  ><i className="bi bi-trash"></i></button></td>
                 </tr>
               ))
             }
@@ -145,7 +154,7 @@ const ClientAppointments = () => {
           <tbody>
             {
               currentItemsA.map((movement, index) => (
-                <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-info' : movement.State === 'ATENDIDO' ? 'table-success' : '' }>
+                <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-info' : movement.State === 'ATENDIDO' ? 'table-success' : ''}>
                   <td>{movement.State}</td>
                   <td>{movement.Date.split('T')[0]}</td>
                   <td>{movement.Date.split('T')[1].split('.')[0]}</td>
@@ -172,7 +181,7 @@ const ClientAppointments = () => {
         </div>
       </div>
 
-      
+
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -194,7 +203,7 @@ const ClientAppointments = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+      <BottomNavigation list={list} />
     </div>
   )
 }

@@ -1,8 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { getInventory } from '../../api/inventory';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const InventoryValued = () => {
+
+    const list = [
+        {
+            title: 'Volver',
+            url: '/admin/inventory',
+            icon: 'bi bi-arrow-left-circle-fill',
+        },
+        {
+            title: 'Panel',
+            url: '/admin/home',
+            icon: 'bi bi-house-fill',
+        },
+    ]
 
     const [inventory, setInvetory] = useState([]);
 
@@ -28,8 +42,7 @@ const InventoryValued = () => {
 
     return (
         <div className='' >
-            <div>Espacio para el menu </div>
-            <div className="container mt-4 p-4 bg-white rounded-4 table-responsive" >
+            <div className="container px-4 bg-white rounded-4 table-responsive" >
                 <div className="col">
                     <div className="row">
                         <h2 className="text-center mt-3 p-2">Inventario valorado</h2>
@@ -115,6 +128,7 @@ const InventoryValued = () => {
                     </div>
                 </div>
             </div>
+            <BottomNavigation list={list} />
         </div>
     )
 }

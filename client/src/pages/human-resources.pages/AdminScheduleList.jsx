@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { getAllSchedules, deleteSchedule } from "../../api/human-resources.js";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
+import BottomNavigation from "../../components/BottomNavigation.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminScheduleList = () => {
+  const {user} = useAuth();
   const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,6 +17,20 @@ const AdminScheduleList = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const itemsPerPage = 10;
+
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -87,14 +104,9 @@ const AdminScheduleList = () => {
   );
 
   return (
-    <div className="container mt-4 mb-4 bg-white rounded-4 shadow">
-      <div>
-        <a
-          href="/admin/human-resources"
-          className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-        >
-          <i className="bi bi-escape"></i>
-        </a>
+    <div className=" mt-4 mb-4 bg-white rounded-4 ">
+      <div className="mx-2">
+
 
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Horarios
@@ -228,6 +240,7 @@ const AdminScheduleList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <BottomNavigation list={list} />
     </div>
   );
 };

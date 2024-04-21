@@ -2,8 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { getInventory, getProducts, updateInventory } from '../../api/inventory';
 import { Button, Modal } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
+import BottomNavigation from '../../components/BottomNavigation';
 
 const InventoryToHand = () => {
+
+    const list = [
+        {
+            title: 'Volver',
+            url: '/admin/inventory',
+            icon: 'bi bi-arrow-left-circle-fill',
+        },
+        {
+            title: 'Panel',
+            url: '/admin/home',
+            icon: 'bi bi-house-fill',
+        },
+    ]
 
     const [inventory, setInvetory] = useState([]);
     const [products, setProducts] = useState([]);
@@ -58,6 +72,7 @@ const InventoryToHand = () => {
             getInventoryFunc();
         } catch (error) {
             alert('Error al actualizar el punto de reorden');
+            error.response.data.map((err) => alert(err));
             console.log(error);
         }
     }
@@ -170,7 +185,7 @@ const InventoryToHand = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            <BottomNavigation list={list} />
         </div>
     )
 }

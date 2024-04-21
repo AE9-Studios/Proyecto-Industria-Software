@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { getEmployees } from "../../api/human-resources.js";
 import { useNavigate } from "react-router-dom";
+import BottomNavigation from "../../components/BottomNavigation.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminEmployeeList = () => {
+
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +13,21 @@ const AdminEmployeeList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   // eslint-disable-next-line no-unused-vars
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const { user } = useAuth();
+  let list = []
+  if (user.role === "ADMINISTRADOR") {
+    list = [
+      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
+    ];
+  } else {
+    list = [
+      { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
+      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+    ];
+  }
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -72,14 +90,9 @@ const AdminEmployeeList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="container mt-4 bg-white rounded-4 shadow">
-      <div>
-        <a
-          href="/admin/human-resources"
-          className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white"
-        >
-          <i className="bi bi-escape"></i>
-        </a>
+    <div className=" mt-4 bg-white rounded-4 ">
+      <div className="container">
+
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Empleados
         </h2>
@@ -114,7 +127,7 @@ const AdminEmployeeList = () => {
                   <td>{employee.User.Email}</td>
                   <td>{formatPosition(employee.Position)}</td>
                   <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ? employee.Schedule_Employee[0].Schedule.ScheduleName : "Este empleado no tiene los campos actualizados"}</td>
-                
+
                   <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ?
 
                     <button
@@ -150,9 +163,8 @@ const AdminEmployeeList = () => {
                 },
                 (_, i) => (
                   <li
-                    className={`page-item ${
-                      currentPage === i + 1 ? "active" : ""
-                    }`}
+                    className={`page-item ${currentPage === i + 1 ? "active" : ""
+                      }`}
                     key={i}
                     onClick={() => paginate(i + 1)}
                   >
@@ -161,12 +173,11 @@ const AdminEmployeeList = () => {
                 )
               )}
               <li
-                className={`page-item ${
-                  currentPage ===
-                  Math.ceil(filteredEmployees.length / itemsPerPage)
+                className={`page-item ${currentPage ===
+                    Math.ceil(filteredEmployees.length / itemsPerPage)
                     ? "disabled"
                     : ""
-                }`}
+                  }`}
               >
                 <button
                   className="page-link"
@@ -179,6 +190,7 @@ const AdminEmployeeList = () => {
           </nav>
         </div>
       </div>
+      <BottomNavigation list={list} />
     </div>
   );
 };

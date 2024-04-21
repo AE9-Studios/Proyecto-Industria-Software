@@ -6,8 +6,13 @@ import {
   rejectPurchaseOrder,
 } from "../../api/purchases";
 import { Modal, Button, Spinner } from "react-bootstrap";
+import BottomNavigation from "../../components/BottomNavigation";
 
 const PurchasesOrderDetails = () => {
+  const list = [
+    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
+  ]
   const navigate = useNavigate();
   const [purchaseOrder, setPurchaseOrder] = useState("");
   const [attachedFile, setAttachedFile] = useState(null);
@@ -366,6 +371,7 @@ const PurchasesOrderDetails = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <BottomNavigation list={list} />
     </div>
   );
 };
