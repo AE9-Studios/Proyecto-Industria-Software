@@ -26,7 +26,7 @@ const ActivityLog = () => {
     const fetchLogs = async () => {
       try {
         const response = await getActivityLogs();
-        const sortedLogs = response.data.sort((a, b) => new Date(b.Date) - new Date(a.Date)); // Ordena los registros por fecha de más reciente a más antiguo
+        const sortedLogs = response.data.sort((a, b) => new Date(b.Date) - new Date(a.Date)); 
         setLogs(sortedLogs);
         setFilteredLogs(sortedLogs);
       } catch (error) {

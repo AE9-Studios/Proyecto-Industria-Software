@@ -136,6 +136,10 @@ export const saveInvoice = async (req, res) => {
 
       await Promise.all(
         parsedPurchaseList.map(async (product) => {
+          await logActivity(
+            "Salida de inventario",
+            `Se ha registado una cantidad saliente de ${product.quantity} del producto ${product.Name}`
+          );
           const invoiceOrderProductDetail =
             await prisma.INVOICE_ORDER_PRODUCT_DETAILS.create({
               data: {
@@ -663,6 +667,12 @@ export const sendOrderReadyEmail = async (req, res) => {
       "/client/orders",
       purchaseOrder.Client.User.Device_Token
     );
+
+    await logActivity(
+      "Orden de venta aprobada",
+      `La orden del cliente ${user_Name}`
+    );
+
     return res.status(200).json({
       message: "Correo electrónico enviado exitosamente y estado actualizado.",
     });
