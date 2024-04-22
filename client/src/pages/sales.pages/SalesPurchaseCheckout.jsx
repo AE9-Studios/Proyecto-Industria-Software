@@ -77,6 +77,7 @@ const SalesPurchaseCheckout = () => {
             (discountApplied ? parseFloat(totalRef.current) * 0.1 : 0)
           ).toFixed(2),
           userId: null,
+          employeeId: user.id,
           userName: user.role === "ADMINISTRADOR" ? clientName : user.userName,
           email: user.role === "ADMINISTRADOR" ? clientEmail : user.email,
           discount: discountApplied
@@ -101,6 +102,7 @@ const SalesPurchaseCheckout = () => {
             (discountApplied ? parseFloat(totalRef.current) * 0.1 : 0)
           ).toFixed(2),
           userId: user.id,
+          employeeId: null,
           userName: user.role === "ADMINISTRADOR" ? clientName : user.userName,
           email: user.role === "ADMINISTRADOR" ? clientEmail : user.email,
           discount: discountApplied
@@ -192,6 +194,7 @@ const SalesPurchaseCheckout = () => {
                     ).toFixed(2),
                     userName: user.userName,
                     userId: user.id,
+                    employeeId: null,
                     email: user.email,
                     discount: discountApplied
                       ? `${(parseFloat(totalRef.current) * 0.1).toFixed(

@@ -6,3 +6,4 @@ export const sendDeviceToken = ({ token, userId }) =>
 export const deleteTokenFromUser = ({ userId }) =>
   axios.delete(`activity-log/token`, { data: { userId } });
 
+export const getActivityLogs = () => axios.get(`activity-log/all-activity`);

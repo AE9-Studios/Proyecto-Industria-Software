@@ -7,6 +7,7 @@ const sendInvoice = async ({
   total,
   userName,
   userId,
+  employeeId,
   email,
   discount,
   invoiceNumber,
@@ -310,6 +311,7 @@ const sendInvoice = async ({
     formData.append("invoice", pdfBlob, "factura.pdf");
     formData.append("purchaseList", JSON.stringify(purchaseList));
     formData.append("userId", userId);
+    formData.append("employeeId", employeeId);
     formData.append("userName", userName);
     formData.append("email", email);
     formData.append("subTotal", subtotal);

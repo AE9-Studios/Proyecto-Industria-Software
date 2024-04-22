@@ -186,7 +186,7 @@ function PurchaseQuotation() {
       </div>
 
       <Modal show={showModal} onHide={closeModal}>
-        <Modal.Header closeButton>
+        <Modal.Header closeButton={!sendingRequest}>
           <Modal.Title>Confirmar Cotización</Modal.Title>
         </Modal.Header>
         <Modal.Body>

@@ -170,8 +170,8 @@ function PurchasesOrder() {
         </button>
       </div>
 
-      <Modal show={showModal} onHide={closeModal}>
-        <Modal.Header closeButton>
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton={!sendingData}>
           <Modal.Title>Confirmar Pedido</Modal.Title>
         </Modal.Header>
         <Modal.Body>

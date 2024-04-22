@@ -10,11 +10,12 @@ import {
   sendEmailOrderDone,
 } from "../libs/sendEmail.js";
 
-import { logActivity } from "./activity-log.controller.js";
+import { logActivity } from "../libs/logActivity.js";
 
 export const saveInvoice = async (req, res) => {
   const {
     userId,
+    employeeId,
     purchaseList,
     userName,
     email,
@@ -58,24 +59,36 @@ export const saveInvoice = async (req, res) => {
         invoice: invoiceFile,
       });
     }
+    let employee = null;
 
-    const employee = await prisma.EMPLOYEE.findFirst({
-      where: {
-        Position: "ADMINISTRATIVO",
-      },
-      select: {
-        Id: true,
-      },
-    });
-
-    if (!employee) {
-      console.log(
-        "No se encontró ningún empleado con la posición ADMINISTRATIVO."
-      );
-      res.status(404).json({
-        error: "No se encontró ningún empleado con la posición ADMINISTRATIVO.",
+    if (employeeId !== "null") {
+      employee = await prisma.EMPLOYEE.findFirst({
+        where: {
+          User_Fk: parseInt(employeeId),
+        },
+        select: {
+          Id: true,
+          User: {
+            select: {
+              User_Name: true,
+            },
+          },
+        },
       });
-      return;
+    } else {
+      employee = await prisma.EMPLOYEE.findFirst({
+        where: {
+          Position: "ADMINISTRATIVO",
+        },
+        select: {
+          Id: true,
+          User: {
+            select: {
+              User_Name: true,
+            },
+          },
+        },
+      });
     }
 
     const newInvoiceOrder = await prisma.INVOICE_ORDER.create({
@@ -107,12 +120,19 @@ export const saveInvoice = async (req, res) => {
       sendNotificationToAdmin(
         "¡Nueva compra!",
         `Se registró una compra de ${total} Lempiras`,
-        '/admin/sales'
+        "/admin/sales"
       );
-      await logActivity(
-        "Nueva compra",
-        `Se registró una compra de ${total} Lempiras`
-      );
+      if (employeeId === "null") {
+        await logActivity(
+          "Compra en línea",
+          `El cliente ${userName} realizó una compra en línea de ${total} Lempiras`
+        );
+      } else {
+        await logActivity(
+          "Compra en caja",
+          `El administrador ${employee.User.User_Name} registró una compra en caja de ${total} Lempiras`
+        );
+      }
 
       await Promise.all(
         parsedPurchaseList.map(async (product) => {
@@ -227,7 +247,7 @@ export const getInvoiceAttachedFile = async (req, res) => {
     });
 
     if (!invoice) {
-      return res.status(200).json("Invoice not found" );
+      return res.status(200).json("Invoice not found");
     }
 
     if (!invoice.Invoice_File) {
@@ -259,7 +279,6 @@ export const getAllInvoiceOrders = async (req, res) => {
         INVOICE_ORDER_PRODUCT_DETAILS: true,
       },
     });
-
 
     res.status(200).json({ invoiceOrders });
   } catch (error) {
@@ -493,7 +512,7 @@ export const getAllOrders = async (req, res) => {
     });
 
     if (purchaseOrders.length === 0) {
-      res.status(200).json("No orders found." );
+      res.status(200).json("No orders found.");
       return;
     }
 

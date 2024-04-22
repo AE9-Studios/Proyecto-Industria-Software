@@ -11,6 +11,7 @@ import {AccountRecovery, ResetPasswordPage } from './pages/PasswordRecovery'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
+import ActivityLog from './pages/admin.pages/Log'
 
 // modulo de inventario
 import InventoryMovement from './pages/inventory.pages/InventoryMovement'
@@ -94,6 +95,7 @@ function AdminRoutes() {
 
           {/* // aqui se agregan las rutas para el administrador */}
           <Route path='home' element={<PanelAdmin />} />
+          <Route path='logbook' element={<ActivityLog />} />
 
           {/* modulo de citas  */}
           <Route path='/appointments' element={<Appointments />} />

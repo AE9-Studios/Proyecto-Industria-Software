@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
-
+import { Modal, Button, Spinner } from "react-bootstrap";
 import {
   getPurchaseOrdersByClientId,
   getAllPurchaseOrders,
@@ -8,11 +7,13 @@ import {
   updateReadClientToFalseById,
   sendOrderReadyEmail,
 } from "../../api/sales";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import BottomNavigation from "../../components/BottomNavigation";
 
 const SalesOrderList = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +21,7 @@ const SalesOrderList = () => {
   const [itemsPerPage] = useState(10);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState([]);
+  const [sendingData, setSendingData] = useState(false);
 
   let list = [];
   if (user.role === "ADMINISTRADOR") {
@@ -123,11 +125,14 @@ const SalesOrderList = () => {
   };
 
   const handleSaveEdit = async () => {
-    setShowUpdateModal(false);
+    setSendingData(true);
     try {
       await sendOrderReadyEmail(selectedOrderId);
+      navigate("/admin/sales/");
     } catch (error) {
       console.error("Error al enviar el correo electrónico:", error);
+    } finally {
+      setSendingData(false);
     }
   };
 
@@ -197,7 +202,7 @@ const SalesOrderList = () => {
                   </td>
                   <td>{order.Date}</td>
                   <td>{order.Discount > 0 ? `$ ${order.Discount}` : "N/A"}</td>
-                  <td>$ {order.Total}</td>
+                  <td>{order.Total} HNL</td>
                   <td>
                     <button
                       className="btn btn-info"
@@ -270,19 +275,47 @@ const SalesOrderList = () => {
           </nav>
         </div>
         {/* Update Modal */}
-        <Modal show={showUpdateModal} onHide={handleCloseUpdateModal}>
-          <Modal.Header closeButton>
+        <Modal
+          show={showUpdateModal}
+          onHide={sendingData ? null : handleCloseUpdateModal}
+        >
+          <Modal.Header closeButton={!sendingData}>
             <Modal.Title>Confirmación</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            ¿Estás seguro de que quieres aprobar esta orden de venta? Se le
-            enviará un correo
+            {sendingData ? (
+              <div className="text-center">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Enviando...</span>
+                </Spinner>
+                <p>Notificando al cliente, por favor espere...</p>
+              </div>
+            ) : (
+              <>
+                ¿Estás seguro de que quieres aprobar esta orden de venta?
+                <br />
+                <br />
+                <p style={{ color: "red" }}>
+                  {" "}
+                  Se enviará un correo electrónico al cliente notificando que su
+                  orden está lista.
+                </p>
+              </>
+            )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseUpdateModal}>
+            <Button
+              variant="secondary"
+              disabled={sendingData}
+              onClick={handleCloseUpdateModal}
+            >
               Cancelar
             </Button>
-            <Button variant="primary" onClick={handleSaveEdit}>
+            <Button
+              variant="primary"
+              disabled={sendingData}
+              onClick={handleSaveEdit}
+            >
               Confirmar
             </Button>
           </Modal.Footer>

@@ -325,6 +325,7 @@ const PurchasesOrderDetails = () => {
               >
                 {fileAttached ? (
                   <div
+                    style={{ zIndex: 0 }}
                     className="col-6 text-center"
                     id="paypal-button-container"
                   ></div>
@@ -332,7 +333,7 @@ const PurchasesOrderDetails = () => {
                   <div
                     className="col-6 text-center"
                     id="paypal-button-container"
-                    style={{ pointerEvents: "none" }}
+                    style={{ zIndex: 0, pointerEvents: "none" }}
                   ></div>
                 )}
               </div>
@@ -342,7 +343,7 @@ const PurchasesOrderDetails = () => {
 
         {/* Modal para confirmar cancelación de orden */}
         <Modal show={showModal} onHide={() => setShowModal(false)}>
-          <Modal.Header closeButton>
+          <Modal.Header closeButton={!loading}>
             <Modal.Title>Confirmar cancelación</Modal.Title>
           </Modal.Header>
           <Modal.Body>

@@ -163,7 +163,7 @@ export const sendEmailOrderDone = async (customerData) => {
     );
   } catch (error) {
     console.error(
-      "Error al enviar el correo electrónico de agradecimiento por la compra:",
+      "Error al enviar el correo electrónico para notificar la orden compra:",
       error
     );
     throw error;

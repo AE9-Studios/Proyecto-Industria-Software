@@ -12,6 +12,11 @@ const PanelAdmin = () => {
         url: '/admin/home',
         icon: 'bi bi-house-fill',
     },
+    {
+      title: "Bitácora",
+      url: "/admin/logbook",
+      icon: "bi bi-journal-bookmark-fill",
+    },
 ]
 
   return (
