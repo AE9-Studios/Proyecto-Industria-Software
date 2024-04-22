@@ -18,17 +18,29 @@ const AdminScheduleDetails = () => {
   const [errors, setErrors] = useState([]);
   const params = useParams();
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
@@ -103,110 +115,111 @@ const AdminScheduleDetails = () => {
   });
 
   return (
-    <div className="container-sm mb-3">
-      <form
-        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
-        style={{ maxWidth: "700px" }}
-        onSubmit={onSubmit}
-      >
+    <>
+      <div className="container-sm mb-3">
+        <form
+          className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
+          style={{ maxWidth: "700px" }}
+          onSubmit={onSubmit}
+        >
+          <div className=" pt-3 pb-5">
+            <div className="d-flex flex-column align-items-center p-5">
+              <h2 className="text-center mb-3">Editar Horario</h2>
+              {schedule && (
+                <div className="container d-flex flex-column">
+                  <div className="p-2 mb-3 container">
+                    <label htmlFor="scheduleName" className="form-label">
+                      <strong>Nombre del Horario:</strong>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="scheduleName"
+                      defaultValue={schedule.ScheduleName}
+                      {...register("scheduleName", { required: true })}
+                      placeholder="Nombre del Horario"
+                    />
+                    {formErrors.scheduleName && (
+                      <span className="form-text text-danger">
+                        Nombre requerido
+                      </span>
+                    )}
+                  </div>
 
-
-        <div className=" pt-3 pb-5">
-          <div className="d-flex flex-column align-items-center p-5">
-            <h2 className="text-center mb-3">Editar Horario</h2>
-            {schedule && (
-              <div className="container d-flex flex-column">
-                <div className="p-2 mb-3 container">
-                  <label htmlFor="scheduleName" className="form-label">
-                    <strong>Nombre del Horario:</strong>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="scheduleName"
-                    defaultValue={schedule.ScheduleName}
-                    {...register("scheduleName", { required: true })}
-                    placeholder="Nombre del Horario"
-                  />
-                  {formErrors.scheduleName && (
-                    <span className="form-text text-danger">
-                      Nombre requerido
-                    </span>
-                  )}
-                </div>
-
-                {schedule.Schedule.set.map((day, index) => (
-                  <div key={index} className="p-2 mb-3 container">
-                    <hr />
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label
-                          htmlFor={`${day.day.toLowerCase()}Start`}
-                          className="form-label fw-bold"
-                        >
-                          {day.day.charAt(0).toUpperCase() + day.day.slice(1)}:
-                        </label>
-                        <div className="d-flex">
-                          <input
-                            type="time"
-                            className="form-control me-2"
-                            id={`${day.day.toLowerCase()}Start`}
-                            defaultValue={day.start}
-                            {...register(`${day.day.toLowerCase()}Start`, {
-                              required: day.day != "domingo",
-                            })}
-                            placeholder="Hora de inicio"
-                          />
-                          <span className="input-group-text">-</span>
-                          <input
-                            type="time"
-                            className="form-control ms-2"
-                            id={`${day.day.toLowerCase()}End`}
-                            defaultValue={day.end}
-                            {...register(`${day.day.toLowerCase()}End`, {
-                              required: day.day != "domingo",
-                            })}
-                            placeholder="Hora de fin"
-                          />
-                        </div>
-                        {(formErrors[`${day.day.toLowerCase()}Start`] ||
-                          formErrors[`${day.day.toLowerCase()}End`]) && (
-                          <div className="form-text text-danger">
-                            Hora de inicio y final requeridas
+                  {schedule.Schedule.set.map((day, index) => (
+                    <div key={index} className="p-2 mb-3 container">
+                      <hr />
+                      <div className="row mb-3">
+                        <div className="col">
+                          <label
+                            htmlFor={`${day.day.toLowerCase()}Start`}
+                            className="form-label fw-bold"
+                          >
+                            {day.day.charAt(0).toUpperCase() + day.day.slice(1)}
+                            :
+                          </label>
+                          <div className="d-flex">
+                            <input
+                              type="time"
+                              className="form-control me-2"
+                              id={`${day.day.toLowerCase()}Start`}
+                              defaultValue={day.start}
+                              {...register(`${day.day.toLowerCase()}Start`, {
+                                required: day.day != "domingo",
+                              })}
+                              placeholder="Hora de inicio"
+                            />
+                            <span className="input-group-text">-</span>
+                            <input
+                              type="time"
+                              className="form-control ms-2"
+                              id={`${day.day.toLowerCase()}End`}
+                              defaultValue={day.end}
+                              {...register(`${day.day.toLowerCase()}End`, {
+                                required: day.day != "domingo",
+                              })}
+                              placeholder="Hora de fin"
+                            />
                           </div>
-                        )}
+                          {(formErrors[`${day.day.toLowerCase()}Start`] ||
+                            formErrors[`${day.day.toLowerCase()}End`]) && (
+                            <div className="form-text text-danger">
+                              Hora de inicio y final requeridas
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
+                  ))}
+                  <hr />
+                  <div className="container d-flex flex-column">
+                    <button
+                      type="submit"
+                      className="btn btn-primary mt-3 py-2 px-5 rounded-4"
+                    >
+                      Guardar Cambios
+                    </button>
                   </div>
-                ))}
-                <hr />
-                <div className="container d-flex flex-column">
-                  <button
-                    type="submit"
-                    className="btn btn-primary mt-3 py-2 px-5 rounded-4"
-                  >
-                    Guardar Cambios
-                  </button>
                 </div>
-              </div>
-            )}
-            {showSuccessMessage && (
-              <div className="alert alert-success mt-3" role="alert">
-                {successMessage}
-              </div>
-            )}
-            {errors.length > 0 && (
-              <div className="alert alert-danger mt-3" role="alert">
-                {errors.map((error, index) => (
-                  <p key={index}>{error}</p>
-                ))}
-              </div>
-            )}
+              )}
+              {showSuccessMessage && (
+                <div className="alert alert-success mt-3" role="alert">
+                  {successMessage}
+                </div>
+              )}
+              {errors.length > 0 && (
+                <div className="alert alert-danger mt-3" role="alert">
+                  {errors.map((error, index) => (
+                    <p key={index}>{error}</p>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
       <BottomNavigation list={list} />
-    </div>
+    </>
   );
 };
 

@@ -4,7 +4,7 @@ const CardTest = ({ title, description, icon, url, requestCount = 20 }) => {
     <a href={url} className="col-md-4 m-2 text-decoration-none">
       <div className="card text-center">
         <div className="card-body">
-          {title === "Solicitudes" || title === "Orden de ventas"  && requestCount > 0 && (
+          {(title === "Solicitudes" || title === "Orden de ventas" ) && requestCount > 0 && (
             <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {requestCount}
               <span className="visually-hidden">unread request</span>

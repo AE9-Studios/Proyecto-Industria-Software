@@ -13,10 +13,14 @@ const SalesStatisticsPage = () => {
 
   const { user } = useAuth();
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+      {
+        title: "Volver",
+        url: "/admin/sales",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
@@ -197,88 +201,89 @@ const SalesStatisticsPage = () => {
     Object.values(getSalesData()).reduce((a, b) => a + b, 0) || 0;
 
   return (
-    <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
-
-      <div className="container mt-4 mb-4">
-        <h2 className="text-center mb-4">Estadísticas de Ventas</h2>
-        <br />
-        <br />
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="row align-items-center">
-              <div className="col">
-                <label htmlFor="startDate" className="form-label">
-                  Fecha de Inicio:
-                </label>
-                <input
-                  type="date"
-                  className="form-control"
-                  id="startDate"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                />
-              </div>
-              <div className="col">
-                <label htmlFor="endDate" className="form-label">
-                  Fecha Final:
-                </label>
-                <input
-                  type="date"
-                  className="form-control"
-                  id="endDate"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                />
+    <>
+      <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
+        <div className="container mt-4 mb-4">
+          <h2 className="text-center mb-4">Estadísticas de Ventas</h2>
+          <br />
+          <br />
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="row align-items-center">
+                <div className="col">
+                  <label htmlFor="startDate" className="form-label">
+                    Fecha de Inicio:
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="startDate"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                  />
+                </div>
+                <div className="col">
+                  <label htmlFor="endDate" className="form-label">
+                    Fecha Final:
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="endDate"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <br />
-        <h6>Total de ventas en el rango de fechas: {totalSalesInRange}</h6>
+          <br />
+          <h6>Total de ventas en el rango de fechas: {totalSalesInRange}</h6>
 
-        <div className="row">
-          <div className="col-md-12">
-            <div className="row mb-3"></div>
-            <hr />
-            <h3 className="text-center mb-3">Ventas Diarias</h3>
-            <Bar
-              data={{
-                labels: Object.keys(getSalesData()),
-                datasets: [{ data: Object.values(getSalesData()) }],
-              }}
-              options={barOptions}
-            />
-            <br />
-            <br />
-            <hr />
+          <div className="row">
+            <div className="col-md-12">
+              <div className="row mb-3"></div>
+              <hr />
+              <h3 className="text-center mb-3">Ventas Diarias</h3>
+              <Bar
+                data={{
+                  labels: Object.keys(getSalesData()),
+                  datasets: [{ data: Object.values(getSalesData()) }],
+                }}
+                options={barOptions}
+              />
+              <br />
+              <br />
+              <hr />
 
-            <div className="row justify-content-center">
-              <div className="col-md-6">
-                <div
-                  className="d-flex flex-column align-items-center"
-                  style={{ overflowX: "auto", overflowY: "hidden" }}
-                >
-                  <hr />
-                  <h3 className="text-center mb-3">
-                    Ventas en Línea vs. Ventas en Caja
-                  </h3>
-                  <div className="mb-4">
-                    <Doughnut
-                      data={getPieChartDataLineaCaja()}
-                      options={pieOptions}
-                      style={{ width: "400px", height: "400px" }}
-                    />
-                  </div>
-                  <hr />
-                  <h3 className="text-center mb-3">
-                    Ventas con Descuento vs. Ventas sin Descuento
-                  </h3>
-                  <div>
-                    <Doughnut
-                      data={getPieChartDataDescuento()}
-                      options={pieOptions}
-                      style={{ width: "400px", height: "400px" }}
-                    />
+              <div className="row justify-content-center">
+                <div className="col-md-6">
+                  <div
+                    className="d-flex flex-column align-items-center"
+                    style={{ overflowX: "auto", overflowY: "hidden" }}
+                  >
+                    <hr />
+                    <h3 className="text-center mb-3">
+                      Ventas en Línea vs. Ventas en Caja
+                    </h3>
+                    <div className="mb-4">
+                      <Doughnut
+                        data={getPieChartDataLineaCaja()}
+                        options={pieOptions}
+                        style={{ width: "400px", height: "400px" }}
+                      />
+                    </div>
+                    <hr />
+                    <h3 className="text-center mb-3">
+                      Ventas con Descuento vs. Ventas sin Descuento
+                    </h3>
+                    <div>
+                      <Doughnut
+                        data={getPieChartDataDescuento()}
+                        options={pieOptions}
+                        style={{ width: "400px", height: "400px" }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -287,7 +292,7 @@ const SalesStatisticsPage = () => {
         </div>
       </div>
       <BottomNavigation list={list} />
-    </div>
+    </>
   );
 };
 

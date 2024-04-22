@@ -12,10 +12,14 @@ const SalesCatalogView = () => {
   const { addPurchase, purchaseList, deletePurchase } = useContext(CartContext);
   const [searchQuery, setSearchQuery] = useState("");
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+      {
+        title: "Volver",
+        url: "/admin/sales",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
@@ -60,8 +64,8 @@ const SalesCatalogView = () => {
               image={
                 product.Image
                   ? `http://localhost:3000/api/img/products/${product.Image}` //dev
-                  // ? `https://classic-vision.alhanisespinal.tech/api/img/products/${product.Image}` //deploy
-                  : "https://www.mobismea.com/upload/iblock/2a0/2f5hleoupzrnz9o3b8elnbv82hxfh4ld/No%20Product%20Image%20Available.png"
+                  : // ? `https://classic-vision.alhanisespinal.tech/api/img/products/${product.Image}` //deploy
+                    "/noimage.jpg"
               }
               title={product.Name}
               description={product.Description}

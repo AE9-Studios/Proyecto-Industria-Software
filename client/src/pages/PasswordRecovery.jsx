@@ -219,7 +219,7 @@ export const ResetPasswordPage = () => {
                     <input
                       id="password1"
                       className="form-control"
-                      placeholder="8 dígitos, mayúsculas, minúsculas, número y caracter especial"
+                      placeholder="Nueva contraseña"
                       type="password"
                       {...register("password", { required: true })}
                     />
@@ -248,9 +248,7 @@ export const ResetPasswordPage = () => {
                       </div>
                     )}
                     <br />
-                    <label className="form-label">
-                      Confirmar contraseña
-                    </label>
+                    <label className="form-label">Confirmar contraseña</label>
                     <input
                       id="password2"
                       className="form-control"

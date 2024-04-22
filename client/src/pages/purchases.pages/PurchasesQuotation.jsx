@@ -7,9 +7,13 @@ import BottomNavigation from "../../components/BottomNavigation";
 
 function PurchaseQuotation() {
   const list = [
-    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    {
+      title: "Volver",
+      url: "/admin/purchases",
+      icon: "bi bi-arrow-left-circle-fill",
+    },
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
-  ]
+  ];
   const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -70,16 +74,18 @@ function PurchaseQuotation() {
   };
 
   return (
-    <div className=" mt-4">
-      <div className="container mx-2">
-        <h2 className="mb-4">Solicitar Cotización</h2>
-        <div className="row mb-3">
+    <div className="mt-4 bg-white rounded-4 ">
+      <div className="container px-2">
+        <h2 className="card-title text-center fw-bold mb-4">
+          Solicitar Cotización
+        </h2>
+        <div className="row mb-3 container p-2 m-2">
           <div className="col">
             <label
               htmlFor="supplierSelect"
               className="form-label me-2 mb-0 fw-bold"
             >
-              Seleccionar Proveedor:
+              Proveedor:
             </label>
             <select
               id="supplierSelect"
@@ -100,10 +106,7 @@ function PurchaseQuotation() {
                 </option>
               ))}
             </select>
-          </div>
-        </div>
-        <div className="row mb-3">
-          <div className="col d-flex align-items-center">
+            <br />
             <label
               htmlFor="productNameInput"
               className="form-label me-2 mb-0 fw-bold"
@@ -117,6 +120,7 @@ function PurchaseQuotation() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
             />
+            <br />
             <label
               htmlFor="quantityInput"
               className="form-label me-2 mb-0 fw-bold"
@@ -131,7 +135,11 @@ function PurchaseQuotation() {
               onChange={(e) => setQuantity(e.target.value)}
               min={1}
             />
-            <button className="btn btn-primary" onClick={handleAddItem}>
+            <br />
+            <button
+              className="w-100 btn btn-primary mt-3 py-2 px-5 rounded-4"
+              onClick={handleAddItem}
+            >
               Añadir
             </button>
           </div>
@@ -169,7 +177,7 @@ function PurchaseQuotation() {
           </table>
         </div>
         <button
-          className="btn btn-success"
+          className="w-100 btn btn-success mt-3 py-2 px-5 rounded-4"
           onClick={openModal}
           disabled={orderItems.length === 0 || sendingRequest}
         >

@@ -5,19 +5,25 @@ import { getRequestWithReadFalse } from "../../api/human-resources";
 import BottomNavigation from "../../components/BottomNavigation";
 
 const HHRRHome = () => {
-  let list = []
-  const { user, logoutUser } = useAuth();
+  let list = [];
+  const { user } = useAuth();
   const [unreadPermissionsCount, setUnreadPermissionsCount] = useState(0);
 
-  if(user.role === "ADMINISTRADOR"){
-    list = [
-      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
-    ];
+  if (user.role === "ADMINISTRADOR") {
+    list = [{ title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" }];
   } else {
-     list = [
+    list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
-      {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
@@ -42,10 +48,13 @@ const HHRRHome = () => {
     <>
       {user.role === "ADMINISTRADOR" ? (
         <>
-          <div className="d-flex flex-column p-4 align-items-center">
-            <h2>Bienvenido, Administrador</h2>
+          <div className="container p-2 m-auto">
+            <h3 className="text-center">Panel de Recursos Humanos</h3>
+            <p className="text-center p-2">
+              Gestiona el personal y recursos humanos. <br />
+              Seleccione una opción para dirigirse al panel correspondiente.
+            </p>
           </div>
-
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">
               <CardTest
@@ -124,16 +133,14 @@ const HHRRHome = () => {
                 url="requests"
                 requestCount={unreadPermissionsCount}
               />
-              {
-                user.employeeData.Position === "MEDICO" ? (
-                  <CardTest
-                    title="Citas"
-                    description="Acepta atiende las citas pendiendes"
-                    icon="bi bi-file-earmark-text"
-                    url="appointments"
-                  />
-                ) : null
-              }
+              {user.employeeData.Position === "MEDICO" ? (
+                <CardTest
+                  title="Citas"
+                  description="Acepta atiende las citas pendiendes"
+                  icon="bi bi-file-earmark-text"
+                  url="appointments"
+                />
+              ) : null}
             </div>
           </div>
           <BottomNavigation list={list} />

@@ -7,9 +7,13 @@ import BottomNavigation from "../../components/BottomNavigation";
 
 const PurchasesReceiptList = () => {
   const list = [
-    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    {
+      title: "Volver",
+      url: "/admin/purchases",
+      icon: "bi bi-arrow-left-circle-fill",
+    },
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
-  ]
+  ];
   const [approvedOrders, setApprovedOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -120,7 +124,9 @@ const PurchasesReceiptList = () => {
           </table>
           <nav aria-label="Page navigation example">
             <ul className="pagination">
-              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
                 <button
                   className="page-link"
                   onClick={() => paginate(currentPage - 1)}
@@ -132,8 +138,10 @@ const PurchasesReceiptList = () => {
                 { length: Math.ceil(filteredOrders.length / itemsPerPage) },
                 (_, i) => (
                   <li
-                    className={`page-item ${currentPage === i + 1 ? "active" : ""
-                      }`}
+                    style={{ zIndex: 0 }}
+                    className={`page-item ${
+                      currentPage === i + 1 ? "active" : ""
+                    }`}
                     key={i}
                     onClick={() => paginate(i + 1)}
                   >
@@ -142,10 +150,12 @@ const PurchasesReceiptList = () => {
                 )
               )}
               <li
-                className={`page-item ${currentPage === Math.ceil(filteredOrders.length / itemsPerPage)
+                className={`page-item ${
+                  currentPage ===
+                  Math.ceil(filteredOrders.length / itemsPerPage)
                     ? "disabled"
                     : ""
-                  }`}
+                }`}
               >
                 <button
                   className="page-link"
@@ -158,7 +168,7 @@ const PurchasesReceiptList = () => {
           </nav>
         </div>
       </div>
-      <BottomNavigation list={list} />
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
     </div>
   );
 };

@@ -6,18 +6,14 @@ import CardTest from "../../components/CardTest";
 import { getPurchaseOrdersWithReadFalse } from "../../api/sales";
 import BottomNavigation from "../../components/BottomNavigation";
 import CardModules from "../../components/CardModules";
-import { Card } from "react-bootstrap";
 
 const ClientHome = () => {
-  const { user, logoutUser } = useAuth();
+  const { user } = useAuth();
   const [unreadOrderCount, setUnreadOrderCount] = useState(0);
-  
-  let list = []
+
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
-    list = [
-      
-      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
-    ];
+    list = [{ title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" }];
   } else {
     list = [
       { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
@@ -50,10 +46,14 @@ const ClientHome = () => {
     <>
       {user.role === "ADMINISTRADOR" ? (
         <>
-          <div className="d-flex flex-column align-items-center">
-            <h2>Bienvenido, Administrador</h2>
+          <div className="container p-2 m-auto">
+            <h3 className="text-center">Panel de Ventas</h3>
+            <p className="text-center p-2">
+              Gestiona las ventas de tu negocio.
+              <br />
+              Seleccione una opción para dirigirse al panel correspondiente.
+            </p>
           </div>
-
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">
               <CardTest
@@ -90,14 +90,39 @@ const ClientHome = () => {
         </>
       ) : (
         <div className="container">
-          <h1 className="p-2 mt-4 text-center">Bienvenido a la app de Shipsmart</h1>
-          <p className="p-2 text-center">Aquí podrás realizar tus compras de una forma rápida y segura. Ademas puedes agendar tus citas</p>
+          <h1 className="p-2 mt-4 text-center">
+            Bienvenido a la app de Shipsmart
+          </h1>
+          <p className="p-2 text-center">
+            Aquí podrás realizar tus compras de una forma rápida y segura.
+            Ademas puedes agendar tus citas
+          </p>
           <div className="container d-flex justify-content-center">
             <div className="row p-3 justify-content-center">
-              <CardModules title="Catálogo" icon="bi bi-shop" description="Mira los productos disponibles" url="/client/catalog" />
-              <CardModules title="Citas" icon="bi bi-calendar" description="Agenda tus citas" url="/client/appointments" />
-              <CardModules title="Carrito" icon="bi bi-cart-fill" description="Revisa tu carrito de compras" url="/client/checkout" />
-              <CardModules title="Órdenes" icon="bi bi-card-checklist" description="Mira tus ordenes de compra" url="/client/purchases" />
+              <CardModules
+                title="Catálogo"
+                icon="bi bi-shop"
+                description="Mira los productos disponibles"
+                url="/client/catalog"
+              />
+              <CardModules
+                title="Citas"
+                icon="bi bi-calendar"
+                description="Agenda tus citas"
+                url="/client/appointments"
+              />
+              <CardModules
+                title="Carrito"
+                icon="bi bi-cart-fill"
+                description="Revisa tu carrito de compras"
+                url="/client/checkout"
+              />
+              <CardModules
+                title="Órdenes"
+                icon="bi bi-card-checklist"
+                description="Mira tus ordenes de compra"
+                url="/client/purchases"
+              />
             </div>
           </div>
         </div>

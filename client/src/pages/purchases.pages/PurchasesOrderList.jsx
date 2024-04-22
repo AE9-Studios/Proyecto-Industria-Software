@@ -5,9 +5,13 @@ import BottomNavigation from "../../components/BottomNavigation";
 
 const PurchasesOrderList = () => {
   const list = [
-    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    {
+      title: "Volver",
+      url: "/admin/purchases",
+      icon: "bi bi-arrow-left-circle-fill",
+    },
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
-  ]
+  ];
   const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [filteredPurchaseOrders, setFilteredPurchaseOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -139,6 +143,7 @@ const PurchasesOrderList = () => {
                 },
                 (_, i) => (
                   <li
+                    style={{ zIndex: 0 }}
                     className={`page-item ${
                       currentPage === i + 1 ? "active" : ""
                     }`}
@@ -168,7 +173,7 @@ const PurchasesOrderList = () => {
           </nav>
         </div>
       </div>
-      <BottomNavigation list={list} />
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
     </div>
   );
 };

@@ -17,17 +17,29 @@ const AdminRequestList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
@@ -66,8 +78,8 @@ const AdminRequestList = () => {
         const readStatus = item.Read ? "leído" : "no leído";
         const days = Math.ceil(
           (new Date(item.End_Date) - new Date(item.Start_Date)) /
-          (1000 * 60 * 60 * 24) +
-          1
+            (1000 * 60 * 60 * 24) +
+            1
         );
         const type = isPermission ? "Permiso" : "Vacaciones";
 
@@ -133,7 +145,6 @@ const AdminRequestList = () => {
 
   return (
     <div className=" mt-4 mb-4 bg-white rounded-4 ">
-
       <div className="container m-auto">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Permisos y Vacaciones
@@ -180,15 +191,16 @@ const AdminRequestList = () => {
                   <td>
                     {"Reason" in item
                       ? "Start_Date" in item &&
-                      Math.ceil(
-                        (new Date(item.End_Date) - new Date(item.Start_Date)) /
-                        (1000 * 60 * 60 * 24) +
-                        1
-                      )
+                        Math.ceil(
+                          (new Date(item.End_Date) -
+                            new Date(item.Start_Date)) /
+                            (1000 * 60 * 60 * 24) +
+                            1
+                        )
                       : calculateDaysWithoutWeekends(
-                        item.Start_Date,
-                        item.End_Date
-                      )}
+                          item.Start_Date,
+                          item.End_Date
+                        )}
                   </td>
 
                   <td>
@@ -206,7 +218,8 @@ const AdminRequestList = () => {
                       className="btn btn-primary btn-sm"
                       onClick={() =>
                         navigate(
-                          `/admin/human-resources/${"Reason" in item ? "permissions" : "vacations"
+                          `/admin/human-resources/${
+                            "Reason" in item ? "permissions" : "vacations"
                           }/${item.Id}`
                         )
                       }
@@ -220,7 +233,9 @@ const AdminRequestList = () => {
           </table>
           <nav aria-label="Page navigation example">
             <ul className="pagination">
-              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
                 <button
                   className="page-link"
                   onClick={() => paginate(currentPage - 1)}
@@ -232,8 +247,10 @@ const AdminRequestList = () => {
                 { length: Math.ceil(filteredItems.length / itemsPerPage) },
                 (_, i) => (
                   <li
-                    className={`page-item ${currentPage === i + 1 ? "active" : ""
-                      }`}
+                    style={{ zIndex: 0 }}
+                    className={`page-item ${
+                      currentPage === i + 1 ? "active" : ""
+                    }`}
                     key={i}
                     onClick={() => paginate(i + 1)}
                   >
@@ -242,10 +259,11 @@ const AdminRequestList = () => {
                 )
               )}
               <li
-                className={`page-item ${currentPage === Math.ceil(filteredItems.length / itemsPerPage)
+                className={`page-item ${
+                  currentPage === Math.ceil(filteredItems.length / itemsPerPage)
                     ? "disabled"
                     : ""
-                  }`}
+                }`}
               >
                 <button
                   className="page-link"
@@ -258,7 +276,7 @@ const AdminRequestList = () => {
           </nav>
         </div>
       </div>
-      <BottomNavigation list={list} />
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
     </div>
   );
 };

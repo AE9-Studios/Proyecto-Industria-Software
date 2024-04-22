@@ -27,8 +27,6 @@ const AdminScheduleCreate = () => {
       );
     };
 
-
-
     const days = [
       "Lunes",
       "Martes",
@@ -72,32 +70,44 @@ const AdminScheduleCreate = () => {
     }
   });
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
   return (
-    <div className=" mb-3">
+    <div className="mb-3">
       <form
-        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
+        className="mx-auto mx-auto rounded-4 bg-white"
         style={{ maxWidth: "700px" }}
         onSubmit={onSubmit}
       >
-
-
-        <div className=" pt-3 pb-5">
+        <div className=" pb-5">
           <div className="d-flex flex-column align-items-center p-5">
-            <h2 className="text-center mb-3">Crear Horario</h2>
+            <h2 className="card-title text-center fw-bold mb-4">
+              Crear Horario
+            </h2>
             <div className="container d-flex flex-column">
               <div className="p-2 mb-3 container">
                 <label htmlFor="scheduleName" className="form-label">

@@ -5,27 +5,37 @@ import BottomNavigation from "../../components/BottomNavigation.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminEmployeeList = () => {
-
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage] = useState(10); // Removed unused setItemsPerPage
 
   const { user } = useAuth();
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
@@ -34,7 +44,6 @@ const AdminEmployeeList = () => {
       try {
         const response = await getEmployees();
         setEmployees(response.data);
-
         setFilteredEmployees(response.data);
       } catch (error) {
         console.error("Error listando los empleados:", error);
@@ -45,27 +54,19 @@ const AdminEmployeeList = () => {
   }, []);
 
   const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+    const searchTerm = event.target.value.toLowerCase(); // Convert search term to lowercase
+    setSearchTerm(searchTerm);
     const filtered = employees.filter(
       (employee) =>
-        employee.User.Email.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        ) ||
-        employee.Person.First_Name.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        ) ||
-        employee.Person.Last_Name.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        ) ||
-        employee.Person.DNI.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        ) ||
-        employee.Position.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        ) ||
-        employee.Schedule_Employee[0].Schedule.ScheduleName.toLowerCase().includes(
-          event.target.value.toLowerCase()
-        )
+        employee.User.Email.toLowerCase().includes(searchTerm) ||
+        employee.Person.First_Name.toLowerCase().includes(searchTerm) ||
+        employee.Person.Last_Name.toLowerCase().includes(searchTerm) ||
+        employee.Person.DNI.toLowerCase().includes(searchTerm) ||
+        employee.Position.toLowerCase().includes(searchTerm) ||
+        (employee.Schedule_Employee[0]?.Schedule.ScheduleName &&
+          employee.Schedule_Employee[0]?.Schedule.ScheduleName.toLowerCase().includes(
+            searchTerm
+          )) // Check if ScheduleName exists before accessing
     );
     setFilteredEmployees(filtered.slice(0, 20));
   };
@@ -90,9 +91,8 @@ const AdminEmployeeList = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className=" mt-4 bg-white rounded-4 ">
+    <div className="mt-4 bg-white rounded-4">
       <div className="container">
-
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Empleados
         </h2>
@@ -126,20 +126,23 @@ const AdminEmployeeList = () => {
                   </td>
                   <td>{employee.User.Email}</td>
                   <td>{formatPosition(employee.Position)}</td>
-                  <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ? employee.Schedule_Employee[0].Schedule.ScheduleName : "Este empleado no tiene los campos actualizados"}</td>
-
-                  <td>{employee?.Schedule_Employee[0]?.Schedule.ScheduleName ?
-
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() =>
-                        navigate(
-                          `/admin/human-resources/employees/${employee.Id}`
-                        )
-                      }
-                    >
-                      Editar
-                    </button> : ""}
+                  <td>
+                    {employee.Schedule_Employee[0]?.Schedule.ScheduleName ||
+                      "Este empleado no tiene los campos actualizados"}
+                  </td>
+                  <td>
+                    {employee.Schedule_Employee[0]?.Schedule.ScheduleName && ( // Check if ScheduleName exists before rendering button
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() =>
+                          navigate(
+                            `/admin/human-resources/employees/${employee.Id}`
+                          )
+                        }
+                      >
+                        Editar
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -158,13 +161,13 @@ const AdminEmployeeList = () => {
                 </button>
               </li>
               {Array.from(
-                {
-                  length: Math.ceil(filteredEmployees.length / itemsPerPage),
-                },
+                { length: Math.ceil(filteredEmployees.length / itemsPerPage) },
                 (_, i) => (
                   <li
-                    className={`page-item ${currentPage === i + 1 ? "active" : ""
-                      }`}
+                    style={{ zIndex: 0 }}
+                    className={`page-item ${
+                      currentPage === i + 1 ? "active" : ""
+                    }`}
                     key={i}
                     onClick={() => paginate(i + 1)}
                   >
@@ -173,11 +176,12 @@ const AdminEmployeeList = () => {
                 )
               )}
               <li
-                className={`page-item ${currentPage ===
-                    Math.ceil(filteredEmployees.length / itemsPerPage)
+                className={`page-item ${
+                  currentPage ===
+                  Math.ceil(filteredEmployees.length / itemsPerPage)
                     ? "disabled"
                     : ""
-                  }`}
+                }`}
               >
                 <button
                   className="page-link"
@@ -190,7 +194,7 @@ const AdminEmployeeList = () => {
           </nav>
         </div>
       </div>
-      <BottomNavigation list={list} />
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
     </div>
   );
 };

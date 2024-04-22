@@ -61,14 +61,18 @@ export const Cart = ({ role }) => {
                 Catálogo
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink
-                to={isAdmin ? "/admin/appointments" : "/client/appointments"}
-                className="nav-link active"
-              >
-                Citas
-              </NavLink>
-            </li>
+            {!isAdmin ? (
+              <li className="nav-item">
+                <NavLink
+                  to={isAdmin ? "/admin/appointments" : "/client/appointments"}
+                  className="nav-link active"
+                >
+                  Citas
+                </NavLink>
+              </li>
+            ) : (
+              ""
+            )}
             {!isAdmin ? (
               <>
                 <li className="nav-item">

@@ -3,16 +3,27 @@ import CardTest from "../../components/CardTest";
 
 const PurchasesPanel = () => {
   const list = [
-    { title: "Volver", url: "/admin/home", icon: "bi bi-arrow-left-circle-fill" },
-    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill"}
-  ]
+    {
+      title: "Volver",
+      url: "/admin/home",
+      icon: "bi bi-arrow-left-circle-fill",
+    },
+    { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
+  ];
   return (
     <div>
-      <div className="col">
-        <div className="row p-3 justify-content-center">
+      <div className="container p-2 m-auto">
+        <h3 className="text-center">Panel de Compras</h3>
+        <p className="text-center p-2">
+          Administra las compras realizadas. <br />
+          Seleccione una opción para dirigirse al panel correspondiente.
+        </p>
+      </div>
+      <div className="container d-flex justify-content-center">
+        <div className="row col justify-content-center">
           <CardTest
             title="Pedidos"
-            description="Realiza pedidos de producto a proveedores"
+            description="Selecciona productos y realiza pedidos a proveedores"
             icon="bi bi-bag-plus"
             url="/admin/purchases/new"
           />

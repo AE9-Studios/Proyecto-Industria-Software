@@ -10,8 +10,12 @@ import BottomNavigation from "../../components/BottomNavigation";
 const EmployeePermissionDetails = () => {
   const list = [
     { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-    {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
-    {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+    {
+      title: "Permisos",
+      url: "/employee/permission",
+      icon: "bi bi-calendar-check",
+    },
+    { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
   ];
   const [fileUrl, setFileUrl] = useState("");
   const [permission, setPermission] = useState("");
@@ -51,104 +55,107 @@ const EmployeePermissionDetails = () => {
   }, [params.id]);
 
   return (
-    <div className="container-sm mb-3">
-      <div
-        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
-        style={{ maxWidth: "700px" }}
-      >
-
-        <div className=" pt-3 pb-5">
-          <div className="d-flex flex-column align-items-center p-5">
-            <h2 className="text-center mb-3">Detalles del Permiso</h2>
-            <h4>
-              <span className={`badge ${getBadgeColor(permission.State)}`}>
-                {permission.State}
-              </span>
-            </h4>
-            <div className="container d-flex flex-column">
-              {permission && (
-                <>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha de Inicio:</strong>
-                    </label>
-                    <span className="badge-detail">
-                      {permission.Start_Date}
-                    </span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha Final:</strong>
-                    </label>
-                    <span className="badge-detail">{permission.End_Date}</span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Cantidad de días:</strong>
-                    </label>
-                    <span className="badge-detail">
-                      {Math.ceil(
-                        (new Date(permission.End_Date) -
-                          new Date(permission.Start_Date)) /
-                          (1000 * 60 * 60 * 24) +
-                          1
-                      )}
-                    </span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      {" "}
-                      <strong>Razón:</strong>{" "}
-                    </label>
-                    <span className="badge-detail">{permission.Reason}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      {" "}
-                      <strong>Descripción:</strong>{" "}
-                    </label>
-                    <span className="badge-detail">
-                      {permission.Description}
-                    </span>
-                  </div>
-
-                  {permission.Answer && (
+    <>
+      <div className="container-sm mb-3">
+        <div
+          className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
+          style={{ maxWidth: "700px" }}
+        >
+          <div className=" pt-3 pb-5">
+            <div className="d-flex flex-column align-items-center p-5">
+              <h2 className="text-center mb-3">Detalles del Permiso</h2>
+              <h4>
+                <span className={`badge ${getBadgeColor(permission.State)}`}>
+                  {permission.State}
+                </span>
+              </h4>
+              <div className="container d-flex flex-column">
+                {permission && (
+                  <>
                     <div className="p-2 mb-3 container">
                       <label className="form-label">
-                        <strong>Respuesta:</strong>
+                        <strong>Fecha de Inicio:</strong>
                       </label>
-                      <span className="badge-detail-gold">
-                        {permission.Answer}
+                      <span className="badge-detail">
+                        {permission.Start_Date}
                       </span>
                     </div>
-                  )}
-                  <div className="container d-flex flex-column">
-                    {fileUrl ? (
-                      <>
-                        <a
-                          href={fileUrl}
-                          download="archivo_adjunto"
-                          className="btn btn-success mt-3 py-2 px-5 rounded-4"
-                        >
-                          Descargar archivo adjunto
-                        </a>
-                      </>
-                    ) : (
-                      <span className="form-text text-danger">
-                        No se adjuntó un archivo de justificación.
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Fecha Final:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {permission.End_Date}
                       </span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Cantidad de días:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {Math.ceil(
+                          (new Date(permission.End_Date) -
+                            new Date(permission.Start_Date)) /
+                            (1000 * 60 * 60 * 24) +
+                            1
+                        )}
+                      </span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        {" "}
+                        <strong>Razón:</strong>{" "}
+                      </label>
+                      <span className="badge-detail">{permission.Reason}</span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        {" "}
+                        <strong>Descripción:</strong>{" "}
+                      </label>
+                      <span className="badge-detail">
+                        {permission.Description}
+                      </span>
+                    </div>
+
+                    {permission.Answer && (
+                      <div className="p-2 mb-3 container">
+                        <label className="form-label">
+                          <strong>Respuesta:</strong>
+                        </label>
+                        <span className="badge-detail-gold">
+                          {permission.Answer}
+                        </span>
+                      </div>
                     )}
-                  </div>
-                </>
-              )}
+                    <div className="container d-flex flex-column">
+                      {fileUrl ? (
+                        <>
+                          <a
+                            href={fileUrl}
+                            download="archivo_adjunto"
+                            className="btn btn-success mt-3 py-2 px-5 rounded-4"
+                          >
+                            Descargar archivo adjunto
+                          </a>
+                        </>
+                      ) : (
+                        <span className="form-text text-danger">
+                          No se adjuntó un archivo de justificación.
+                        </span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <BottomNavigation list={list} />
-    </div>
+    </>
   );
 };
 

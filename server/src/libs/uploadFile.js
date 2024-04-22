@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const storageDocument = multer.diskStorage({
   destination: function (req, file, cb) {
-    const allowedPDFExtensions = ['.pdf'];
+    const allowedPDFExtensions = ['.pdf', '.png', '.jpg'];
     const fileExtension = path.extname(file.originalname).toLowerCase();
     if (!allowedPDFExtensions.includes(fileExtension)) {
       return cb('El archivo debe tener una de las siguientes extensiones: ' + allowedPDFExtensions.join(', '), null);

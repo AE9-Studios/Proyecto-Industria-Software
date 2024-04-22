@@ -6,7 +6,7 @@ import BottomNavigation from "../../components/BottomNavigation.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 const AdminScheduleList = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,17 +18,29 @@ const AdminScheduleList = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const itemsPerPage = 10;
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
 
@@ -105,9 +117,7 @@ const AdminScheduleList = () => {
 
   return (
     <div className=" mt-4 mb-4 bg-white rounded-4 ">
-      <div className="mx-2">
-
-
+      <div className="container">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Horarios
         </h2>
@@ -153,13 +163,13 @@ const AdminScheduleList = () => {
                         )
                       }
                     >
-                      <i className="bi bi-pencil-square"></i> Editar
+                      <i className="bi bi-pencil-square"></i>
                     </button>{" "}
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => handleOpenDeleteModal(schedule.Id)}
                     >
-                      <i className="bi bi-trash"></i> Eliminar
+                      <i className="bi bi-trash"></i>
                     </button>
                   </td>
                 </tr>
@@ -182,6 +192,7 @@ const AdminScheduleList = () => {
                 { length: Math.ceil(filteredSchedules.length / itemsPerPage) },
                 (_, i) => (
                   <li
+                    style={{ zIndex: 0 }}
                     className={`page-item ${
                       currentPage === i + 1 ? "active" : ""
                     }`}
@@ -240,7 +251,7 @@ const AdminScheduleList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <BottomNavigation list={list} />
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
     </div>
   );
 };

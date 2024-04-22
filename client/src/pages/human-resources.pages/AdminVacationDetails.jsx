@@ -8,7 +8,6 @@ import { useAuth } from "../../context/AuthContext";
 import BottomNavigation from "../../components/BottomNavigation";
 
 const AdminVacationDetails = () => {
-
   const [vacation, setVacation] = useState(null);
   const [person, setPerson] = useState(null);
   const [newState, setNewState] = useState("");
@@ -20,21 +19,32 @@ const AdminVacationDetails = () => {
   const { user } = useAuth();
   const [availableDays, setAvailableDays] = useState(0);
 
-
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
     list = [
-      { title: 'Volver', url: '/admin/human-resources', icon: 'bi bi-arrow-left-circle-fill' },
+      {
+        title: "Volver",
+        url: "/admin/human-resources",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
     list = [
       { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-      { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
-      { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
+      {
+        title: "Permisos",
+        url: "/employee/permission",
+        icon: "bi bi-calendar-check",
+      },
+      {
+        title: "Solicitudes",
+        url: "/employee/requests",
+        icon: "bi bi-mailbox2",
+      },
     ];
   }
-  
+
   useEffect(() => {
     const loadVacation = async () => {
       try {
@@ -82,7 +92,7 @@ const AdminVacationDetails = () => {
       setDaysBetween(days);
     }
   }, [vacation]);
-  
+
   const handleStateChange = async () => {
     try {
       if (!newState) {
@@ -131,7 +141,7 @@ const AdminVacationDetails = () => {
     const start = new Date(startDate);
     const end = new Date(endDate);
     let count = 0;
-  
+
     while (start <= end) {
       const day = start.getDay();
       if (day !== 0 && day !== 6) {
@@ -139,10 +149,10 @@ const AdminVacationDetails = () => {
       }
       start.setDate(start.getDate() + 1);
     }
-  
+
     return count;
   };
-  
+
   const calculateVacationDays = (Start_Date, Days_Spent) => {
     const currentDate = new Date();
     const startYear = new Date(Start_Date).getFullYear();
@@ -164,153 +174,157 @@ const AdminVacationDetails = () => {
   };
 
   return (
-    <div className="container-sm mb-3">
-      <div
-        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
-        style={{ maxWidth: "700px" }}
-      >
-
-
-        <div className=" pt-3 pb-5">
-          <div className="d-flex flex-column align-items-center p-5">
-            <h2 className="text-center mb-3">
-              Responder Solicitud de Vacaciones
-            </h2>
-            <div className="container d-flex flex-column">
-              {vacation && (
-                <>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>DNI:</strong>
-                    </label>
-                    <span className="badge-detail">{person && person.DNI}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Nombre:</strong>
-                    </label>
-                    <span className="badge-detail">
-                      {person && `${person.First_Name} ${person.Last_Name}`}
-                    </span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Cargo:</strong>
-                    </label>
-                    <span className="badge-detail">
-                      {vacation.Employee && vacation.Employee.Position}
-                    </span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Estado:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.State}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha Inicial:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.Start_Date}</span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha Final:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.End_Date}</span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Cantidad de días:</strong>
-                    </label>
-                    <span className="badge-detail">{daysBetween}</span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Días de vacaciones disponibles:</strong>
-                    </label>
-                    <span className="badge-detail">{availableDays}</span>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Seleccione un estado:</strong>
-                    </label>
-                    <select
-                      className="form-select"
-                      value={newState}
-                      onChange={(e) => setNewState(e.target.value)}
-                    >
-                      <option value="" hidden defaultValue>
-                        Seleccione un estado
-                      </option>
-                      <option value="PENDIENTE">Pendiente</option>
-                      <option value="APROBADO">Aprobado</option>
-                      <option value="RECHAZADO">Rechazado</option>
-                    </select>
-                  </div>
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Ingrese un comentario:</strong>
-                    </label>
-                    <textarea
-                      className="form-control"
-                      placeholder="Comentario (Opcional)"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                    />
-                  </div>
-                  <div className="container d-flex flex-column">
-                    <button
-                      className="btn btn-primary mt-3 py-2 px-5 rounded-4"
-                      onClick={handleStateChange}
-                      disabled={
-                        !newState ||
-                        newState === vacation.State ||
-                        daysBetween > availableDays
-                      }
-                    >
-                      Enviar Respuesta
-                    </button>
-                    <br />
-
-                    {error && (
-                      <span className="form-text text-danger">{error}</span>
-                    )}
-                    {responseSent && (
-                      <div className="alert alert-success" role="alert">
-                        Respuesta enviada exitosamente
-                      </div>
-                    )}
-                    {daysBetween > availableDays && (
-                      <span className="form-text text-danger">
-                        <br /> <br />
-                        Ya no puede manipular esta petición, los días
-                        solicitados superan los días disponibles.
-                        <br /> <br />
-                        <strong>Causas:</strong>
-                        <li>
-                          Acaba de aprobar la solicitud y se han actualizado los
-                          dias.
-                        </li>
-                        <li>
-                          Se han aceptado previamente otras solicitudes y se han
-                          actualizado los dias.
-                        </li>
+    <>
+      <div className="container-sm mb-3">
+        <div
+          className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
+          style={{ maxWidth: "700px" }}
+        >
+          <div className=" pt-3 pb-5">
+            <div className="d-flex flex-column align-items-center p-5">
+              <h2 className="text-center mb-3">
+                Responder Solicitud de Vacaciones
+              </h2>
+              <div className="container d-flex flex-column">
+                {vacation && (
+                  <>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>DNI:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {person && person.DNI}
                       </span>
-                    )}
-                  </div>
-                </>
-              )}
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Nombre:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {person && `${person.First_Name} ${person.Last_Name}`}
+                      </span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Cargo:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {vacation.Employee && vacation.Employee.Position}
+                      </span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Estado:</strong>
+                      </label>
+                      <span className="badge-detail">{vacation.State}</span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Fecha Inicial:</strong>
+                      </label>
+                      <span className="badge-detail">
+                        {vacation.Start_Date}
+                      </span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Fecha Final:</strong>
+                      </label>
+                      <span className="badge-detail">{vacation.End_Date}</span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Cantidad de días:</strong>
+                      </label>
+                      <span className="badge-detail">{daysBetween}</span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Días de vacaciones disponibles:</strong>
+                      </label>
+                      <span className="badge-detail">{availableDays}</span>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Seleccione un estado:</strong>
+                      </label>
+                      <select
+                        className="form-select"
+                        value={newState}
+                        onChange={(e) => setNewState(e.target.value)}
+                      >
+                        <option value="" hidden defaultValue>
+                          Seleccione un estado
+                        </option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="APROBADO">Aprobado</option>
+                        <option value="RECHAZADO">Rechazado</option>
+                      </select>
+                    </div>
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Ingrese un comentario:</strong>
+                      </label>
+                      <textarea
+                        className="form-control"
+                        placeholder="Comentario (Opcional)"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
+                    </div>
+                    <div className="container d-flex flex-column">
+                      <button
+                        className="btn btn-primary mt-3 py-2 px-5 rounded-4"
+                        onClick={handleStateChange}
+                        disabled={
+                          !newState ||
+                          newState === vacation.State ||
+                          daysBetween > availableDays
+                        }
+                      >
+                        Enviar Respuesta
+                      </button>
+                      <br />
+
+                      {error && (
+                        <span className="form-text text-danger">{error}</span>
+                      )}
+                      {responseSent && (
+                        <div className="alert alert-success" role="alert">
+                          Respuesta enviada exitosamente
+                        </div>
+                      )}
+                      {daysBetween > availableDays && (
+                        <span className="form-text text-danger">
+                          <br /> <br />
+                          Ya no puede manipular esta petición, los días
+                          solicitados superan los días disponibles.
+                          <br /> <br />
+                          <strong>Causas:</strong>
+                          <li>
+                            Acaba de aprobar la solicitud y se han actualizado
+                            los dias.
+                          </li>
+                          <li>
+                            Se han aceptado previamente otras solicitudes y se
+                            han actualizado los dias.
+                          </li>
+                        </span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
       <BottomNavigation list={list} />
-    </div>
+    </>
   );
 };
 

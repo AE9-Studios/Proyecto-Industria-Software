@@ -7,13 +7,16 @@ import BottomNavigation from "../../components/BottomNavigation";
 const EmployeeVacationDetails = () => {
   const list = [
     { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-    {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
-    {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+    {
+      title: "Permisos",
+      url: "/employee/permission",
+      icon: "bi bi-calendar-check",
+    },
+    { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
   ];
   const [vacation, setVacation] = useState(null);
   const { user } = useAuth();
   const params = useParams();
-
 
   useEffect(() => {
     const loadVacation = async () => {
@@ -45,9 +48,9 @@ const EmployeeVacationDetails = () => {
   };
 
   const daysBetween = vacation
-  ? calculateDaysWithoutWeekends(vacation.Start_Date, vacation.End_Date)
-  : null;
-  
+    ? calculateDaysWithoutWeekends(vacation.Start_Date, vacation.End_Date)
+    : null;
+
   const getBadgeColor = (state) => {
     switch (state) {
       case "PENDIENTE":
@@ -62,69 +65,72 @@ const EmployeeVacationDetails = () => {
   };
 
   return (
-    <div className=" mb-3">
-      <div
-        className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
-        style={{ maxWidth: "700px" }}
-      >
-
-        <div className=" pt-3 pb-5">
-          <div className="d-flex flex-column align-items-center p-5">
-            <h2 className="text-center mb-3">Detalles de las Vacaciones</h2>
-            {vacation && (
-              <>
-                <h4>
-                  <span className={`badge ${getBadgeColor(vacation.State)}`}>
-                    {vacation.State}
-                  </span>
-                </h4>
-                <div className="container d-flex flex-column">
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha de Inicio:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.Start_Date}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Fecha Final:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.End_Date}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Cantidad de días:</strong>
-                    </label>
-                    <span className="badge-detail">{daysBetween}</span>
-                  </div>
-
-                  <div className="p-2 mb-3 container">
-                    <label className="form-label">
-                      <strong>Estado:</strong>
-                    </label>
-                    <span className="badge-detail">{vacation.State}</span>
-                  </div>
-
-                  {vacation.Answer && (
+    <>
+      <div className=" mb-3">
+        <div
+          className="mx-auto  mt-3 mx-auto rounded-4 bg-white"
+          style={{ maxWidth: "700px" }}
+        >
+          <div className=" pt-3 pb-5">
+            <div className="d-flex flex-column align-items-center p-5">
+              <h2 className="text-center mb-3">Detalles de las Vacaciones</h2>
+              {vacation && (
+                <>
+                  <h4>
+                    <span className={`badge ${getBadgeColor(vacation.State)}`}>
+                      {vacation.State}
+                    </span>
+                  </h4>
+                  <div className="container d-flex flex-column">
                     <div className="p-2 mb-3 container">
                       <label className="form-label">
-                        <strong>Respuesta:</strong>
+                        <strong>Fecha de Inicio:</strong>
                       </label>
-                      <span className="badge-detail-gold">
-                        {vacation.Answer}
+                      <span className="badge-detail">
+                        {vacation.Start_Date}
                       </span>
                     </div>
-                  )}
-                </div>
-              </>
-            )}
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Fecha Final:</strong>
+                      </label>
+                      <span className="badge-detail">{vacation.End_Date}</span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Cantidad de días:</strong>
+                      </label>
+                      <span className="badge-detail">{daysBetween}</span>
+                    </div>
+
+                    <div className="p-2 mb-3 container">
+                      <label className="form-label">
+                        <strong>Estado:</strong>
+                      </label>
+                      <span className="badge-detail">{vacation.State}</span>
+                    </div>
+
+                    {vacation.Answer && (
+                      <div className="p-2 mb-3 container">
+                        <label className="form-label">
+                          <strong>Respuesta:</strong>
+                        </label>
+                        <span className="badge-detail-gold">
+                          {vacation.Answer}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
       <BottomNavigation list={list} />
-    </div>
+    </>
   );
 };
 

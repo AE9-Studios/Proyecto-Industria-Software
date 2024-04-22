@@ -8,7 +8,6 @@ import { useAuth } from "../../context/AuthContext";
 import BottomNavigation from "../../components/BottomNavigation";
 
 const SalesPurchaseList = () => {
-
   const { user } = useAuth();
   const [invoices, setInvoices] = useState([]);
   const [filteredInvoices, setFilteredInvoices] = useState([]);
@@ -16,10 +15,14 @@ const SalesPurchaseList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  let list = []
+  let list = [];
   if (user.role === "ADMINISTRADOR") {
-    list = [      
-      {title: 'Volver', url: '/admin/sales', icon: 'bi bi-arrow-left-circle-fill'},
+    list = [
+      {
+        title: "Volver",
+        url: "/admin/sales",
+        icon: "bi bi-arrow-left-circle-fill",
+      },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
     ];
   } else {
@@ -99,123 +102,127 @@ const SalesPurchaseList = () => {
   );
 
   return (
-    <div className="container mt-4 mb-4 bg-white rounded-4 ">
-      {user.role === "ADMINISTRADOR" ? (
-        <>
-
+    <>
+      <div className="container mt-4 mb-4 bg-white rounded-4 ">
+        {user.role === "ADMINISTRADOR" ? (
+          <>
+            <h2 className="card-title text-center fw-bold pt-4 mb-4">
+              Historial de Ventas
+            </h2>{" "}
+          </>
+        ) : (
           <h2 className="card-title text-center fw-bold pt-4 mb-4">
-            Historial de Ventas
-          </h2>{" "}
-        </>
-      ) : (
-        <h2 className="card-title text-center fw-bold pt-4 mb-4">
-          Mis Compras
-        </h2>
-      )}
+            Mis Compras
+          </h2>
+        )}
 
-      <div className="mb-3">
-        <input
-          type="text"
-          placeholder="Buscar facturas..."
-          className="form-control"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </div>
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              {user.role === "ADMINISTRADOR" ? (
-                <>
-                  <th>Número de Factura</th>
-                  <th>Método de pago</th>
-                </>
-              ) : null}
-
-              <th>Fecha</th>
-              <th>Descuento</th>
-              <th>Total</th>
-              <th>Detalles de la compra</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentInvoices.map((invoice) => (
-              <tr key={invoice.Id}>
+        <div className="mb-3">
+          <input
+            type="text"
+            placeholder="Buscar facturas..."
+            className="form-control"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <div className="table-responsive">
+          <table className="table">
+            <thead>
+              <tr>
                 {user.role === "ADMINISTRADOR" ? (
                   <>
-                    <td>{invoice.Id}</td>
-                    <td>
-                      {invoice.PayMethod === "LINEA" ? (
-                        <span className="badge bg-dark">LINEA</span>
-                      ) : (
-                        <span className="badge bg-primary">CAJA</span>
-                      )}
-                    </td>
+                    <th>Número de Factura</th>
+                    <th>Método de pago</th>
                   </>
                 ) : null}
 
-                <td>{invoice.Date}</td>
-                <td>
-                  {invoice.Discount > 0 ? `${invoice.Discount} HNL` : "N/A"}
-                </td>
-                <td>{invoice.Total} HNL</td>
-                <td>
-                  <button
-                    className="btn btn-info"
-                    onClick={() => downloadInvoice(invoice.Id, invoice.Date)}
-                  >
-                    <i className="bi bi-box-arrow-down"></i> Descargar Factura
-                  </button>
-                </td>
+                <th>Fecha</th>
+                <th>Descuento</th>
+                <th>Total</th>
+                <th>Detalles de la compra</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <nav aria-label="Page navigation example">
-          <ul className="pagination">
-            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-              <button
-                className="page-link"
-                onClick={() => paginate(currentPage - 1)}
+            </thead>
+            <tbody>
+              {currentInvoices.map((invoice) => (
+                <tr key={invoice.Id}>
+                  {user.role === "ADMINISTRADOR" ? (
+                    <>
+                      <td>{invoice.Id}</td>
+                      <td>
+                        {invoice.PayMethod === "LINEA" ? (
+                          <span className="badge bg-dark">LINEA</span>
+                        ) : (
+                          <span className="badge bg-primary">CAJA</span>
+                        )}
+                      </td>
+                    </>
+                  ) : null}
+
+                  <td>{invoice.Date}</td>
+                  <td>
+                    {invoice.Discount > 0 ? `${invoice.Discount} HNL` : "N/A"}
+                  </td>
+                  <td>{invoice.Total} HNL</td>
+                  <td>
+                    <button
+                      className="btn btn-info"
+                      onClick={() => downloadInvoice(invoice.Id, invoice.Date)}
+                    >
+                      <i className="bi bi-box-arrow-down"></i> Descargar Factura
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <nav aria-label="Page navigation example" style={{ zIndex: -1 }}>
+            <ul className="pagination">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               >
-                Anterior
-              </button>
-            </li>
-            {Array.from(
-              { length: Math.ceil(filteredInvoices.length / itemsPerPage) },
-              (_, i) => (
-                <li
-                  className={`page-item ${
-                    currentPage === i + 1 ? "active" : ""
-                  }`}
-                  key={i}
-                  onClick={() => paginate(i + 1)}
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage - 1)}
                 >
-                  <button className="page-link">{i + 1}</button>
-                </li>
-              )
-            )}
-            <li
-              className={`page-item ${
-                currentPage ===
-                Math.ceil(filteredInvoices.length / itemsPerPage)
-                  ? "disabled"
-                  : ""
-              }`}
-            >
-              <button
-                className="page-link"
-                onClick={() => paginate(currentPage + 1)}
+                  Anterior
+                </button>
+              </li>
+              {Array.from(
+                { length: Math.ceil(filteredInvoices.length / itemsPerPage) },
+                (_, i) => (
+                  <li
+                    style={{ zIndex: 0 }}
+                    className={`page-item ${
+                      currentPage === i + 1 ? "active" : ""
+                    }`}
+                    key={i}
+                    onClick={() => paginate(i + 1)}
+                  >
+                    <button className="page-link">{i + 1}</button>
+                  </li>
+                )
+              )}
+              <li
+                className={`page-item ${
+                  currentPage ===
+                  Math.ceil(filteredInvoices.length / itemsPerPage)
+                    ? "disabled"
+                    : ""
+                }`}
               >
-                Siguiente
-              </button>
-            </li>
-          </ul>
-        </nav>
+                <button
+                  className="page-link"
+                  onClick={() => paginate(currentPage + 1)}
+                >
+                  Siguiente
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
-      <BottomNavigation list={list} />
-    </div>
+      <BottomNavigation list={list} style={{ zIndex: 1000 }} />
+    </>
   );
 };
 

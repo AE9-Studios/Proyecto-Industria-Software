@@ -7,9 +7,13 @@ import BottomNavigation from "../../components/BottomNavigation";
 
 function PurchasesOrder() {
   const list = [
-    { title: "Volver", url: "/admin/purchases", icon: "bi bi-arrow-left-circle-fill" },
+    {
+      title: "Volver",
+      url: "/admin/purchases",
+      icon: "bi bi-arrow-left-circle-fill",
+    },
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
-  ]
+  ];
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -69,9 +73,9 @@ function PurchasesOrder() {
   );
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 bg-white rounded-4 ">
       <div className="container px-2">
-        <h2 className="m-4">Realizar Pedido</h2>
+        <h2 className="card-title text-center fw-bold mb-4">Realizar Pedido</h2>
 
         <div className="row mb-3 container p-2 m-2">
           <div className="col">
@@ -153,11 +157,12 @@ function PurchasesOrder() {
             </tbody>
           </table>
         </div>
+        <hr />
         <p className="mt-3">
           <strong>Total:</strong> {total} HNL
         </p>
         <button
-          className="btn btn-success"
+          className="w-100 btn btn-success mt-3 py-2 px-5 rounded-4"
           onClick={openModal}
           disabled={orderItems.length === 0}
         >

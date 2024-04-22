@@ -11,7 +11,11 @@ import BottomNavigation from "../../components/BottomNavigation.jsx";
 const EmployeeRequestList = () => {
   const list = [
     { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-    { title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check" },
+    {
+      title: "Permisos",
+      url: "/employee/permission",
+      icon: "bi bi-calendar-check",
+    },
     { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
   ];
   const [permissions, setPermissions] = useState([]);
@@ -63,8 +67,8 @@ const EmployeeRequestList = () => {
         const readStatus = item.ReadEmployee ? "leído" : "no leído";
         const days = Math.ceil(
           (new Date(item.End_Date) - new Date(item.Start_Date)) /
-          (1000 * 60 * 60 * 24) +
-          1
+            (1000 * 60 * 60 * 24) +
+            1
         );
         const type = isPermission ? "Permiso" : "Vacaciones";
 
@@ -116,7 +120,6 @@ const EmployeeRequestList = () => {
   return (
     <div className="mt-4 mb-4 bg-white rounded-4 ">
       <div className="container mx-auto">
-
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Permisos y Vacaciones
         </h2>
@@ -166,8 +169,8 @@ const EmployeeRequestList = () => {
                     {"Start_Date" in item &&
                       Math.ceil(
                         (new Date(item.End_Date) - new Date(item.Start_Date)) /
-                        (1000 * 60 * 60 * 24) +
-                        1
+                          (1000 * 60 * 60 * 24) +
+                          1
                       )}
                   </td>
                   <td>
@@ -189,7 +192,8 @@ const EmployeeRequestList = () => {
                       className="btn btn-primary btn-sm"
                       onClick={() =>
                         navigate(
-                          `/employee/${"Reason" in item ? "permission" : "vacation"
+                          `/employee/${
+                            "Reason" in item ? "permission" : "vacation"
                           }/${item.Id}`
                         )
                       }
@@ -203,7 +207,9 @@ const EmployeeRequestList = () => {
           </table>
           <nav aria-label="Page navigation example">
             <ul className="pagination">
-              <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
                 <button
                   className="page-link"
                   onClick={() => paginate(currentPage - 1)}
@@ -215,8 +221,10 @@ const EmployeeRequestList = () => {
                 { length: Math.ceil(filteredItems.length / itemsPerPage) },
                 (_, i) => (
                   <li
-                    className={`page-item ${currentPage === i + 1 ? "active" : ""
-                      }`}
+                    style={{ zIndex: 0 }}
+                    className={`page-item ${
+                      currentPage === i + 1 ? "active" : ""
+                    }`}
                     key={i}
                     onClick={() => paginate(i + 1)}
                   >
@@ -225,10 +233,11 @@ const EmployeeRequestList = () => {
                 )
               )}
               <li
-                className={`page-item ${currentPage === Math.ceil(filteredItems.length / itemsPerPage)
+                className={`page-item ${
+                  currentPage === Math.ceil(filteredItems.length / itemsPerPage)
                     ? "disabled"
                     : ""
-                  }`}
+                }`}
               >
                 <button
                   className="page-link"
