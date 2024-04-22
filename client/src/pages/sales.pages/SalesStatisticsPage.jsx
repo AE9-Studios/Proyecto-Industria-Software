@@ -202,9 +202,11 @@ const SalesStatisticsPage = () => {
 
   return (
     <>
-      <div className="container mt-4 mb-4 pt-4 pb-4 bg-white rounded-4  text-center">
+      <div className="container mt-4 mb-4 bg-white rounded-4 ">
         <div className="container mt-4 mb-4">
-          <h2 className="text-center mb-4">Estadísticas de Ventas</h2>
+          <h2 className="card-title text-center fw-bold pt-4 mb-4">
+            Estadísticas de Ventas
+          </h2>
           <br />
           <br />
           <div className="row justify-content-center">
