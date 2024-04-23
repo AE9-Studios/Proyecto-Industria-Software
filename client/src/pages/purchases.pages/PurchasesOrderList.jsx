@@ -17,8 +17,7 @@ const PurchasesOrderList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  // eslint-disable-next-line no-unused-vars
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     const fetchPurchaseOrders = async () => {
@@ -39,6 +38,12 @@ const PurchasesOrderList = () => {
 
     fetchPurchaseOrders();
   }, []);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setFilteredPurchaseOrders(purchaseOrders.slice(startIndex, endIndex));
+  }, [currentPage, purchaseOrders, itemsPerPage]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -137,13 +142,11 @@ const PurchasesOrderList = () => {
               </li>
               {Array.from(
                 {
-                  length: Math.ceil(
-                    filteredPurchaseOrders.length / itemsPerPage
-                  ),
+                  length: Math.ceil(purchaseOrders.length / itemsPerPage),
                 },
                 (_, i) => (
                   <li
-                    style={{ zIndex: 0 }}
+                  style={{ zIndex: 0 }}
                     className={`page-item ${
                       currentPage === i + 1 ? "active" : ""
                     }`}
@@ -157,7 +160,7 @@ const PurchasesOrderList = () => {
               <li
                 className={`page-item ${
                   currentPage ===
-                  Math.ceil(filteredPurchaseOrders.length / itemsPerPage)
+                  Math.ceil(purchaseOrders.length / itemsPerPage)
                     ? "disabled"
                     : ""
                 }`}
@@ -179,3 +182,4 @@ const PurchasesOrderList = () => {
 };
 
 export default PurchasesOrderList;
+

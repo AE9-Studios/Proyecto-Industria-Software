@@ -4,85 +4,65 @@ import {
   sendNotification,
   sendNotificationToAdmin,
 } from "../libs/sendNotification.js";
-import { sendEmailSupplier } from "../libs/sendEmail.js";
+import { sendEmailPurchaseOrderData } from "../libs/sendEmail.js";
+import { logActivity } from "../libs/logActivity.js";
 
 export const savePurchaseOrder = async (req, res) => {
-  const { items } = req.body;
-
   try {
-    const groupedProducts = {};
+    const { purchaseList, total } = req.body;
+    const attachment = req.file;
 
-    let totalOrder = 0;
-    for (const item of items) {
-      const { product, quantity } = item;
-      const totalPrice = product.Price_Buy * quantity;
-      totalOrder += totalPrice;
+    const supplierName = JSON.parse(purchaseList)[0].Product.Supplier.Name;
+    const supplierId = JSON.parse(purchaseList)[0].Product.Supplier.Id;
 
-      if (!groupedProducts[product.Supplier.Id]) {
-        groupedProducts[product.Supplier.Id] = {
-          supplier: product.Supplier,
-          items: [],
-        };
-      }
-      groupedProducts[product.Supplier.Id].items.push({
-        product: product,
-        quantity: parseInt(quantity),
-        totalPrice: totalPrice,
-        description: product.Description,
-      });
-    }
+    const supplier = await prisma.SUPPLIER.findUnique({
+      where: { Id: supplierId },
+    });
 
-    for (const supplierId in groupedProducts) {
-      const supplierOrder = groupedProducts[supplierId];
-      const purchaseOrder = await prisma.PURCHASE_ORDER.create({
+    const purchaseOrder = await prisma.PURCHASE_ORDER.create({
+      data: {
+        Date: new Date(),
+        State: "PENDIENTE",
+        Total: parseFloat(total),
+        Supplier: {
+          connect: { Id: supplierId },
+        },
+      },
+    });
+
+    for (const item of JSON.parse(purchaseList)) {
+      await prisma.PURCHASE_ORDER_DETAILED.create({
         data: {
           Date: new Date(),
-          State: "PENDIENTE",
-          Total: supplierOrder.items.reduce(
-            (acc, item) => acc + item.totalPrice,
-            0
-          ),
-          Supplier: {
-            connect: { Id: supplierOrder.supplier.Id },
+          Quantity: parseInt(item.Quantity),
+          Description: item.Product.Description,
+          Product: {
+            connect: { Id: item.Product.Id },
+          },
+          Purchase_Order: {
+            connect: { Id: purchaseOrder.Id },
           },
         },
       });
-
-      for (const item of supplierOrder.items) {
-        await prisma.PURCHASE_ORDER_DETAILED.create({
-          data: {
-            Date: new Date(),
-            Quantity: item.quantity,
-            Description: item.description,
-            Product: {
-              connect: { Id: item.product.Id },
-            },
-            Purchase_Order: {
-              connect: { Id: purchaseOrder.Id },
-            },
-          },
-        });
-      }
-
-      let emailMessage = `Hola ${supplierOrder.supplier.Name},<br><br>
-        Aquí están los detalles de la orden de compra de los productos solicitados:<br><br>
-        <strong>Total:</strong> ${purchaseOrder.Total} HNL<br><br>
-        <strong>Productos:</strong><br><br>`;
-      supplierOrder.items.forEach((item) => {
-        emailMessage += `— ${item.product.Name} (${item.product.Description}) - Cantidad: ${item.quantity}<br>`;
-      });
-      emailMessage += `<br>¡Gracias por su servicio!`;
-
-      await sendEmailSupplier(
-        supplierOrder.supplier,
-        "Detalles de la Orden de Compra",
-        emailMessage
-      );
     }
 
+    const message = `<p>Hola <strong>${supplierName}</strong>,</p>
+        <p><strong>Classic Vision</strong> solicita un nuevo pedido de producto.</p>
+        <p>Adjunto encontrará la orden de compra detallada. Esperamos su pronta respuesta.</p>
+        `;
+    await sendEmailPurchaseOrderData(
+      supplier,
+      "Orden de Compra",
+      message,
+      attachment
+    );
+
+    await logActivity(
+      "Nueva orden de compra",
+      `Se ha enviado una orden de compra a ${supplierName}`
+    );
     res.status(200).json({
       message: "Órdenes de compra guardadas exitosamente.",
-      totalOrder: totalOrder,
     });
   } catch (error) {
     console.error("Error al guardar las órdenes de compra:", error);
@@ -157,7 +137,7 @@ export const getPurchaseOrderByIdWithDetails = async (req, res) => {
 };
 
 export const updatePurchaseOrderAndInventory = async (req, res) => {
-  const { id } = req.body;
+  const { id, userName } = req.body;
   const { filename } = req.file;
 
   try {
@@ -170,6 +150,9 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
       data: {
         State: "APROBADO",
         Invoice_File: filename,
+      },
+      include: {
+        Supplier: true,
       },
     });
 
@@ -190,8 +173,13 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
 
         const product = await prisma.PRODUCT.findUnique({
           where: { Id: Product_Fk },
-          select: { Price_Sell: true },
+          select: { Price_Sell: true, Name: true },
         });
+
+        await logActivity(
+          "Entrada a inventario",
+          `Se ha registado una cantidad entrante de ${Quantity} del producto ${product.Name}`
+        );
 
         await prisma.INVENTORY.updateMany({
           where: { Product_Fk: Product_Fk },
@@ -206,6 +194,23 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
           },
         });
       })
+    );
+
+    const message = `<p>Hola <strong>${updatedPurchaseOrder.Supplier.Name}</strong>,</p>
+      <p><strong>Classic Vision</strong> ha completado el pago de la orden de compra</p>
+      <p>Adjunto encontrará la factura detallada.</p>
+    `;
+
+    await sendEmailPurchaseOrderData(
+      updatedPurchaseOrder.Supplier,
+      "Pago Realizado",
+      message,
+      req.file.filename
+    );
+
+    await logActivity(
+      "Nueva orden de compra",
+      `El administrador ${userName} ha realizado un pago al proveedor ${updatedPurchaseOrder.Supplier.Name} de ${updatedPurchaseOrder.Total} Lempiras`
     );
 
     res.status(200).json({
@@ -223,7 +228,14 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
 };
 
 export const rejectPurchaseOrder = async (req, res) => {
-  const { id } = req.body;
+  const { purchaseList } = req.body;
+  const attachment = req.file;
+
+  const parsedPurchaseList =
+    typeof purchaseList === "string" ? JSON.parse(purchaseList) : purchaseList;
+
+  const id =
+    purchaseList.length > 0 ? parsedPurchaseList[0].Purchase_Order_Fk : null;
 
   try {
     if (!id || isNaN(id)) {
@@ -261,18 +273,20 @@ export const rejectPurchaseOrder = async (req, res) => {
       });
     }
 
-    let emailMessage = `Hola ${purchaseOrder.Supplier.Name},<br><br>
-        La orden de compra ha sido rechazada.<br><br>
-        Aquí están los detalles de los productos de la orden de compra rechazada:<br><br>`;
-    purchaseOrder.PURCHASE_ORDER_DETAILED.forEach((item) => {
-      emailMessage += `— ${item.Product.Name} (${item.Description}) - Cantidad: ${item.Quantity}<br>`;
-    });
-    emailMessage += `<br>Disculpe los incovenientes. Saludos.`;
-
-    await sendEmailSupplier(
-      purchaseOrder.Supplier,
+    const message = `<p>Hola <strong>${parsedPurchaseList[0].Product.Supplier.Name}</strong>,</p>
+    <p><strong>Classic Vision</strong> <span style="color: red;">ha rechazado</span> la orden de compra.</p>
+    <p>Adjunto encontrará la orden de compra detallada. Disculpe los incovenientes.</p>
+    `;
+    await sendEmailPurchaseOrderData(
+      parsedPurchaseList[0].Product.Supplier,
       "Orden de Compra Rechazada",
-      emailMessage
+      message,
+      attachment
+    );
+
+    await logActivity(
+      "Orden de compra rechazada",
+      `Se ha rechazado una orden de compras a ${parsedPurchaseList[0].Product.Supplier.Name}`
     );
 
     res.status(200).json({
@@ -290,49 +304,27 @@ export const rejectPurchaseOrder = async (req, res) => {
 export const requestQuotation = async (req, res) => {
   const { quotationItems } = req.body;
 
+  const parsedquotationItems = JSON.parse(quotationItems);
+  const attachment = req.file;
+
+  const supplierName = parsedquotationItems[0].supplier.Name;
   try {
-    if (
-      !quotationItems ||
-      !Array.isArray(quotationItems) ||
-      !quotationItems.length
-    ) {
-      return res
-        .status(400)
-        .json({ error: "Elementos de cotización inválidos." });
-    }
+    const message = `<p>Hola <strong>${supplierName}</strong>,</p>
+    <p><strong>Classic Vision</strong> ha solicitado una cotización de productos.</p>
+    <p>Adjunto encontrará la orden de compra detallada. Esperamos su pronta respuesta.</p>
+    `;
 
-    const productsBySupplier = {};
-    for (const item of quotationItems) {
-      const supplierId = item.supplier.Id;
-      if (!productsBySupplier[supplierId]) {
-        productsBySupplier[supplierId] = {
-          supplier: item.supplier,
-          products: [],
-        };
-      }
-      productsBySupplier[supplierId].products.push({
-        productName: item.productName,
-        quantity: item.quantity,
-      });
-    }
+    await sendEmailPurchaseOrderData(
+      parsedquotationItems[0].supplier,
+      "Solicitud de Cotización",
+      message,
+      attachment
+    );
 
-    for (const supplierId in productsBySupplier) {
-      const { supplier, products } = productsBySupplier[supplierId];
-
-      let emailMessage = `Hola ${supplier.Name},<br><br>
-        Se solicita una cotización de los siguientes productos:<br><br>`;
-      for (const product of products) {
-        emailMessage += `Producto: ${product.productName}<br>`;
-        emailMessage += `Cantidad: ${product.quantity}<br><br>`;
-      }
-      emailMessage += `<br>¡Esperamos su respuesta!`;
-
-      await sendEmailSupplier(
-        supplier,
-        "Solicitud de Cotización",
-        emailMessage
-      );
-    }
+    await logActivity(
+      "Solicitud de cotización",
+      `Se ha enviado una solicitud de cotización a ${supplierName}`
+    );
 
     res.status(200).json({
       message:

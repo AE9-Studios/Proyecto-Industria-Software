@@ -3,6 +3,8 @@ import path from "path";
 import { v4 as uuid } from "uuid";
 import fs from 'fs';
 
+const storage = multer.memoryStorage();
+
 const storageDocument = multer.diskStorage({
   destination: function (req, file, cb) {
     const allowedPDFExtensions = ['.pdf', '.png', '.jpg'];
@@ -115,6 +117,7 @@ export const deleteReceipt = (file) => {
   }
 };
 
+export const upload = multer({ storage: storage });
 export const uploadRequest = multer({ storage: storageDocument });
 export const uploadInvoice = multer({ storage: storageInvoice });
 export const uploadOrder = multer({ storage: storageOrder });

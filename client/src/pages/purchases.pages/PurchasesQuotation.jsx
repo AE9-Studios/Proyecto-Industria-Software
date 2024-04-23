@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { getSuppliers } from "../../api/inventory";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { requestQuotation } from "../../api/purchases";
 import BottomNavigation from "../../components/BottomNavigation";
+import { sendQuotation } from "../../libs/sendInvoice";
 
 function PurchaseQuotation() {
   const list = [
@@ -63,13 +63,28 @@ function PurchaseQuotation() {
   const handlePlaceOrder = async () => {
     try {
       setSendingRequest(true);
-      await requestQuotation({ quotationItems: orderItems });
-      closeModal();
-      navigate("/admin/purchases");
+
+      const productsBySupplier = {};
+
+      orderItems.forEach((item) => {
+        const supplierId = item.supplier.Id;
+        if (!productsBySupplier[supplierId]) {
+          productsBySupplier[supplierId] = [];
+        }
+        productsBySupplier[supplierId].push(item);
+      });
+
+      for (const supplierId in productsBySupplier) {
+        const productsForSupplier = productsBySupplier[supplierId];
+
+        await sendQuotation({ purchaseList: productsForSupplier });
+      }
     } catch (error) {
       console.error("Error al solicitar cotización:", error);
     } finally {
       setSendingRequest(false);
+      closeModal();
+      navigate("/admin/purchases");
     }
   };
 

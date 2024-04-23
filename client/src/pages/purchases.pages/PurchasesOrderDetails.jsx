@@ -1,22 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   getPurchaseOrderByIdWithDetails,
   updatePurchaseOrderAndInventory,
-  rejectPurchaseOrder,
 } from "../../api/purchases";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import BottomNavigation from "../../components/BottomNavigation";
+import { sendOrder } from "../../libs/sendInvoice";
 
 const PurchasesOrderDetails = () => {
   const list = [
     {
       title: "Volver",
-      url: "/admin/purchases",
+      url: "/admin/purchases/list",
       icon: "bi bi-arrow-left-circle-fill",
     },
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
   ];
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [purchaseOrder, setPurchaseOrder] = useState("");
   const [attachedFile, setAttachedFile] = useState(null);
@@ -147,6 +149,7 @@ const PurchasesOrderDetails = () => {
                 const formData = new FormData();
                 formData.append("id", purchaseOrder.Id);
                 formData.append("receipt", attachedFileRef.current);
+                formData.append("userName", user.userName);
                 updatePurchaseOrderAndInventory(formData)
                   .then(() => {})
                   .catch((error) => {
@@ -185,16 +188,26 @@ const PurchasesOrderDetails = () => {
   const handleConfirmCancelOrder = async () => {
     try {
       setLoading(true);
-      await rejectPurchaseOrder({ id: purchaseOrder.Id });
-      setShowModal(false);
+      const listProduct = purchaseOrder.PURCHASE_ORDER_DETAILED.map((item) => ({
+        ...item,
+        Product: {
+          ...item.Product,
+          Supplier: purchaseOrder.Supplier,
+        },
+      }));
 
-      navigate("/admin/purchases/list");
+      await sendOrder({
+        purchaseList: listProduct,
+        typeIO: "Orden de Compra Rechazada",
+      });
     } catch (error) {
       console.error("Error al cancelar la orden:", error);
     } finally {
       setLoading(false);
+      navigate("/admin/purchases/list");
     }
   };
+
   const handleCancelOrder = () => {
     setShowModal(true);
   };
@@ -213,6 +226,9 @@ const PurchasesOrderDetails = () => {
               <div className="row mb-3">
                 <div className="col-sm-6">
                   <strong>Proveedor:</strong> {purchaseOrder.Supplier.Name}
+                  <div>
+                    <strong>Email:</strong> {purchaseOrder.Supplier.Email}
+                  </div>
                 </div>
                 <div className="col-sm-6 text-sm-end">
                   <strong>Estado:</strong>{" "}

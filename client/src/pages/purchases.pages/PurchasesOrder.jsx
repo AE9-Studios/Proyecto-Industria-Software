@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { getProducts } from "../../api/inventory";
-import { createOrder } from "../../api/purchases";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import BottomNavigation from "../../components/BottomNavigation";
+import { sendOrder } from "../../libs/sendInvoice";
 
 function PurchasesOrder() {
   const list = [
@@ -57,13 +57,34 @@ function PurchasesOrder() {
   const handlePlaceOrder = async () => {
     setSendingData(true);
     try {
-      const response = await createOrder({ items: orderItems });
-      console.log(response.data.message);
-      navigate("/admin/purchases/list");
+      const productsBySupplier = {};
+      orderItems.forEach((item) => {
+        const supplierName = item.product.Supplier.Name;
+
+        if (!productsBySupplier[supplierName]) {
+          productsBySupplier[supplierName] = [];
+        }
+        productsBySupplier[supplierName].push(item);
+      });
+
+      const promises = Object.keys(productsBySupplier).map(
+        async (supplierName) => {
+          const purchaseList = productsBySupplier[supplierName].map((item) => ({
+            Product: item.product,
+            Quantity: item.quantity,
+          }));
+          await sendOrder({
+            purchaseList,
+            typeIO: "Orden de Compra",
+          });
+        }
+      );
+      await Promise.all(promises);
     } catch (error) {
       console.error("Error al realizar el pedido:", error);
     } finally {
       setSendingData(false);
+      navigate("/admin/purchases/list");
     }
   };
 

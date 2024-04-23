@@ -72,14 +72,9 @@ export const sendEmailSupplier = async (supplierData, subject, message) => {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(
-      `Correo enviado a ${supplierData.Email}`
-    );
+    console.log(`Correo enviado a ${supplierData.Email}`);
   } catch (error) {
-    console.error(
-      "Error al enviar el correo electrónico al proveedor:",
-      error
-    );
+    console.error("Error al enviar el correo electrónico al proveedor:", error);
     throw error;
   }
 };
@@ -207,6 +202,52 @@ export const sendEmailRecoveryPassword = async (
       "Error al enviar el correo electrónico de notificación de cambio de contraseña:",
       error
     );
+    throw error;
+  }
+};
+
+export const sendEmailPurchaseOrderData = async (
+  supplierData,
+  subject,
+  message,
+  attachment
+) => {
+  try {
+    const mailOptions = {
+      from: '"Óptica Classic Vision" <opticaclassicvision@gmail.com>',
+      to: supplierData.Email,
+      subject: subject,
+      html:
+        message +
+        '<br/><img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">',
+      attachments: [
+        
+        {
+          filename: "signature.jpg",
+          path: path.join(__dirname, "../assets/signature.jpg"),
+          cid: "signature",
+        },
+        attachment.buffer ? 
+        {
+          filename: "attachment_file.pdf",
+          content: attachment.buffer,
+          encoding: "base64",
+        }
+        :
+        {
+          filename: `receipts_${attachment}.pdf`,
+          path: path.join(
+            __dirname,
+            `../assets/receipts/${attachment}`
+          ),
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Correo enviado a ${supplierData.Email}`);
+  } catch (error) {
+    console.error("Error al enviar el correo electrónico al proveedor:", error);
     throw error;
   }
 };
