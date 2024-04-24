@@ -6,6 +6,10 @@ import {
 } from "../../api/sales";
 import { useAuth } from "../../context/AuthContext";
 import BottomNavigation from "../../components/BottomNavigation";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const SalesPurchaseList = () => {
   const { user } = useAuth();
@@ -101,6 +105,142 @@ const SalesPurchaseList = () => {
     indexOfLastItem
   );
 
+  const currentDate = new Date().getTime();
+  const fileName = `ventas_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const invoiceData = filteredInvoices.map((invoice) => ({
+      "ID de Factura": invoice.Id,
+      Fecha: invoice.Date,
+      Cliente: `${invoice.Client?.Person?.First_Name || ""} ${
+        invoice.Client?.Person?.Last_Name || ""
+      }`,
+      "Correo del Cliente": invoice.Client?.User?.Email || "",
+      Empleado: `${invoice.Employee.Person.First_Name} ${invoice.Employee.Person.Last_Name}`,
+      "Correo del Empleado": invoice.Employee.Email,
+      "Método de Pago": invoice.PayMethod,
+      Subtotal: invoice.Subtotal,
+      Descuento: invoice.Discount,
+      ISV: invoice.ISV,
+      Total: invoice.Total,
+    }));
+
+    const invoiceWscols = calculateColumnWidths(invoiceData);
+
+    const invoiceWs = utils.json_to_sheet(invoiceData);
+
+    const productDetailsData = [];
+    filteredInvoices.forEach((invoice) => {
+      invoice.INVOICE_ORDER_PRODUCT_DETAILS.forEach((detail) => {
+        productDetailsData.push({
+          "ID de Factura": invoice.Id,
+          Producto: detail.Product.Name,
+          Cantidad: detail.Quantity,
+          Descripción: detail.Description,
+          "Precio Unitario": detail.Product.Price_Sell,
+          "Precio Total": detail.Quantity * detail.Product.Price_Sell,
+        });
+      });
+    });
+
+    const productDetailsWscols = calculateColumnWidths(productDetailsData);
+
+    const productDetailsWs = utils.json_to_sheet(productDetailsData);
+
+    const productDetailsMap = {};
+    filteredInvoices.forEach((invoice) => {
+      invoice.INVOICE_ORDER_PRODUCT_DETAILS.forEach((detail) => {
+        if (!productDetailsMap[invoice.Id]) {
+          productDetailsMap[invoice.Id] = [];
+        }
+        productDetailsMap[invoice.Id].push({
+          "ID de Factura": invoice.Id,
+          Producto: detail.Product.Name,
+          Cantidad: detail.Quantity,
+          Descripción: detail.Description,
+          "Precio Unitario": detail.Product.Price_Sell,
+          "Precio Total": detail.Quantity * detail.Product.Price_Sell,
+        });
+      });
+    });
+
+    const combinedData = [];
+    invoiceData.forEach((invoice) => {
+      const productId = invoice["ID de Factura"];
+      const productDetails = productDetailsMap[productId] || [];
+      productDetails.forEach((detail) => {
+        combinedData.push({ ...invoice, ...detail });
+      });
+    });
+
+    const combinedWscols = calculateColumnWidths(combinedData);
+
+    const combinedWs = utils.json_to_sheet(combinedData);
+
+    const wb = utils.book_new();
+
+    utils.book_append_sheet(wb, invoiceWs, "Facturas");
+    utils.book_append_sheet(wb, productDetailsWs, "Detalles del Producto");
+    utils.book_append_sheet(wb, combinedWs, "Facturas y Detalles");
+
+    invoiceWs["!autofilter"] = { ref: invoiceWs["!ref"] };
+    productDetailsWs["!autofilter"] = { ref: productDetailsWs["!ref"] };
+    combinedWs["!autofilter"] = { ref: combinedWs["!ref"] };
+
+    invoiceWs["!cols"] = invoiceWscols;
+    productDetailsWs["!cols"] = productDetailsWscols;
+    combinedWs["!cols"] = combinedWscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableData = filteredInvoices.map((invoice) => [
+      invoice.Id,
+      invoice.Date,
+      `${invoice.Client?.Person?.First_Name || ""} ${
+        invoice.Client?.Person?.Last_Name || ""
+      }`,
+      invoice.Client?.User?.Email || "",
+      `${invoice.Employee.Person.First_Name} ${invoice.Employee.Person.Last_Name}`,
+      invoice.Employee.Email,
+      invoice.PayMethod,
+      invoice.Subtotal,
+      invoice.Discount,
+      invoice.ISV,
+      invoice.Total,
+      invoice.INVOICE_ORDER_PRODUCT_DETAILS.map(
+        (detail) =>
+          `Producto: ${detail.Product.Name}, Cantidad: ${detail.Quantity}`
+      ).join("\n"),
+    ]);
+
+    doc.autoTable({
+      head: [
+        [
+          "ID de Factura",
+          "Fecha",
+          "Cliente",
+          "Correo del Cliente",
+          "Empleado",
+          "Correo del Empleado",
+          "Método de Pago",
+          "Subtotal",
+          "Descuento",
+          "ISV",
+          "Total",
+          "Detalles de Producto",
+        ],
+      ],
+      body: tableData,
+    });
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <>
       <div className="container mt-4 mb-4 bg-white rounded-4 ">
@@ -109,6 +249,23 @@ const SalesPurchaseList = () => {
             <h2 className="card-title text-center fw-bold pt-4 mb-4">
               Historial de Ventas
             </h2>{" "}
+            <div className="d-flex justify-content-end">
+              <button
+                className="mb-3 mx-2 btn btn-sm button-pdf"
+                onClick={handleExportPDF}
+                disabled={currentInvoices.length === 0}
+              >
+                Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+              </button>
+              <button
+                className="mb-3 mx-2 btn btn-sm button-excel"
+                onClick={handleExportExcel}
+                disabled={currentInvoices.length === 0}
+              >
+                Reporte de Ventas en Excel{" "}
+                <i className="bi bi-file-earmark-excel-fill"></i>
+              </button>
+            </div>
           </>
         ) : (
           <h2 className="card-title text-center fw-bold pt-4 mb-4">
@@ -119,7 +276,7 @@ const SalesPurchaseList = () => {
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Buscar facturas..."
+            placeholder="Filtrar facturas..."
             className="form-control"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -139,7 +296,7 @@ const SalesPurchaseList = () => {
                 <th>Fecha</th>
                 <th>Descuento</th>
                 <th>Total</th>
-                <th>Detalles de la compra</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -168,7 +325,8 @@ const SalesPurchaseList = () => {
                       className="btn btn-info"
                       onClick={() => downloadInvoice(invoice.Id, invoice.Date)}
                     >
-                      <i className="bi bi-box-arrow-down"></i> Descargar Factura
+                      <i className="bi bi-cloud-arrow-down-fill"></i> Descargar
+                      Factura
                     </button>
                   </td>
                 </tr>

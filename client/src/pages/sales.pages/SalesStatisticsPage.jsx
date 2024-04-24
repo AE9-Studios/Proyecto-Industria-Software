@@ -5,6 +5,7 @@ import Chart from "chart.js/auto";
 import "chartjs-adapter-moment";
 import BottomNavigation from "../../components/BottomNavigation";
 import { useAuth } from "../../context/AuthContext";
+import html2canvas from "html2canvas";
 
 const SalesStatisticsPage = () => {
   const [invoices, setInvoices] = useState([]);
@@ -200,6 +201,21 @@ const SalesStatisticsPage = () => {
   const totalSalesInRange =
     Object.values(getSalesData()).reduce((a, b) => a + b, 0) || 0;
 
+  const currentDate = new Date().getTime();
+  const fileName = `gráficas_ventas_${currentDate}.png`;
+
+  const saveAsImage = () => {
+    const salesChart = document.getElementById("sales-chart");
+    html2canvas(salesChart).then((canvas) => {
+      canvas.toBlob((blob) => {
+        const link = document.createElement("a");
+        link.download = fileName;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      });
+    });
+  };
+
   return (
     <>
       <div className="container mt-4 mb-4 bg-white rounded-4 ">
@@ -236,6 +252,15 @@ const SalesStatisticsPage = () => {
                     onChange={handleEndDateChange}
                   />
                 </div>
+                <div className="col d-flex justify-content-center">
+                  <button
+                    className="mb-3 mt-3 mx-2 btn btn-sm button-pdf"
+                    onClick={saveAsImage}
+                    disabled={totalSalesInRange <= 0}
+                  >
+                    <i className="bi bi-card-image"></i> Descargar Gráficos
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -243,8 +268,7 @@ const SalesStatisticsPage = () => {
           <h6>Total de ventas en el rango de fechas: {totalSalesInRange}</h6>
 
           <div className="row">
-            <div className="col-md-12">
-              <div className="row mb-3"></div>
+            <div className="col-md-12" id="sales-chart">
               <hr />
               <h3 className="text-center mb-3">Ventas Diarias</h3>
               <Bar
@@ -262,7 +286,7 @@ const SalesStatisticsPage = () => {
                 <div className="col-md-6">
                   <div
                     className="d-flex flex-column align-items-center"
-                    style={{ overflowX: "auto", overflowY: "hidden" }}
+                    id="linea-caja-chart"
                   >
                     <hr />
                     <h3 className="text-center mb-3">

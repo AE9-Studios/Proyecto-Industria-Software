@@ -38,7 +38,7 @@ export async function sendNotification(title, description, url, token) {
 
     return response;
   } catch (error) {
-    console.error("Error al enviar las notificaciones:", error);
+    console.error("El token destino no fue encontrado");
   }
 }
 
@@ -82,6 +82,6 @@ export async function sendNotificationToAdmin(title, message, url) {
 
     return "Notificaciones enviadas exitosamente";
   } catch (error) {
-    console.error("Error al enviar las notificaciones:", error);
+    console.error("El token destino no fue encontrado");
   }
 }

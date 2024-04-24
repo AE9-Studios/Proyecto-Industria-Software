@@ -3,6 +3,10 @@ import { getEmployees } from "../../api/human-resources.js";
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../../components/BottomNavigation.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const AdminEmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -10,7 +14,7 @@ const AdminEmployeeList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Removed unused setItemsPerPage
+  const itemsPerPage = 10;
 
   const { user } = useAuth();
   let list = [];
@@ -54,7 +58,7 @@ const AdminEmployeeList = () => {
   }, []);
 
   const handleSearchChange = (event) => {
-    const searchTerm = event.target.value.toLowerCase(); // Convert search term to lowercase
+    const searchTerm = event.target.value.toLowerCase();
     setSearchTerm(searchTerm);
     const filtered = employees.filter(
       (employee) =>
@@ -66,9 +70,9 @@ const AdminEmployeeList = () => {
         (employee.Schedule_Employee[0]?.Schedule.ScheduleName &&
           employee.Schedule_Employee[0]?.Schedule.ScheduleName.toLowerCase().includes(
             searchTerm
-          )) // Check if ScheduleName exists before accessing
+          ))
     );
-    setFilteredEmployees(filtered.slice(0, 20));
+    setFilteredEmployees(filtered);
   };
 
   const formatPosition = (position) => {
@@ -88,6 +92,64 @@ const AdminEmployeeList = () => {
     }
   };
 
+  const currentDate = new Date().getTime();
+  const fileName = `empleados_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const employeeData = filteredEmployees.map((employee) => {
+      const activeSalary = employee.Salary.find((salary) => salary.State);
+      return {
+        DNI: employee.Person.DNI,
+        "Nombre Completo": `${employee.Person.First_Name} ${employee.Person.Last_Name}`,
+        "Correo Institucional": employee.User.Email,
+        Cargo: formatPosition(employee.Position),
+        "Fecha de Inicio": employee.Start_Date,
+        "Días Trabajados": employee.Days_Spent,
+        Estado: employee.State,
+        Teléfono: employee.Person.Phone_Number,
+        Dirección: employee.Person.Address,
+        Género: employee.Person.Gender,
+        "Salario Actual": activeSalary
+          ? activeSalary.Amount
+          : "Sin salario activo",
+        Horario:
+          employee.Schedule_Employee[0]?.Schedule?.ScheduleName ||
+          "Este empleado no tiene los campos actualizados",
+      };
+    });
+
+    const wscols = calculateColumnWidths(employeeData);
+
+    const ws = utils.json_to_sheet(employeeData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Empleados");
+    ws["!autofilter"] = { ref: ws["!ref"] };
+    ws["!cols"] = wscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+    doc.autoTable({
+      head: [
+        ["DNI", "Nombre Completo", "Correo Institucional", "Cargo", "Horario"],
+      ],
+      body: filteredEmployees.map((employee) => [
+        employee.Person.DNI,
+        `${employee.Person.First_Name} ${employee.Person.Last_Name}`,
+        employee.User.Email,
+        formatPosition(employee.Position),
+        employee.Schedule_Employee[0]?.Schedule.ScheduleName ||
+          "Este empleado no tiene los campos actualizados",
+      ]),
+    });
+    doc.save(`${fileName}.pdf`);
+  };
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -96,6 +158,22 @@ const AdminEmployeeList = () => {
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Empleados
         </h2>
+        <div className="d-flex justify-content-end">
+          <button
+            className="mb-3 mx-2 btn btn-sm button-pdf"
+            onClick={handleExportPDF}
+            disabled={filteredEmployees.length === 0}
+          >
+            Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+          </button>
+          <button
+            className="mb-3 mx-2 btn btn-sm button-excel"
+            onClick={handleExportExcel}
+            disabled={filteredEmployees.length === 0}
+          >
+            Exportar a Excel <i className="bi bi-file-earmark-excel-fill"></i>
+          </button>
+        </div>
         <div className="mb-3">
           <input
             type="text"
@@ -118,34 +196,39 @@ const AdminEmployeeList = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredEmployees.map((employee) => (
-                <tr key={employee.Id}>
-                  <td>{employee.Person.DNI}</td>
-                  <td>
-                    {employee.Person.First_Name} {employee.Person.Last_Name}
-                  </td>
-                  <td>{employee.User.Email}</td>
-                  <td>{formatPosition(employee.Position)}</td>
-                  <td>
-                    {employee.Schedule_Employee[0]?.Schedule.ScheduleName ||
-                      "Este empleado no tiene los campos actualizados"}
-                  </td>
-                  <td>
-                    {employee.Schedule_Employee[0]?.Schedule.ScheduleName && ( // Check if ScheduleName exists before rendering button
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() =>
-                          navigate(
-                            `/admin/human-resources/employees/${employee.Id}`
-                          )
-                        }
-                      >
-                        Editar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {filteredEmployees
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )
+                .map((employee) => (
+                  <tr key={employee.Id}>
+                    <td>{employee.Person.DNI}</td>
+                    <td>
+                      {employee.Person.First_Name} {employee.Person.Last_Name}
+                    </td>
+                    <td>{employee.User.Email}</td>
+                    <td>{formatPosition(employee.Position)}</td>
+                    <td>
+                      {employee.Schedule_Employee[0]?.Schedule.ScheduleName ||
+                        "Este empleado no tiene los campos actualizados"}
+                    </td>
+                    <td>
+                      {employee.Schedule_Employee[0]?.Schedule.ScheduleName && (
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() =>
+                            navigate(
+                              `/admin/human-resources/employees/${employee.Id}`
+                            )
+                          }
+                        >
+                          Editar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
           <nav aria-label="Page navigation example">

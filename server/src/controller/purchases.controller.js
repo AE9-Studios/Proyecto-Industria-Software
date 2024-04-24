@@ -209,8 +209,8 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
     );
 
     await logActivity(
-      "Nueva orden de compra",
-      `El administrador ${userName} ha realizado un pago al proveedor ${updatedPurchaseOrder.Supplier.Name} de ${updatedPurchaseOrder.Total} Lempiras`
+      "Pago a proveedores",
+      `El administrador ${userName} ha realizado un pago de ${updatedPurchaseOrder.Total} Lempiras al proveedor ${updatedPurchaseOrder.Supplier.Name}`
     );
 
     res.status(200).json({
@@ -311,7 +311,7 @@ export const requestQuotation = async (req, res) => {
   try {
     const message = `<p>Hola <strong>${supplierName}</strong>,</p>
     <p><strong>Classic Vision</strong> ha solicitado una cotización de productos.</p>
-    <p>Adjunto encontrará la orden de compra detallada. Esperamos su pronta respuesta.</p>
+    <p>Adjunto encontrará la cotización detallada. Esperamos su pronta respuesta.</p>
     `;
 
     await sendEmailPurchaseOrderData(

@@ -6,6 +6,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../../components/BottomNavigation.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const AdminRequestList = () => {
   const { user } = useAuth();
@@ -143,13 +147,89 @@ const AdminRequestList = () => {
     }
   };
 
+  const currentDate = new Date().getTime();
+  const fileName = `permisos_vacaciones_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const permissionData = permissions.map((permission) => ({
+      Tipo: "Permiso",
+      Estado: permission.State,
+      "Fecha de inicio": permission.Start_Date,
+      "Fecha de fin": permission.End_Date,
+      Empleado: `${permission.Employee.Person.First_Name} ${permission.Employee.Person.Last_Name}`,
+      Cargo: permission.Employee.Position,
+    }));
+
+    const vacationData = vacations.map((vacation) => ({
+      Tipo: "Vacaciones",
+      Estado: vacation.State,
+      "Fecha de inicio": vacation.Start_Date,
+      "Fecha de fin": vacation.End_Date,
+      Empleado: `${vacation.Employee.Person.First_Name} ${vacation.Employee.Person.Last_Name}`,
+      Cargo: vacation.Employee.Position,
+    }));
+
+    const allData = [...permissionData, ...vacationData];
+
+    const wscols = calculateColumnWidths(allData);
+
+    const ws = utils.json_to_sheet(allData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Permisos y Vacaciones");
+    ws["!autofilter"] = { ref: ws["!ref"] };
+    ws["!cols"] = wscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableBody = permissions.concat(vacations).map((item) => {
+      return [
+        item.State,
+        item.Start_Date,
+        item.End_Date,
+        `${item.Employee.Person.First_Name} ${item.Employee.Person.Last_Name}`,
+        item.Employee.Position,
+      ];
+    });
+
+    doc.autoTable({
+      head: [
+        ["Estado", "Fecha de inicio", "Fecha de fin", "Empleado", "Cargo"],
+      ],
+      body: tableBody,
+    });
+
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <div className=" mt-4 mb-4 bg-white rounded-4 ">
       <div className="container m-auto">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Permisos y Vacaciones
         </h2>
-
+        <div className="d-flex justify-content-end">
+          <button
+            className="mb-3 mx-2 btn btn-sm button-pdf"
+            onClick={handleExportPDF}
+            disabled={itemsToShow.length === 0}
+          >
+            Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+          </button>
+          <button
+            className="mb-3 mx-2 btn btn-sm button-excel"
+            onClick={handleExportExcel}
+            disabled={itemsToShow.length === 0}
+          >
+            Exportar a Excel <i className="bi bi-file-earmark-excel-fill"></i>
+          </button>
+        </div>
         <div className="mb-3">
           <input
             type="text"
@@ -174,8 +254,8 @@ const AdminRequestList = () => {
               </tr>
             </thead>
             <tbody>
-              {itemsToShow.map((item) => (
-                <tr key={item.Id} className={item.Read ? "" : "table-danger"}>
+              {itemsToShow.map((item, index) => (
+                <tr key={index} className={item.Read ? "" : "table-danger"}>
                   <td>
                     {"Reason" in item ? (
                       <span className="badge bg-info text-dark">Permiso</span>

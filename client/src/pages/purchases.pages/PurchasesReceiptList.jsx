@@ -4,6 +4,10 @@ import {
   getOrderReceipt,
 } from "../../api/purchases";
 import BottomNavigation from "../../components/BottomNavigation";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const PurchasesReceiptList = () => {
   const list = [
@@ -77,16 +81,147 @@ const PurchasesReceiptList = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
 
+  const currentDate = new Date().getTime();
+  const fileName = `historial_compras_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const purchaseOrderData = filteredOrders.map((order) => ({
+      "ID de Orden": order.Id,
+      Fecha: order.Date,
+      Estado: order.State,
+      Total: order.Total,
+      Proveedor: order.Supplier.Name,
+    }));
+
+    const purchaseOrderWscols = calculateColumnWidths(purchaseOrderData);
+
+    const purchaseOrderWs = utils.json_to_sheet(purchaseOrderData);
+
+    const productDetailsData = [];
+    filteredOrders.forEach((order) => {
+      order.PURCHASE_ORDER_DETAILED.forEach((detail) => {
+        productDetailsData.push({
+          "ID de Orden": order.Id,
+          Producto: detail.Product.Name,
+          Cantidad: detail.Quantity,
+          Descripción: detail.Description,
+          "Precio Unitario": detail.Product.Price_Sell,
+          "Precio Total": detail.Quantity * detail.Product.Price_Sell,
+        });
+      });
+    });
+
+    const productDetailsWscols = calculateColumnWidths(productDetailsData);
+
+    const productDetailsWs = utils.json_to_sheet(productDetailsData);
+
+    const productDetailsMap = {};
+    filteredOrders.forEach((order) => {
+      order.PURCHASE_ORDER_DETAILED.forEach((detail) => {
+        if (!productDetailsMap[order.Id]) {
+          productDetailsMap[order.Id] = [];
+        }
+        productDetailsMap[order.Id].push({
+          "ID de Orden": order.Id,
+          Producto: detail.Product.Name,
+          Cantidad: detail.Quantity,
+          Descripción: detail.Description,
+          "Precio Unitario": detail.Product.Price_Sell,
+          "Precio Total": detail.Quantity * detail.Product.Price_Sell,
+        });
+      });
+    });
+
+    const combinedData = [];
+    purchaseOrderData.forEach((order) => {
+      const orderId = order["ID de Orden"];
+      const productDetails = productDetailsMap[orderId] || [];
+      productDetails.forEach((detail) => {
+        combinedData.push({ ...order, ...detail });
+      });
+    });
+
+    const combinedWscols = calculateColumnWidths(combinedData);
+
+    const combinedWs = utils.json_to_sheet(combinedData);
+
+    const wb = utils.book_new();
+
+    utils.book_append_sheet(wb, purchaseOrderWs, "Ordenes de Compra");
+    utils.book_append_sheet(wb, productDetailsWs, "Detalles del Producto");
+    utils.book_append_sheet(wb, combinedWs, "Ordenes de Compra y Detalles");
+
+    purchaseOrderWs["!autofilter"] = { ref: purchaseOrderWs["!ref"] };
+    productDetailsWs["!autofilter"] = { ref: productDetailsWs["!ref"] };
+    combinedWs["!autofilter"] = { ref: combinedWs["!ref"] };
+
+    purchaseOrderWs["!cols"] = purchaseOrderWscols;
+    productDetailsWs["!cols"] = productDetailsWscols;
+    combinedWs["!cols"] = combinedWscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableData = filteredOrders.map((order) => [
+      order.Id,
+      order.Date,
+      order.State,
+      order.Total,
+      order.Supplier.Name,
+      order.PURCHASE_ORDER_DETAILED.map(
+        (detail) =>
+          `Producto: ${detail.Product.Name}, Cantidad: ${detail.Quantity}`
+      ).join("\n"),
+    ]);
+
+    doc.autoTable({
+      head: [
+        [
+          "ID de Orden",
+          "Fecha",
+          "Estado",
+          "Total",
+          "Proveedor",
+          "Detalles de Producto",
+        ],
+      ],
+      body: tableData,
+    });
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <div className="mt-4 mb-4 bg-white rounded-4 ">
       <div className="container">
         <h2 className="card-title text-center fw-bold pt-4 mb-4">
-          Compras realizadas
+          Historial de Compras{" "}
         </h2>
+        <div className="d-flex justify-content-end">
+          <button
+            className="mb-3 mx-2 btn btn-sm button-pdf"
+            onClick={handleExportPDF}
+            disabled={currentOrders.length === 0}
+          >
+            Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+          </button>
+          <button
+            className="mb-3 mx-2 btn btn-sm button-excel"
+            onClick={handleExportExcel}
+            disabled={currentOrders.length === 0}
+          >
+            Reporte de Compras en Excel{" "}
+            <i className="bi bi-file-earmark-excel-fill"></i>
+          </button>
+        </div>
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Buscar compras..."
+            placeholder="Filtrar compras..."
             className="form-control"
             value={searchTerm}
             onChange={handleSearchChange}
@@ -100,12 +235,12 @@ const PurchasesReceiptList = () => {
                 <th>Proveedor</th>
                 <th>Fecha</th>
                 <th>Total</th>
-                <th>Descargar Recibo</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {currentOrders.map((order) => (
-                <tr key={order.Id}>
+              {currentOrders.map((order, index) => (
+                <tr key={index}>
                   <td>{order.Id}</td>
                   <td>{order.Supplier.Name}</td>
                   <td>{order.Date}</td>
@@ -115,7 +250,8 @@ const PurchasesReceiptList = () => {
                       className="btn btn-info"
                       onClick={() => downloadReceipt(order.Id)}
                     >
-                      <i className="bi bi-box-arrow-down"></i> Descargar Recibo
+                      <i className="bi bi-cloud-arrow-down-fill"></i> Descargar
+                      Recibo
                     </button>
                   </td>
                 </tr>

@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { getAllPurchaseOrdersWithDetails } from "../../api/purchases";
 import { useNavigate } from "react-router-dom";
 import BottomNavigation from "../../components/BottomNavigation";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const PurchasesOrderList = () => {
   const list = [
@@ -74,12 +78,93 @@ const PurchasesOrderList = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const currentDate = new Date().getTime();
+  const fileName = `ordenes_compra_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const purchaseOrdersData = filteredPurchaseOrders.map((order) => ({
+      "ID de Orden": order.Id,
+      Fecha: order.Date,
+      Proveedor: order.Supplier.Name,
+      "Email del Proveedor": order.Supplier.Email,
+      "Dirección del Proveedor": order.Supplier.Address,
+      "Teléfono del Proveedor": order.Supplier.Phone,
+      Producto: order.PURCHASE_ORDER_DETAILED[0]?.Product.Name || "",
+      Marca: order.PURCHASE_ORDER_DETAILED[0]?.Product.Brand || "",
+      Cantidad: order.PURCHASE_ORDER_DETAILED[0]?.Quantity || "",
+      Estado: order.State,
+      Total: order.Total,
+    }));
+
+    const wscols = calculateColumnWidths(purchaseOrdersData);
+
+    const ws = utils.json_to_sheet(purchaseOrdersData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Órdenes de Compra");
+    ws["!autofilter"] = { ref: ws["!ref"] };
+    ws["!cols"] = wscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableBody = filteredPurchaseOrders.map((order) => [
+      order.Id,
+      order.Date,
+      order.Supplier.Name,
+      order.PURCHASE_ORDER_DETAILED[0]?.Product.Name || "",
+      order.PURCHASE_ORDER_DETAILED[0]?.Product.Brand || "",
+      order.PURCHASE_ORDER_DETAILED[0]?.Quantity || "",
+      order.State,
+      order.Total,
+    ]);
+
+    doc.autoTable({
+      head: [
+        [
+          "ID de Orden",
+          "Fecha",
+          "Proveedor",
+          "Producto",
+          "Marca",
+          "Cantidad",
+          "Estado",
+          "Total",
+        ],
+      ],
+      body: tableBody,
+    });
+
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <div className="mt-4 bg-white rounded-4 ">
       <div className="container">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Órdenes de Compra
         </h2>
+        <div className="d-flex justify-content-end">
+          <button
+            className="mb-3 mx-2 btn btn-sm button-pdf"
+            onClick={handleExportPDF}
+            disabled={filteredPurchaseOrders.length === 0}
+          >
+            Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+          </button>
+          <button
+            className="mb-3 mx-2 btn btn-sm button-excel"
+            onClick={handleExportExcel}
+            disabled={filteredPurchaseOrders.length === 0}
+          >
+            Exportar a Excel <i className="bi bi-file-earmark-excel-fill"></i>
+          </button>
+        </div>
         <div className="mb-3">
           <input
             type="text"
@@ -101,9 +186,9 @@ const PurchasesOrderList = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredPurchaseOrders.map((order) => (
+              {filteredPurchaseOrders.map((order, index) => (
                 <tr
-                  key={order.Id}
+                  key={index}
                   className={order.State !== "PENDIENTE" ? "" : "table-danger"}
                 >
                   <td>{order.Supplier.Name}</td>
@@ -146,7 +231,7 @@ const PurchasesOrderList = () => {
                 },
                 (_, i) => (
                   <li
-                  style={{ zIndex: 0 }}
+                    style={{ zIndex: 0 }}
                     className={`page-item ${
                       currentPage === i + 1 ? "active" : ""
                     }`}
@@ -182,4 +267,3 @@ const PurchasesOrderList = () => {
 };
 
 export default PurchasesOrderList;
-

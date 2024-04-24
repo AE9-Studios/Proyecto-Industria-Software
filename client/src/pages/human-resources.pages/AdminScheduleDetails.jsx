@@ -23,7 +23,7 @@ const AdminScheduleDetails = () => {
     list = [
       {
         title: "Volver",
-        url: "/admin/human-resources",
+        url: "/admin/human-resources/schedules",
         icon: "bi bi-arrow-left-circle-fill",
       },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },

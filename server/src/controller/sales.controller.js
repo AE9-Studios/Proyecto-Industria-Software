@@ -277,10 +277,23 @@ export const getAllInvoiceOrders = async (req, res) => {
   try {
     const invoiceOrders = await prisma.INVOICE_ORDER.findMany({
       include: {
-        Client: true,
-        Employee: true,
+        Client: {
+          include: {
+            Person: true,
+            User: true
+          },
+        },
+        Employee: {
+          include: {
+            Person: true,
+          },
+        },
         INVOICE_ORDER_SERVICE_DETAILS: true,
-        INVOICE_ORDER_PRODUCT_DETAILS: true,
+        INVOICE_ORDER_PRODUCT_DETAILS: {
+          include: {
+            Product: true,
+          },
+        },
       },
     });
 
@@ -510,8 +523,17 @@ export const getAllOrders = async (req, res) => {
   try {
     const purchaseOrders = await prisma.SALE_ORDER.findMany({
       include: {
-        Client: true,
-        Employee: true,
+        Client: {
+          include: {
+            Person: true,
+            User: true
+          },
+        },
+        Employee: {
+          include: {
+            Person: true,
+          },
+        },
       },
     });
 

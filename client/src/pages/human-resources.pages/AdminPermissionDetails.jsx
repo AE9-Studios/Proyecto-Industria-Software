@@ -25,7 +25,7 @@ const AdminPermissionDetails = () => {
     list = [
       {
         title: "Volver",
-        url: "/admin/human-resources",
+        url: "/admin/human-resources/permissions",
         icon: "bi bi-arrow-left-circle-fill",
       },
       { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },

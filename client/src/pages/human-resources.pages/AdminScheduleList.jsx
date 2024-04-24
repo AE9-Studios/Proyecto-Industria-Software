@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import BottomNavigation from "../../components/BottomNavigation.jsx";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const AdminScheduleList = () => {
   const { user } = useAuth();
@@ -65,7 +69,7 @@ const AdminScheduleList = () => {
         event.target.value.toLowerCase()
       )
     );
-    setFilteredSchedules(filtered.slice(0, 20));
+    setFilteredSchedules(filtered);
   };
 
   const handleDeleteSchedule = async () => {
@@ -115,12 +119,74 @@ const AdminScheduleList = () => {
     indexOfLastItem
   );
 
+  const currentDate = new Date().getTime();
+  const fileName = `horarios_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const scheduleData = filteredSchedules.map((schedule) => ({
+      "Nombre Horario": schedule.ScheduleName,
+      ...schedule.Schedule.set.reduce((acc, cur) => {
+        acc[cur.day] = `${cur.start} - ${cur.end}`;
+        return acc;
+      }, {}),
+    }));
+
+    const wscols = calculateColumnWidths(scheduleData);
+
+    const ws = utils.json_to_sheet(scheduleData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Horarios");
+    ws["!autofilter"] = { ref: ws["!ref"] };
+    ws["!cols"] = wscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableBody = filteredSchedules.map((schedule) => {
+      const scheduleDetails = schedule.Schedule.set
+        .map((day) => {
+          return `${day.day}: ${day.start} - ${day.end}`;
+        })
+        .join("\n");
+      return [schedule.ScheduleName, scheduleDetails];
+    });
+
+    doc.autoTable({
+      head: [["Nombre Horario", "Horarios por día"]],
+      body: tableBody,
+    });
+
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <div className=" mt-4 mb-4 bg-white rounded-4 ">
       <div className="container">
         <h2 className="card-title text-center fw-bold mb-4">
           Lista de Horarios
         </h2>
+        <div className="d-flex justify-content-end">
+          <button
+            className="mb-3 mx-2 btn btn-sm button-pdf"
+            onClick={handleExportPDF}
+            disabled={currentItems.length === 0}
+          >
+            Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+          </button>
+          <button
+            className="mb-3 mx-2 btn btn-sm button-excel"
+            onClick={handleExportExcel}
+            disabled={currentItems.length === 0}
+          >
+            Exportar a Excel <i className="bi bi-file-earmark-excel-fill"></i>
+          </button>
+        </div>
         <div className="mb-3">
           <input
             type="text"
@@ -140,8 +206,8 @@ const AdminScheduleList = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((schedule) => (
-                <tr key={schedule.Id}>
+              {currentItems.map((schedule, index) => (
+                <tr key={index}>
                   <td>{schedule.ScheduleName}</td>
                   <td>
                     <ul>

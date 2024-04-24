@@ -10,6 +10,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import BottomNavigation from "../../components/BottomNavigation";
+import { calculateColumnWidths } from "../../libs/utils.js";
+import { utils, writeFile } from "xlsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
 const SalesOrderList = () => {
   const { user } = useAuth();
@@ -151,14 +155,105 @@ const SalesOrderList = () => {
     }
   };
 
+  const currentDate = new Date().getTime();
+  const fileName = `ordenes_ventas_${currentDate}`;
+
+  const handleExportExcel = () => {
+    const orderData = filteredPurchaseOrders.map((order) => ({
+      Fecha: order.Date,
+      Cliente: `${order.Client?.Person?.First_Name || ""} ${
+        order.Client?.Person?.Last_Name || ""
+      }`,
+      "Correo del Cliente": order.Client?.User?.Email || "",
+      Estado: order.State,
+      Subtotal: order.Subtotal,
+      Descuento: order.Discount,
+      ISV: order.ISV,
+      Total: order.Total,
+    }));
+
+    const wscols = calculateColumnWidths(orderData);
+
+    const ws = utils.json_to_sheet(orderData);
+
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Órdenes de Ventas");
+    ws["!autofilter"] = { ref: ws["!ref"] };
+    ws["!cols"] = wscols;
+
+    writeFile(wb, `${fileName}.xlsx`);
+  };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+    });
+
+    const tableBody = filteredPurchaseOrders.map((order) => {
+      return [
+        order.State,
+        order.Date,
+        `${order.Client?.Person?.First_Name || ""} ${
+          order.Client?.Person?.Last_Name || ""
+        }`,
+        order.Client?.User?.Email || "",
+        order.Subtotal,
+        order.Discount,
+        order.ISV,
+        order.Total,
+      ];
+    });
+
+    doc.autoTable({
+      head: [
+        [
+          "Estado",
+          "Fecha",
+          "Cliente",
+          "Correo del Cliente",
+          "Subtotal",
+          "Descuento",
+          "ISV",
+          "Total",
+        ],
+      ],
+      body: tableBody,
+    });
+
+    doc.save(`${fileName}.pdf`);
+  };
+
   return (
     <>
       <div className="container mt-4 mb-4 bg-white rounded-4 ">
-        <h2 className="card-title text-center fw-bold pt-4 mb-4">
-          {user.role === "ADMINISTRADOR"
-            ? "Historial de Órdenes de Venta"
-            : "Mis Órdenes de Compra"}
-        </h2>
+        {user.role === "ADMINISTRADOR" ? (
+          <>
+            <h2 className="card-title text-center fw-bold pt-4 mb-4">
+              Historial de Órdenes de Venta
+            </h2>{" "}
+            <div className="d-flex justify-content-end">
+              <button
+                className="mb-3 mx-2 btn btn-sm button-pdf"
+                onClick={handleExportPDF}
+                disabled={purchaseOrders.length === 0}
+              >
+                Exportar a PDF <i className="bi bi-file-earmark-pdf-fill"></i>
+              </button>
+              <button
+                className="mb-3 mx-2 btn btn-sm button-excel"
+                onClick={handleExportExcel}
+                disabled={purchaseOrders.length === 0}
+              >
+                Exportar a Excel{" "}
+                <i className="bi bi-file-earmark-excel-fill"></i>
+              </button>
+            </div>
+          </>
+        ) : (
+          <h2 className="card-title text-center fw-bold pt-4 mb-4">
+            Mis Órdenes de Compra{" "}
+          </h2>
+        )}
         <div className="mb-3">
           <input
             type="text"
@@ -182,47 +277,54 @@ const SalesOrderList = () => {
               </tr>
             </thead>
             <tbody>
-              {purchaseOrders.map((order) => (
-                <tr
-                  key={order.Id}
-                  className={
-                    !(
-                      (user.role === "ADMINISTRADOR" && order.Read) ||
-                      (user.role !== "ADMINISTRADOR" && order.ReadClient)
-                    )
-                      ? "table-danger"
-                      : ""
-                  }
-                >
-                  {user.role === "ADMINISTRADOR" && <td>{order.Id}</td>}
-                  <td>
-                    <span className={`badge ${getBadgeColor(order.State)}`}>
-                      {order.State}
-                    </span>
-                  </td>
-                  <td>{order.Date}</td>
-                  <td>{order.Discount > 0 ? `$ ${order.Discount}` : "N/A"}</td>
-                  <td>{order.Total} HNL</td>
-                  <td>
-                    <button
-                      className="btn btn-info"
-                      onClick={() => downloadOrder(order.Id, order.Date)}
-                    >
-                      <i className="bi bi-box-arrow-down"></i> Descargar Orden
-                    </button>
-                  </td>
-                  {user.role === "ADMINISTRADOR" && (
+              {purchaseOrders
+                .slice(
+                  (currentPage - 1) * itemsPerPage,
+                  currentPage * itemsPerPage
+                )
+                .map((order, index) => (
+                  <tr
+                    key={index}
+                    className={
+                      !(
+                        (user.role === "ADMINISTRADOR" && order.Read) ||
+                        (user.role !== "ADMINISTRADOR" && order.ReadClient)
+                      )
+                        ? "table-danger"
+                        : ""
+                    }
+                  >
+                    {user.role === "ADMINISTRADOR" && <td>{order.Id}</td>}
+                    <td>
+                      <span className={`badge ${getBadgeColor(order.State)}`}>
+                        {order.State}
+                      </span>
+                    </td>
+                    <td>{order.Date}</td>
+                    <td>
+                      {order.Discount > 0 ? `$ ${order.Discount}` : "N/A"}
+                    </td>
+                    <td>{order.Total} HNL</td>
                     <td>
                       <button
-                        className="btn btn-primary"
-                        onClick={() => handleApproveOrder(order.Id)}
+                        className="btn btn-info"
+                        onClick={() => downloadOrder(order.Id, order.Date)}
                       >
-                        Aprobar orden de venta
+                        <i className="bi bi-box-arrow-down"></i> Descargar Orden
                       </button>
                     </td>
-                  )}
-                </tr>
-              ))}
+                    {user.role === "ADMINISTRADOR" && (
+                      <td>
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => handleApproveOrder(order.Id)}
+                        >
+                          Aprobar orden de venta
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
             </tbody>
           </table>
           <nav aria-label="Page navigation example">
