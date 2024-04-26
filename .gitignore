@@ -25,9 +25,6 @@ client/pnpm-debug.log*
 client/lerna-debug.log*
 
 client/node_modules
-client/dist
-client/dist-ssr
-client/*.local
 
 # Editor directories and files
 client/.vscode/*
