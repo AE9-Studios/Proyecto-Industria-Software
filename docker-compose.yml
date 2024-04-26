@@ -8,7 +8,7 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_node-network
+      - db_database-postgres_node-network
     # volumes: 
     #   - ./server:/usr/src/app
     #   - /usr/src/app/node_modules
@@ -27,7 +27,7 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_node-network
+      - db_database-postgres_node-network
     # volumes: 
     #   - ./client:/usr/src/app
     #   - /usr/src/app/node_modules
@@ -76,11 +76,11 @@ services:
       - "80:80"
       - "443:443"
     networks: 
-      - database-postgres_node-network
+      - db_database-postgres_node-network
     depends_on:
        - back-end
        - front-end
 
 networks: 
-  database-postgres_node-network:
+  db_database-postgres_node-network:
     external: true
