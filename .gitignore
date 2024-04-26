@@ -1,8 +1,15 @@
 #No subur al repositorio
 
+#aws
+aws
+
+#nginx
+nginx
+
 #server
 server/node_modules
-#server/.env
+server/.env
+server/Dokerfile
 
 #base de datos
 dbdata

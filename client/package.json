@@ -10,14 +10,28 @@
     "preview": "vite preview --port 5173"
   },
   "dependencies": {
+    "auto": "^11.1.2",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
+    "chart.js": "^4.4.2",
+    "chartjs-adapter-moment": "^1.0.1",
+    "firebase": "^10.11.0",
+    "html2pdf.js": "^0.10.1",
     "js-cookie": "^3.0.5",
+    "jspdf-autotable": "^3.8.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.1",
+    "react-calendar": "^4.8.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-emulatorjs": "^2.2.6",
     "react-hook-form": "^7.50.1",
-    "react-router-dom": "^6.22.1"
+    "react-router-dom": "^6.22.1",
+    "react-toastify": "^10.0.5",
+    "recharts": "^2.12.3",
+    "vite-plugin-mkcert": "^1.17.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",

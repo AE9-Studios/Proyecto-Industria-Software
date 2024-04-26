@@ -61,11 +61,34 @@ Si quiere desarrollar fuera del docker lo puede hacer, solo le recomendaría dej
 - frontend en el puerto 5173, exepto si trabaja fuera del docker y buildea el proyecto el front correria en el puerto 4173
 - pgadmin puerto 8001
 
-El nginx corre en el puerto 80 (puerto por defecto del localhost) y redirige las direcciones tanto al backend como al frontend, por lo que si entra al puerto 80 ira al frontend y al 80/api ira al backend.
+El nginx corre en el puerto 80 (puerto por defecto del localhost) y redirige las direcciones  tanto al backend como al frontend, por lo que si entra al puerto 80 ira al frontend y al 80/api ira al backend.
 
 
 # Restaurar los datos de la BD
+
 - corra el comando docker exec -t db pg_dumpall -c -U postgres > dump.sql desde la carpeta proyecto/server para guardar una copia de la base de datos
 
 - corra el comando "type dump.sql | docker exec -i db psql -U postgres" para restaurarla en windows
 - "cat dump.sql | docker exec -i db psql -U postgres" en linux (este se usara para produccion)
+
+
+# Métodos de pago para hacer pruebas
+
+**Cuenta Paypal:**
+
+- Email: sb-lsm8530074212@personal.example.com
+- Password: Fy+qm9ce
+
+**Tarjeta de Crédito:**
+
+- Card Number: 5110928322401165
+- Expiry Date: 04/2027
+- CVC Code: 552
+- First Name: Javier
+- Last Name: Flores
+- Street Address: Saturn
+- City: Stellar Drift
+- State: Washington
+- Zip Code: 20001
+- Mobile: +1 555-123-4567
+- Email: javier.flores@example.com

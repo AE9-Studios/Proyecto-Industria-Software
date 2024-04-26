@@ -77,24 +77,59 @@ enum ROL {
   CLIENTE
 }
 
+enum APPOINTMENT_SOLICITATION_STATE {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+enum APPOINTMENT_STATE {
+  PENDIENTE
+  ATENDIDO
+}
+
+enum PAY_METHOD {
+  LINEA
+  CAJA
+}
+
+enum EMPLOYEE_STATE {
+  ENABLED
+  DISABLED
+}
+
+enum REQUEST_STATE {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+enum INVENTORY_MOVEMENT_TYPE {
+  ENTRADA
+  SALIDA
+  PEDIDO
+}
+
 enum POSITIONS {
   MEDICO
   ENFERMERO
   ADMINISTRATIVO
+  RECEPCION
   LIMPIEZA
   SEGURIDAD
 }
 
 model USER {
-  Id         Int        @id @default(autoincrement())
-  User_Name  String
-  Email      String     @unique
-  Password   String
-  Role       ROL
-  created_At DateTime   @default(now())
-  updated_At DateTime?  @updatedAt
-  Employee   EMPLOYEE[]
-  Client     CLIENT[]
+  Id            Int        @id @default(autoincrement())
+  User_Name     String
+  Email         String     @unique
+  Password      String
+  Role          ROL
+  Device_Token  String?
+  Created_At    DateTime   @default(now())
+  Updated_At    DateTime?  @updatedAt
+  Employee      EMPLOYEE[]
+  Client        CLIENT[]
 }
 
 model PERSON {
@@ -114,8 +149,8 @@ model PERSON {
 
 model SCHEDULE {
   Id                Int                 @id @default(autoincrement())
-  Start_Date        DateTime
-  End_Date          DateTime
+  ScheduleName      String             
+  Schedule          Json               
   Created_At        DateTime            @default(now())
   Updated_At        DateTime?           @default(now()) @updatedAt
   Schedule_Employee SCHEDULE_EMPLOYEE[]
@@ -123,12 +158,13 @@ model SCHEDULE {
 
 model EMPLOYEE {
   Id                Int                 @id @default(autoincrement())
-  Phone             String?
   Email             String              @unique
   Person_Fk         Int
   User_Fk           Int
   Position          POSITIONS
   Start_Date        DateTime
+  Days_Spent        Int?                @default(0)
+  State             EMPLOYEE_STATE      @default(ENABLED)
   Person            PERSON              @relation(fields: [Person_Fk], references: [Id], onDelete: Cascade)
   User              USER                @relation(fields: [User_Fk], references: [Id])
   Created_At        DateTime            @default(now())
@@ -138,7 +174,7 @@ model EMPLOYEE {
   Vacation          VACATION[]
   Salary            SALARY[]
   APPOINTMENT       APPOINTMENT[]
-  PURCHASE_ORDER    PURCHASE_ORDER[]
+  SALE_ORDER        SALE_ORDER[]
   INVOICE_ORDER     INVOICE_ORDER[]
 }
 
@@ -156,7 +192,6 @@ model SCHEDULE_EMPLOYEE {
   Id          Int       @id @default(autoincrement())
   Schedule_Fk Int
   Employee_Fk Int
-  description String?
   Created_At  DateTime  @default(now())
   Updated_At  DateTime? @default(now()) @updatedAt
   Schedule    SCHEDULE  @relation(fields: [Schedule_Fk], references: [Id])
@@ -167,36 +202,45 @@ model PERMISION {
   Id            Int       @id @default(autoincrement())
   Employee_Fk   Int
   Reason        String
-  Discount      Boolean
+  State         REQUEST_STATE
+  Read          Boolean
+  ReadEmployee  Boolean
   Description   String
+  Answer        String?
   Attached_File String?
+  Start_Date    String
+  End_Date      String
   Created_At    DateTime  @default(now())
   Updated_At    DateTime? @default(now()) @updatedAt
   Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
-  Role          ROL[]
 }
 
 model VACATION {
-  Id          Int       @id @default(autoincrement())
-  Employee_Fk Int
-  Start_Date  DateTime
-  End_Date    DateTime
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
-  Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+  Id            Int       @id @default(autoincrement())
+  Employee_Fk   Int
+  State         REQUEST_STATE
+  Read          Boolean
+  ReadEmployee  Boolean
+  Answer        String?
+  Start_Date    String
+  End_Date      String
+  Created_At    DateTime  @default(now())
+  Updated_At    DateTime? @default(now()) @updatedAt
+  Employee      EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
 }
 
 model CLIENT {
-  Id             Int              @id @default(autoincrement())
-  Person_Fk      Int
-  User_Fk        Int?
-  Person         PERSON           @relation(fields: [Person_Fk], references: [Id])
-  User           USER?            @relation(fields: [User_Fk], references: [Id], onDelete: Cascade)
-  Created_At     DateTime         @default(now())
-  Updated_At     DateTime?        @default(now()) @updatedAt
-  APPOINTMENT    APPOINTMENT[]
-  PURCHASE_ORDER PURCHASE_ORDER[]
-  INVOICE_ORDER  INVOICE_ORDER[]
+  Id                       Int                        @id @default(autoincrement())
+  Person_Fk                Int
+  User_Fk                  Int?
+  Person                   PERSON                     @relation(fields: [Person_Fk], references: [Id])
+  User                     USER?                      @relation(fields: [User_Fk], references: [Id], onDelete: Cascade)
+  Created_At               DateTime                   @default(now())
+  Updated_At               DateTime?                  @default(now()) @updatedAt
+  APPOINTMENT              APPOINTMENT[]
+  SALE_ORDER               SALE_ORDER[]
+  INVOICE_ORDER            INVOICE_ORDER[]
+  APPOINTMENT_SOLICITATION APPOINTMENT_SOLICITATION[]
 }
 
 model SUPPLIER {
@@ -209,6 +253,7 @@ model SUPPLIER {
   Updated_At         DateTime?            @default(now()) @updatedAt
   Product            PRODUCT[]
   PURCHASE_QUOTATION PURCHASE_QUOTATION[]
+  PURCHASE_ORDER     PURCHASE_ORDER[]
 }
 
 model CATEGORY {
@@ -227,6 +272,7 @@ model PRODUCT {
   Brand                         String
   Price_Buy                     Float
   Price_Sell                    Float
+  Image                         String?
   Supplier_Fk                   Int
   Category_Fk                   Int
   Created_At                    DateTime                        @default(now())
@@ -237,6 +283,7 @@ model PRODUCT {
   PURCHASE_QUOTATION            PURCHASE_QUOTATION[]
   PURCHASE_ORDER                PURCHASE_ORDER_DETAILED[]
   INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
+  INVENTORY_MOVEMENT            INVENTORY_MOVEMENT[]
 }
 
 model INVENTORY {
@@ -256,11 +303,22 @@ model APPOINTMENT {
   Description String?
   Client_Fk   Int
   Employee_Fk Int
-  State       Boolean
+  State       APPOINTMENT_STATE
   Created_At  DateTime  @default(now())
   Updated_At  DateTime? @default(now()) @updatedAt
   Client      CLIENT    @relation(fields: [Client_Fk], references: [Id], onDelete: Cascade)
   Employee    EMPLOYEE  @relation(fields: [Employee_Fk], references: [Id], onDelete: Cascade)
+}
+
+model APPOINTMENT_SOLICITATION {
+  Id          Int                            @id @default(autoincrement())
+  Date        DateTime
+  Client_Fk   Int
+  Description String
+  State       APPOINTMENT_SOLICITATION_STATE
+  Created_At  DateTime                       @default(now())
+  Updated_At  DateTime?                      @default(now()) @updatedAt
+  Client      CLIENT                         @relation(fields: [Client_Fk], references: [Id], onDelete: Cascade)
 }
 
 model SERVICE {
@@ -290,7 +348,6 @@ model PURCHASE_ORDER_DETAILED {
   Id                Int            @id @default(autoincrement())
   Date              DateTime
   Quantity          Int
-  Discount          Float?
   Description       String?
   Product_Fk        Int
   Purchase_Order_Fk Int
@@ -303,9 +360,25 @@ model PURCHASE_ORDER_DETAILED {
 model PURCHASE_ORDER {
   Id                      Int                       @id @default(autoincrement())
   Date                    DateTime
+  Invoice_File            String?
+  State                   REQUEST_STATE
+  Total                   Float
+  Supplier_Fk             Int                       
+  Created_At              DateTime                  @default(now())
+  Updated_At              DateTime?                 @default(now()) @updatedAt
+  Supplier                SUPPLIER                  @relation(fields: [Supplier_Fk], references: [Id])
+  PURCHASE_ORDER_DETAILED PURCHASE_ORDER_DETAILED[]
+}
+
+model SALE_ORDER {
+  Id                      Int                       @id @default(autoincrement())
+  Date                    DateTime
   Client_Fk               Int
   Employee_Fk             Int
-  Description             String?
+  Order_File              String?
+  State                   REQUEST_STATE
+  Read                    Boolean
+  ReadClient              Boolean
   Subtotal                Float
   Discount                Float?
   ISV                     Float
@@ -314,36 +387,12 @@ model PURCHASE_ORDER {
   Updated_At              DateTime?                 @default(now()) @updatedAt
   Client                  CLIENT                    @relation(fields: [Client_Fk], references: [Id])
   Employee                EMPLOYEE                  @relation(fields: [Employee_Fk], references: [Id])
-  PURCHASE_ORDER_DETAILED PURCHASE_ORDER_DETAILED[]
-}
-
-model ACCOUNT_PLAYABLE {
-  Id          Int       @id @default(autoincrement())
-  Date        DateTime
-  Amount      Float
-  Creditor    String
-  Description String?
-  State       Boolean
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
-}
-
-model ACCOUNT_RECEIVABLE {
-  Id          Int       @id @default(autoincrement())
-  Date        DateTime
-  Amount      Float
-  Debtor      String
-  Description String?
-  State       Boolean
-  Created_At  DateTime  @default(now())
-  Updated_At  DateTime? @default(now()) @updatedAt
 }
 
 model INVOICE_ORDER_PRODUCT_DETAILS {
   Id               Int           @id @default(autoincrement())
   Quantity         Int
   Product_Fk       Int
-  Discount         Float?
   Description      String?
   Invoice_Order_Fk Int
   Created_At       DateTime      @default(now())
@@ -366,21 +415,23 @@ model INVOICE_ORDER_SERVICE_DETAILS {
 
 model INVOICE_ORDER {
   Id                            Int                             @id @default(autoincrement())
-  Client_Fk                     Int
+  Client_Fk                     Int?
   Employee_Fk                   Int
   Date                          DateTime
-  Description                   String?
+  Invoice_File                  String?
+  PayMethod                     PAY_METHOD                      @default(CAJA)
   Subtotal                      Float
   Discount                      Float?
   ISV                           Float
   Total                         Float
   Created_At                    DateTime                        @default(now())
   Updated_At                    DateTime?                       @default(now()) @updatedAt
-  Client                        CLIENT                          @relation(fields: [Client_Fk], references: [Id])
+  Client                        CLIENT?                         @relation(fields: [Client_Fk], references: [Id])
   Employee                      EMPLOYEE                        @relation(fields: [Employee_Fk], references: [Id])
   INVOICE_ORDER_SERVICE_DETAILS INVOICE_ORDER_SERVICE_DETAILS[]
   INVOICE_ORDER_PRODUCT_DETAILS INVOICE_ORDER_PRODUCT_DETAILS[]
 }
+
 
 model ACTIVITY_LOG {
   Id          Int       @id @default(autoincrement())
@@ -389,4 +440,15 @@ model ACTIVITY_LOG {
   Description String
   Created_At  DateTime  @default(now())
   Updated_At  DateTime? @default(now()) @updatedAt
+}
+
+model INVENTORY_MOVEMENT {
+  Id          Int                     @id @default(autoincrement())
+  Product_Fk  Int
+  Quantity    Int
+  Description String
+  State       INVENTORY_MOVEMENT_TYPE
+  Created_At  DateTime                @default(now())
+  Updated_At  DateTime?               @default(now()) @updatedAt
+  Product     PRODUCT                 @relation(fields: [Product_Fk], references: [Id], onDelete: Cascade)
 }

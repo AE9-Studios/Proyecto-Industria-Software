@@ -1,12 +1,12 @@
-body {
+/* body {
     background-color: #DDE6EE;
-}
+} */
 
-.container-cardProductsCategories{
+.container-cardProductsCategories {
     max-width: 190px;
 }
 
-.div-container-productCategoryHome{
+.div-container-productCategoryHome {
     justify-content: space-between;
 }
 
@@ -19,6 +19,19 @@ body {
     justify-content: center;
 }
 
+.wrap-table td,
+.wrap-table th {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+
+/* .edit-btn:hover{
+    background-color: #3a3737;
+    color: white;
+    padding: 4px;
+} */
+
+
 @media (min-width: 900px) {
 
     .div-container-footer {
@@ -28,15 +41,196 @@ body {
 }
 
 @media (min-width: 1200px) {
-    .container-cardProductsCategories{
+    .container-cardProductsCategories {
         max-width: 290px;
     }
 
     .container-cardServices {
         max-width: 230px;
     }
+
     .container-appointment-home {
         max-width: 50%;
     }
 
+}
+
+.badge-detail {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 0.25rem;
+}
+
+.badge-detail-gold {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #3a3737;
+    border-radius: 0.25rem;
+}
+
+.quantity-cell {
+    white-space: nowrap;
+}
+
+.quantity-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.bottom-navigation-space {
+    margin-bottom: 100px;
+}
+
+.bottom-navigation {
+    background-color: #fff;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    box-shadow: 0px 0px 1px 0px #3a3737;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-navigation-item {
+    text-decoration: none;
+    color: #3a3737;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+
+.bottom-navigation-item.active {
+    color: #32b8cf;
+}
+
+.bottom-navigation-item:hover .bottom-navigation-item-icon {
+    color: #007bff;
+    position: relative;
+    top: -20px;
+    text-shadow: 0px 0px 1px #000000;
+    font-weight: bold;
+}
+
+
+.bottom-navigation-item:hover .bottom-navigation-item-text{
+    color: #007bff;
+    text-shadow: 0px 0px 1px #007bff;
+}
+
+.emulator-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background-color: #f0f0f0; 
+    animation: changeBackground 100s infinite alternate; 
+}
+  
+@keyframes changeBackground {
+    0% {
+      background-color: #f0f0f0; 
+    }
+    25% {
+      background-color: #ffe4e1; 
+    }
+    50% {
+      background-color: #add8e6; 
+    }
+    75% {
+      background-color: #ffb6c1; 
+    }
+    100% {
+      background-color: #f0f0f0; 
+    }
+}
+  
+.emulator-container > div {
+    max-width: 80%; 
+    width: 100%;
+    max-height: 80vh; 
+    overflow: auto; 
+}
+
+.button-excel {
+    appearance: none;
+    background-color: #27ae60;
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: normal;
+    line-height: 1.5;
+    outline: none;
+    overflow: hidden;
+    padding: 5px 20px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transform: translate3d(0, 0, 0);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.button-excel:hover {
+    border: 2px solid #000;
+    padding: 3px 18px; 
+}
+
+.button-pdf {
+    appearance: none;
+    background-color: #ee0566;
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: normal;
+    line-height: 1.5;
+    outline: none;
+    overflow: hidden;
+    padding: 5px 20px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transform: translate3d(0, 0, 0);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.button-pdf:hover {
+    border: 2px solid #000;
+    padding: 3px 18px; 
 }

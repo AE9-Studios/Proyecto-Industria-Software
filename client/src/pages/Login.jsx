@@ -28,7 +28,7 @@ const Login = () => {
         <>
             <div className="container-sm mb-3">
 
-                <form className="mx-auto shadow mt-3  mx-auto rounded-4 bg-white" style={{ maxWidth: '500px' }} onSubmit={onSubmit}>
+                <form className="mx-auto  mt-3  mx-auto rounded-4 bg-white" style={{ maxWidth: '500px' }} onSubmit={onSubmit}>
                     <div className="px-3 pt-3">
                         <a href="/" className="py-2 px-4 rounded-3 btn btn-primary text-decoration-none text-white" ><i className="bi bi-house-door-fill"></i></a>
                         <p className="text-center fw-bold">Inicio de Sesión</p>
