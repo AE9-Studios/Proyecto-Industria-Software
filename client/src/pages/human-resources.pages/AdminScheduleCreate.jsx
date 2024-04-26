@@ -66,7 +66,11 @@ const AdminScheduleCreate = () => {
       }, 3000);
     } catch (error) {
       console.error("Error al crear el horario:", error);
-      setErrors(["Error al crear el horario. Inténtelo de nuevo más tarde."]);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrors([error.response.data.error]);
+      } else {
+        setErrors(["Error al crear el horario. Inténtelo de nuevo más tarde."]);
+      }
     }
   });
 

@@ -483,12 +483,16 @@ const SalesPurchaseCheckout = () => {
           ) : (
             <>
               {calculateTotal() > 0 ? (
-                <div className="col-6" id="paypal-button-container"></div>
+                <div
+                  style={{ zIndex: 0 }}
+                  className="col-6"
+                  id="paypal-button-container"
+                ></div>
               ) : (
                 <div
                   className="col-6"
                   id="paypal-button-container"
-                  style={{ pointerEvents: "none" }}
+                  style={{ zIndex: 0, pointerEvents: "none" }}
                 ></div>
               )}
             </>

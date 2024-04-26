@@ -27,22 +27,20 @@ const HHRRHome = () => {
     ];
   }
 
-  useEffect(() => {
-    const fetchUnreadPermissionsCount = async () => {
-      try {
-        const count = await getRequestWithReadFalse(user.role, user.id);
-        setUnreadPermissionsCount(count.data.unreadPermissionsCount);
-      } catch (error) {
-        console.error(
-          "Error al obtener el número de permisos no leídos:",
-          error
-        );
-      }
-    };
+  const fetchUnreadPermissionsCount = async () => {
+    try {
+      const count = await getRequestWithReadFalse(user.role, user.id);
+      setUnreadPermissionsCount(count.data.unreadPermissionsCount);
+    } catch (error) {
+      console.error("Error al obtener el número de permisos no leídos:", error);
+    }
+  };
 
-    fetchUnreadPermissionsCount();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {
+    fetchUnreadPermissionsCount(); // Llama una vez cuando se monta el componente
+    const interval = setInterval(fetchUnreadPermissionsCount, 60000); // Actualiza cada 60 segundos
+    return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
+  }, []); // Solo se ejecuta al montar el componente
 
   return (
     <>
@@ -105,7 +103,7 @@ const HHRRHome = () => {
       ) : (
         <>
           <div className="d-flex flex-column align-items-center p-2 my-4">
-            <h2>Bienvenido, Empleado</h2>
+          <h2>¡Hola, {user.userName}!</h2>
           </div>
           <div className="container d-flex justify-content-center">
             <div className="row col justify-content-center">

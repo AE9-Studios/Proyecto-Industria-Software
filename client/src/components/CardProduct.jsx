@@ -28,7 +28,7 @@ const CardProducts = ({
         {image ? (
           <img
             src={image}
-            alt="Section Image"
+            alt="Product Image"
             style={{
               width: "100%",
               height: "100%",

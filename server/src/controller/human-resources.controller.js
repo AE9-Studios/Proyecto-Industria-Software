@@ -624,6 +624,17 @@ const calculateDaysWithoutWeekends = (startDate, endDate) => {
 export const saveSchedule = async (req, res) => {
   try {
     const { scheduleName, ...scheduleData } = req.body;
+
+    const existingSchedule = await prisma.SCHEDULE.findFirst({
+      where: {
+        ScheduleName: scheduleName,
+      },
+    });
+
+    if (existingSchedule) {
+      return res.status(400).json({ error: "Ya existe un horario con este nombre, no puede crear horarios con el mismo nombre." });
+    }
+
     const days = [];
 
     Object.keys(scheduleData).forEach((day) => {
@@ -656,6 +667,7 @@ export const saveSchedule = async (req, res) => {
       .json({ error: "An error occurred while saving the schedule" });
   }
 };
+
 
 export const updateSchedule = async (req, res) => {
   try {

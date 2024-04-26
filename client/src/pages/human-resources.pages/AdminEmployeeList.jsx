@@ -104,7 +104,7 @@ const AdminEmployeeList = () => {
         "Correo Institucional": employee.User.Email,
         Cargo: formatPosition(employee.Position),
         "Fecha de Inicio": employee.Start_Date,
-        "Días Trabajados": employee.Days_Spent,
+        "Días de vacaciones tomados": employee.Days_Spent,
         Estado: employee.State,
         Teléfono: employee.Person.Phone_Number,
         Dirección: employee.Person.Address,
@@ -223,7 +223,7 @@ const AdminEmployeeList = () => {
                             )
                           }
                         >
-                          Editar
+                          <i className="bi bi-gear-fill"></i>{" "}
                         </button>
                       )}
                     </td>

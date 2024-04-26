@@ -109,44 +109,35 @@ const AdminCalendar = () => {
       <div style={{ marginBottom: "20px" }}>
         <h3 className="text-center">Eventos en el día seleccionado:</h3>
         <ul className="list-group">
-          {!isDateSelected && (
-            <div
-              className="alert alert-warning"
-              style={{ textAlign: "center" }}
-              role="alert"
-            >
-              Aún no has seleccionado ningún día, selecciona un día para ver los
-              eventos.
-            </div>
-          )}
-          {selectedEvents.length === 0 && isDateSelected && (
-            <li className="list-group-item" style={{ marginBottom: "20px" }}>
-              No hay eventos para este día
-            </li>
-          )}
-          {selectedEvents.map((event) => (
-            <li
-              key={event.Id}
-              className="list-group-item"
-              style={{ marginBottom: "20px" }}
-            >
-              <strong>
-                {event.Employee.Person.First_Name}{" "}
-                {event.Employee.Person.Last_Name}{" "}
-              </strong>
-              <br />
-              {event.Reason ? (
-                <span className="badge bg-info" style={{ color: "black" }}>
-                  Permiso desde {event.Start_Date} hasta {event.End_Date}{" "}
-                </span>
-              ) : (
-                <span className="badge bg-dark">
-                  Vacaciones desde {event.Start_Date} hasta {event.End_Date}{" "}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
+  {!isDateSelected && (
+    <div className="alert alert-warning mx-auto w-75 text-center" role="alert">
+      Aún no has seleccionado ningún día, selecciona un día para ver los eventos.
+    </div>
+  )}
+  {selectedEvents.length === 0 && isDateSelected && (
+    <li className="list-group-item mx-auto w-75 my-2 text-center">
+      No hay eventos para este día
+    </li>
+  )}
+  {selectedEvents.map((event) => (
+    <li key={event.Id} className="list-group-item mx-auto w-75 my-2">
+      <strong>
+        {event.Employee.Person.First_Name} {event.Employee.Person.Last_Name}{" "}
+      </strong>
+      <br />
+      {event.Reason ? (
+        <span className="badge bg-info text-dark">
+          Permiso desde {event.Start_Date} hasta {event.End_Date}{" "}
+        </span>
+      ) : (
+        <span className="badge bg-dark">
+          Vacaciones desde {event.Start_Date} hasta {event.End_Date}{" "}
+        </span>
+      )}
+    </li>
+  ))}
+</ul>
+
       </div>
       <BottomNavigation list={list} />
     </div>

@@ -33,7 +33,6 @@ const SalesPurchaseList = () => {
     list = [
       { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
       { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
-      { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
     ];
   }
 

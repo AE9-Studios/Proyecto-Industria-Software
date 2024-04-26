@@ -122,8 +122,8 @@ function AdminRoutes() {
 
           {/** Módulo Ventas */}
           <Route path="sales" element={<ClientHome />} />
-          <Route path="/sales/new" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesCatalogView /></ShoppingCartProvider></ProductsProvider>} />
-          <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><Cart role={user.role} /><SalesPurchaseCheckout /></ShoppingCartProvider></ProductsProvider>} />
+          <Route path="/sales/new" element={<ProductsProvider><ShoppingCartProvider><SalesCatalogView /><Cart /></ShoppingCartProvider></ProductsProvider>} />
+          <Route path="/sales/checkout" element={<ProductsProvider><ShoppingCartProvider><SalesPurchaseCheckout /><Cart /></ShoppingCartProvider></ProductsProvider>} />
           <Route path="/sales/list" element={<SalesPurchaseList />} />
           <Route path="/sales/stadistics" element={<SalesStatisticsPage />} />
           <Route path="/sales/order-list" element={<SalesOrderList />} />
@@ -148,14 +148,13 @@ function ClientRoutes() {
   return (
     <ProductsProvider>
       <ShoppingCartProvider>
-        <Cart />
         <NotificationHandler />
         <Routes>
           {user.role === 'CLIENTE' && <>
             // aqui se agregan las rutas para el cliente
             <Route path='home' element={<ClientHome />} />
-            <Route path="/catalog" element={<SalesCatalogView />} />
-            <Route path="/checkout" element={<SalesPurchaseCheckout />} />
+            <Route path="/catalog" element={<><SalesCatalogView /><Cart /></>} />
+            <Route path="/checkout" element={<><SalesPurchaseCheckout /><Cart /></>} />
             <Route path="/purchases" element={<SalesPurchaseList />} />
             <Route path="/orders" element={<SalesOrderList />} />
             <Route path="/thankyou" element={<ThankYouPage />} />

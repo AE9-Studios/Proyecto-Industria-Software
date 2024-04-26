@@ -18,7 +18,6 @@ const ClientHome = () => {
     list = [
       { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
       { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
-      { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
     ];
   }
 
@@ -95,7 +94,7 @@ const ClientHome = () => {
           </h1>
           <p className="p-2 text-center">
             Aquí podrás realizar tus compras de una forma rápida y segura.
-            Ademas puedes agendar tus citas
+            Además, puedes agendar tus citas.
           </p>
           <div className="container d-flex justify-content-center">
             <div className="row p-3 justify-content-center">
@@ -112,16 +111,16 @@ const ClientHome = () => {
                 url="/client/appointments"
               />
               <CardModules
-                title="Carrito"
-                icon="bi bi-cart-fill"
-                description="Revisa tu carrito de compras"
-                url="/client/checkout"
+                title="Mis Compras"
+                icon="bi bi-bag-check"
+                description="Explora tu historial de compras"
+                url="/client/purchases"
               />
               <CardModules
-                title="Órdenes"
+                title="Órdenes de Compra"
                 icon="bi bi-card-checklist"
-                description="Mira tus ordenes de compra"
-                url="/client/purchases"
+                description="Mira tus órdenes de compra"
+                url="/client/orders"
               />
             </div>
           </div>

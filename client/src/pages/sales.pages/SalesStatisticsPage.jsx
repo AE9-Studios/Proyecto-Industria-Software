@@ -264,11 +264,13 @@ const SalesStatisticsPage = () => {
               </div>
             </div>
           </div>
-          <br />
-          <h6>Total de ventas en el rango de fechas: {totalSalesInRange}</h6>
 
           <div className="row">
             <div className="col-md-12" id="sales-chart">
+              <br />
+              <h6>
+                Total de ventas en el rango de fechas: {totalSalesInRange}
+              </h6>
               <hr />
               <h3 className="text-center mb-3">Ventas Diarias</h3>
               <Bar

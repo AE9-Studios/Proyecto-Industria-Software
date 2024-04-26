@@ -3,32 +3,11 @@ import { useContext } from "react";
 import { ProductContext } from "../../context/ShoppingCartContext";
 import { CartContext } from "../../context/ShoppingCartContext";
 import CardProducts from "../../components/CardProduct";
-import BottomNavigation from "../../components/BottomNavigation";
-import { useAuth } from "../../context/AuthContext";
 
 const SalesCatalogView = () => {
-  const { user } = useAuth();
   const { products } = useContext(ProductContext);
   const { addPurchase, purchaseList, deletePurchase } = useContext(CartContext);
   const [searchQuery, setSearchQuery] = useState("");
-
-  let list = [];
-  if (user.role === "ADMINISTRADOR") {
-    list = [
-      {
-        title: "Volver",
-        url: "/admin/sales",
-        icon: "bi bi-arrow-left-circle-fill",
-      },
-      { title: "Inicio", url: "/admin/home", icon: "bi bi-house-fill" },
-    ];
-  } else {
-    list = [
-      { title: "Home", url: "/client/home", icon: "bi bi-house-fill" },
-      { title: "Tienda", url: "/client/catalog", icon: "bi bi-shop" },
-      { title: "Carrito", url: "/client/checkout", icon: "bi bi-cart-fill" },
-    ];
-  }
 
   const handleAdd = (purchase) => {
     addPurchase(purchase);
@@ -77,7 +56,6 @@ const SalesCatalogView = () => {
           ))}
         </div>
       </div>
-      <BottomNavigation list={list} />
     </>
   );
 };
