@@ -14,7 +14,7 @@ services:
     ports: 
       - "5432:5432"
     networks: 
-      - node-network
+      - database-postgres_bridge
 
   back-end:
     build: 
