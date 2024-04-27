@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services: 
   back-end:
@@ -7,7 +7,7 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_node-network
+      - database-postgres_bridge
     tty: true
     ports: 
       - "3000:3000"
@@ -21,7 +21,7 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_node-network
+      - database-postgres_bridge
     tty: true
     ports: 
       - "5173:5173"
@@ -40,11 +40,11 @@ services:
       - "80:80"
       - "443:443"
     networks: 
-      - database-postgres_node-network
+      - database-postgres_bridge
     depends_on:
        - back-end
        - front-end
 
 networks:
-  database-postgres_node-network:
+  database-postgres_bridge:
     external: true
