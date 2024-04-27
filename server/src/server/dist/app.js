@@ -9,7 +9,8 @@ const start = async () => {
     const app = express();
     await initializeDb();
     const admin = new AdminJS(options);
-    if (process.env.NODE_ENV === 'production') {
+    const NODE_ENV = 'production';
+    if (NODE_ENV === 'production') {
         await admin.initialize();
     }
     else {

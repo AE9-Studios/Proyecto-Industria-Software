@@ -1,7 +1,7 @@
 import componentLoader from './component-loader.js';
 const options = {
     componentLoader,
-    rootPath: '/admin',
+    rootPath: '/admin-crud',
     resources: [],
     databases: [],
 };
