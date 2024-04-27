@@ -22,7 +22,7 @@ jobs:
             echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
             git fetch
             git checkout master 
-            git pull origin master 
+            git pull 
             sudo usermod -aG docker $USER 
             if [ $(sudo docker ps -q -f name=nginx) ]; then
               sudo docker stop nginx
