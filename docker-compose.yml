@@ -1,7 +1,6 @@
 version: '3'
 
 services: 
-
   back-end:
     build: 
       context: server
@@ -46,6 +45,6 @@ services:
        - back-end
        - front-end
 
-networks:
+networks: 
   node-network:
     external: true
