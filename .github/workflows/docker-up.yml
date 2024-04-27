@@ -17,7 +17,7 @@ jobs:
               echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
               echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
               chmod 600 private_key.pem
-              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-3-221-247-199.compute-1.amazonaws.com &&
+              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-18-207-22-174.compute-1.amazonaws.com &&
   
               git checkout master &&
               git pull origin master &&
@@ -35,5 +35,8 @@ jobs:
                 sudo docker stop pgadmin
               fi
               sudo docker-compose up --build -d &&
+              sudo docker network connect db_database-postgres_node-network back-end &&
+              sudo docker network connect db_database-postgres_node-network front-end &&
+              sudo docker network connect db_database-postgres_node-network nginx &&
               sudo cat dump.sql | docker exec -i db psql -U postgres &&
               exit
