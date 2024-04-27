@@ -24,12 +24,15 @@ jobs:
             git pull 
             sudo usermod -aG docker $USER 
             if [ $(sudo docker ps -q -f name=nginx) ]; then
+              sudo docker network disconnect node-network nginx
               sudo docker stop nginx
             fi
             if [ $(sudo docker ps -q -f name=back-end) ]; then
+              sudo docker network disconnect node-network back-end
               sudo docker stop back-end
             fi
             if [ $(sudo docker ps -q -f name=front-end) ]; then
+              sudo docker network disconnect node-network front-end
               sudo docker stop front-end
             fi
             if [ $(sudo docker ps -q -f name=pgadmin) ]; then
