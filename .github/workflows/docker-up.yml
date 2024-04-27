@@ -33,4 +33,5 @@ jobs:
               if [ $(sudo docker ps -q -f name=pgadmin) ]; then
                 sudo docker stop pgadmin
               fi
+              sudo docker-compose up --build -d &&
               exit
