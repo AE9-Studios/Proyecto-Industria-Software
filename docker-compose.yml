@@ -45,6 +45,6 @@ services:
        - back-end
        - front-end
 
-networks: 
+networks:
   node-network:
     external: true
