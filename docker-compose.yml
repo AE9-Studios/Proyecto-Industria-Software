@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services: 
 
@@ -8,13 +8,15 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_bridge
+      - node-network
     tty: true
     ports: 
       - "3000:3000"
     expose:
       - "3000"
     command: npm run dev
+    # depends_on:
+    #    - db
 
   front-end:
     build: 
@@ -22,11 +24,11 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_bridge
+      - node-network
     tty: true
     ports: 
       - "5173:5173"
-    command: npm run preview -- --host
+    command: npm run preview -- --host #para produccion
 
   nginx:
     build: 
@@ -34,18 +36,14 @@ services:
     container_name: nginx
     restart: always
     tty: true
-    volumes:
-      - ./fullchain.pem:/etc/ssl/certs/fullchain.pem
-      - ./privkey.pem:/etc/ssl/private/privkey.pem
     ports: 
-      - "80:80"
-      - "443:443"
+      - "80:8000"
     networks: 
-      - database-postgres_bridge
+      - node-network
     depends_on:
        - back-end
        - front-end
 
-networks:
-  database-postgres_bridge:
-    driver: bridge
+networks: 
+  node-network:
+    external: true
