@@ -17,7 +17,7 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: 22
           script: |
-            cd ${{secrets.WORK_DIR}}
+            cd Proyecto-Industria-Software
             echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
             echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
             git fetch
@@ -37,3 +37,4 @@ jobs:
               sudo docker stop pgadmin
             fi
             sudo docker-compose up --build -d 
+            exit
