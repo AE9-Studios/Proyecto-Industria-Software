@@ -47,4 +47,3 @@ services:
 
 networks:
   database-postgres_bridge:
-    external: true
