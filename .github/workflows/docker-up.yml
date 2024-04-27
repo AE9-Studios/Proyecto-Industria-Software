@@ -12,26 +12,30 @@ jobs:
         steps:
           - uses: appleboy/ssh-action@v1.0.0
           - name: Build & Deploy
-            run: |
-              echo "${{secrets.SSH_KEY}}" > private_key.pem
-              echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
-              echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
-              chmod 600 private_key.pem
-              ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-3-221-247-199.compute-1.amazonaws.com &&
-              git checkout master &&
-              git pull origin master &&
-              sudo usermod -aG docker $USER &&
-              if [ $(sudo docker ps -q -f name=nginx) ]; then
-                sudo docker stop nginx
-              fi
-              if [ $(sudo docker ps -q -f name=back-end) ]; then
-                sudo docker stop back-end
-              fi
-              if [ $(sudo docker ps -q -f name=front-end) ]; then
-                sudo docker stop front-end
-              fi
-              if [ $(sudo docker ps -q -f name=pgadmin) ]; then
-                sudo docker stop pgadmin
-              fi
-              sudo docker-compose up --build -d &&
-              exit
+            with:
+                host: ${{secrets.SSH_HOST}}
+                username: ${{secrets.SSH_USER}}
+                key: ${{secrets.SSH_KEY}}
+                port: ${{secrets.SSH_PORT}}
+                script: |
+                  echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
+                  echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
+                  chmod 600 private_key.pem
+                  ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-3-221-247-199.compute-1.amazonaws.com 
+                  git checkout master 
+                  git pull origin master 
+                  sudo usermod -aG docker $USER 
+                  if [ $(sudo docker ps -q -f name=nginx) ]; then
+                    sudo docker stop nginx
+                  fi
+                  if [ $(sudo docker ps -q -f name=back-end) ]; then
+                    sudo docker stop back-end
+                  fi
+                  if [ $(sudo docker ps -q -f name=front-end) ]; then
+                    sudo docker stop front-end
+                  fi
+                  if [ $(sudo docker ps -q -f name=pgadmin) ]; then
+                    sudo docker stop pgadmin
+                  fi
+                  sudo docker-compose up --build -d 
+                  exit              
