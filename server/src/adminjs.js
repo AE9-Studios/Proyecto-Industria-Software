@@ -32,7 +32,7 @@ const adminOptions = {
     assets: {
         styles: ["styles.css"],
     },
-    rootPath: '/admin-crud',
+    rootPath: '/api/admin-crud',
     defaultTheme: light.id,
     availableThemes: [dark, light, noSidebar],
     branding: {
