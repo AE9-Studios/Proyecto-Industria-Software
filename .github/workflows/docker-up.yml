@@ -38,8 +38,8 @@ jobs:
             if [ $(sudo docker ps -q -f name=pgadmin) ]; then
               sudo docker stop pgadmin
             fi
-            sudo docker system prune
-            sudo docker system prune -a
+            sudo docker system prune -f
+            sudo docker system prune -a -f
             sudo docker-compose up --build -d 
             sudo docker network connect node-network back-end
             sudo docker network connect node-network front-end
