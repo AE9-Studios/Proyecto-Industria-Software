@@ -36,4 +36,8 @@ jobs:
               sudo docker stop pgadmin
             fi
             sudo docker-compose up --build -d 
+            sudo docker network connect node_network back-end
+            sudo docker network connect node_network front-end
+            sudo docker network connect node_network nginx
+            cat dump.sql | docker exec -i db psql -U postgres
             exit
