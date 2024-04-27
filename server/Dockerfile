@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:slim
 
 WORKDIR /usr/src/app
 
@@ -14,9 +14,7 @@ ENV TOKEN_SECRET 1234
 
 COPY . .
 
-RUN echo "Starting npm install back" \
-&& npm install \
-&& echo "npm install completed back"
+RUN  npm install 
 
 
 EXPOSE 3000

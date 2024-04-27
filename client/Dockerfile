@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:slim
 
 WORKDIR /usr/src/app
 
