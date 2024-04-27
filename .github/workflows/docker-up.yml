@@ -3,7 +3,6 @@ name: Docker CI/CD Pipeline
 on:
   push:
     branches: [ "master" ]
-
 jobs:
     Deploy:
         name: Deploy to EC2
