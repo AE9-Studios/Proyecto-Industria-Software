@@ -14,6 +14,9 @@ ENV TOKEN_SECRET 1234
 
 COPY . .
 
-RUN npm install
+RUN echo "Starting npm install back" \
+&& npm install \
+&& echo "npm install completed back"
+
 
 EXPOSE 3000
