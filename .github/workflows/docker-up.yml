@@ -17,10 +17,9 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: 22
           script: |
-            cd Proyecto-Industria-Software
+            cd Proyecto-Industria-Software/Proyecto-Industria-Software
             echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
             echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
-            git fetch
             git checkout master 
             git pull 
             sudo usermod -aG docker $USER 
