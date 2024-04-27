@@ -69,8 +69,8 @@ const dashboard = () => {
           </div>
         </a>
         <a onClick={logout}
-          href='http://localhost:5173/login' //dev
-          // href='https://classic-vision.alhanisespinal.tech/login' //deploy
+          // href='http://localhost:5173/login' //dev
+          href='https://classic-vision.alhanisespinal.tech/login' //deploy
           style={{
             margin: '10px',
             textDecoration: 'none',

@@ -1,4 +1,4 @@
-import express from 'express';
+mport express from 'express';
 import AdminJS from 'adminjs';
 import { buildAuthenticatedRouter } from '@adminjs/express';
 
