@@ -36,7 +36,7 @@ const PanelAdmin = () => {
           <CardModules title="Citas" description="Organiza y gestiona citas y eventos." icon="bi bi-file-earmark-text" url="appointments" />
           <CardModules title="Recursos Humanos" description="Gestiona el personal y recursos humanos." icon="bi bi-people" url="human-resources" />
           <CardModules title="CRUD" description="Administra los registros de la Base de datos" icon="bi bi-database"
-            url="https://classic-vision.alhanisespinal.tech/admin-crud/resources/USER" //para deploy
+            url="https://classic-vision.alhanisespinal.tech/admin-crud/" //para deploy
             // url="http://localhost:3000/admin-crud" //para dev
           />
         </div>
