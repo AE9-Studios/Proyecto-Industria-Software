@@ -48,3 +48,4 @@ services:
 networks:
   node-network:
     external: true
+    name: cea21d6fa3da
