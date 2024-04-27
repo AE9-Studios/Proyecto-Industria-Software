@@ -41,7 +41,9 @@ const dashboard = () => {
         justifyContent: 'space-around',
         alignItems: 'center',
       }}>
-        <a href='http://localhost:5173/admin/home'
+        <a 
+          // href='http://localhost:5173/admin/home' //dev
+          href='https://classic-vision.alhanisespinal.tech/admin/home' //deploy
           style={{
             margin: '10px',
             textDecoration: 'none',
