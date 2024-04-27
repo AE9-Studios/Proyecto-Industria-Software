@@ -19,8 +19,6 @@ jobs:
                 script: |
                   echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
                   echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
-                  chmod 600 private_key.pem
-                  ssh -o StrictHostKeyChecking=no -i "private_key.pem" ubuntu@ec2-3-221-247-199.compute-1.amazonaws.com 
                   git checkout master 
                   git pull origin master 
                   sudo usermod -aG docker $USER 
