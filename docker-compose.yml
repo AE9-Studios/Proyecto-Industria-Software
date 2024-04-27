@@ -7,7 +7,7 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - node-network
+      - database-postgres_node-network
     tty: true
     ports: 
       - "3000:3000"
@@ -21,7 +21,7 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - node-network
+      - database-postgres_node-network
     tty: true
     ports: 
       - "5173:5173"
@@ -40,12 +40,11 @@ services:
       - "80:80"
       - "443:443"
     networks: 
-      - node-network
+      - database-postgres_node-network
     depends_on:
        - back-end
        - front-end
 
 networks:
-  node-network:
-    external:
-      name: cea21d6fa3da
+  database-postgres_node-network:
+    external: true
