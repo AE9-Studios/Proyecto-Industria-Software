@@ -1,6 +1,21 @@
 version: '3.8'
 
 services: 
+
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    environment: 
+      - POSTGRES_PASSWORD=1234
+    ports: 
+      - "5432:5432"
+    networks: 
+      - node-network
+
   back-end:
     build: 
       context: server
