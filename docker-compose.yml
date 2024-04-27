@@ -2,27 +2,13 @@ version: '3.8'
 
 services: 
 
-  db:
-    image: postgres
-    container_name: db
-    restart: always
-    tty: true
-    volumes:
-      - ./dbdata:/var/lib/postgresql/data
-    environment: 
-      - POSTGRES_PASSWORD=1234
-    ports: 
-      - "5432:5432"
-    networks: 
-      - database-postgres_bridge
-
   back-end:
     build: 
       context: server
     container_name: back-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_bridge
+      - database-postgres_node-network
     tty: true
     ports: 
       - "3000:3000"
@@ -36,7 +22,7 @@ services:
     container_name: front-end
     working_dir: /usr/src/app
     networks: 
-      - database-postgres_bridge
+      - database-postgres_node-network
     tty: true
     ports: 
       - "5173:5173"
@@ -55,7 +41,7 @@ services:
       - "80:80"
       - "443:443"
     networks: 
-      - database-postgres_bridge
+      - database-postgres_node-network
     depends_on:
        - back-end
        - front-end
