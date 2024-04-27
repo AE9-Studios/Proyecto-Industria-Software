@@ -17,8 +17,10 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           port: ${{secrets.SSH_PORT}}
           script: |
+            cd ${{secrets.WORK_DIR}}
             echo "${{secrets.SSL_CERTIFICATE}}" > fullchain.pem
             echo "${{secrets.SSL_CERTIFICATE_KEY}}" > privkey.pem
+            git fetch
             git checkout master 
             git pull origin master 
             sudo usermod -aG docker $USER 
