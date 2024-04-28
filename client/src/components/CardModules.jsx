@@ -2,7 +2,7 @@ import React from 'react'
 
 const CardModules = ({title, icon, description, url}) => {
     return (
-        <a href={url} className="col-md-4 m-2 text-decoration-none">
+        <a href={url} className="col-md-4 m-2 text-decoration-none" onClick={(e) => { e.preventDefault(); window.location.reload(true); }}>
             <div className="card text-center">
                 {<i className={`fs-2 mt-3 ${icon}`}></i>}
                 <div className="card-body">
