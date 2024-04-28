@@ -34,7 +34,9 @@ app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
-
+app.get('/admin-crud', (req, res) => {
+    res.redirect('http://3.221.247.199/admin-crud');
+});
 app.use(admin.options.rootPath, adminAuth, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);

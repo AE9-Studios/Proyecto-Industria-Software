@@ -37,7 +37,7 @@ const adminOptions = {
         debug: false,
     },
     isDebug: false,
-    rootPath: '/admin-crud',
+    rootPath: '/admin-crud/panel',
     defaultTheme: light.id,
     availableThemes: [dark, light, noSidebar],
     branding: {

@@ -33,12 +33,6 @@ export const registerClient = async (req, res) => {
             }
         });
 
-        const client = await prisma.CLIENT.findFirst({
-            where: {
-                Person_Fk: person?.Id
-            }
-        });
-
         if (client) return res.status(400).json(['Este DNI ya esta registrado']);
 
         if (person) return res.status(400).json(['Este DNI ya esta registrado']);

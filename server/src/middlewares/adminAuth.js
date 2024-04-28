@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import prisma from "../db.js";
-import { adminRouter } from '../adminjs.js';
 
 export const adminAuth = async (req, res, next) => {
     const { token } = req.cookies
