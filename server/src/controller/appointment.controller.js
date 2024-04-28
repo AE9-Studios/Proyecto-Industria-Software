@@ -5,9 +5,9 @@ import { http500 } from "../libs/handleErrors.js";
 export const createAppointmentSolicitation = async (req, res) => {
     const { date, description, clientId } = req.body;
     try {
-        const findClient = await prisma.cLIENT.findUnique({
+        const findClient = await prisma.cLIENT.findFirst({
             where: {
-                Id: parseInt(clientId)
+                User_Fk: parseInt(clientId)
             }
         });
         if (!findClient) return res.status(400).json(["El cliente no existe"]);
@@ -242,9 +242,14 @@ export const getAppointments = async (req, res) => {
 export const getAppointmentsSolicitationToClient = async (req, res) => {
     const { id } = req.params;
     try {
+        const findClient = await prisma.cLIENT.findFirst({
+            where: {
+                User_Fk: parseInt(id)
+            }
+        });
         const appointments = await prisma.aPPOINTMENT_SOLICITATION.findMany({
             where: {
-                Client_Fk: parseInt(id)
+                Client_Fk: findClient.Id
             },
             include: {
                 Client: {
@@ -280,9 +285,14 @@ export const getAppointmentsSolicitationToClient = async (req, res) => {
 export const getAppointmentToClient = async (req, res) => {
     const { id } = req.params;
     try {
+        const findClient = await prisma.cLIENT.findFirst({
+            where: {
+                User_Fk: parseInt(id)
+            }
+        });
         const appointments = await prisma.aPPOINTMENT.findMany({
             where: {
-                Client_Fk: parseInt(id)
+                Client_Fk: findClient.Id
             },
             include: {
                 Employee: {
