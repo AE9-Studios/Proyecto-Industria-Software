@@ -33,7 +33,6 @@ export const registerClient = async (req, res) => {
             }
         });
 
-        if (client) return res.status(400).json(['Este DNI ya esta registrado']);
 
         if (person) return res.status(400).json(['Este DNI ya esta registrado']);
 
