@@ -33,6 +33,14 @@ export const registerClient = async (req, res) => {
             }
         });
 
+        const client = await prisma.CLIENT.findFirst({
+            where: {
+                Person_Fk: person?.Id
+            }
+        });
+
+        if (client) return res.status(400).json(['Este DNI ya esta registrado']);
+
         if (person) return res.status(400).json(['Este DNI ya esta registrado']);
 
         if (user) {
@@ -67,16 +75,8 @@ export const registerClient = async (req, res) => {
 
         const newClient = await prisma.CLIENT.create({
             data: {
-                Person: {
-                    connect: {
-                        Id: newPerson.Id
-                    }
-                },
-                User: {
-                    connect: {
-                        Id: newUser.Id
-                    }
-                }
+                Person_Fk: newPerson.Id,
+                User_Fk: newUser.Id
             }
         });
 
