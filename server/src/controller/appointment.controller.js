@@ -7,7 +7,7 @@ export const createAppointmentSolicitation = async (req, res) => {
     try {
         const findClient = await prisma.cLIENT.findUnique({
             where: {
-                Id: parseInt(clientId)
+                User_Fk: parseInt(clientId)
             }
         });
         if (!findClient) return res.status(400).json(["El cliente no existe"]);

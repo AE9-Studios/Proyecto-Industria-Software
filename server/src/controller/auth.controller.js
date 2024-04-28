@@ -33,16 +33,11 @@ export const registerClient = async (req, res) => {
             }
         });
 
-
         if (person) return res.status(400).json(['Este DNI ya esta registrado']);
-
         if (user) {
             return res.status(400).json(['Este correo ya esta registrado']);
         }
-
         const passwordHash = await bcrypt.hash(password, 10);
-
-
         const newPerson = await prisma.PERSON.create({
             data: {
                 DNI: dni,
