@@ -101,7 +101,9 @@ export const createAppointment = async (req, res) => {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
 
     // Convertir la fecha a un objeto Date
-    if (!date) return res.status(400).json(["La fecha es requerida"]);
+    if (!date || isNaN(new Date(date))) {
+        return res.status(400).json(["La fecha es requerida y debe ser una cadena de fecha válida"]);
+    }
     const startDate = new Date(date);
 
     // Crear una nueva fecha que sea 30 minutos después
