@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 
-
+app.set('trust proxy', 1);
 app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -44,6 +44,6 @@ app.use('/api/img/products', express.static(imagesProducts));
 app.use(express.static(path.join(__dirname, "/public")));
 
 
-console.log(`AdminJS started on http://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
+console.log(`AdminJS started on https://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
 
 export default app; // exportamos la aplicación para poder usarla en otros archivos
