@@ -16,7 +16,7 @@ export const createAppointmentSolicitation = async (req, res) => {
             data: {
                 Date: new Date(date),
                 Description: description,
-                Client_Fk: parseInt(findClient.Id),
+                Client_Fk: parseInt(clientId),
                 State: 'PENDIENTE'
             }
         });
