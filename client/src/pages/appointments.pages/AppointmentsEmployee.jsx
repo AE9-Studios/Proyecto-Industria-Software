@@ -142,7 +142,7 @@ const AppointmentsEmployee = () => {
                                     <tr key={index} className={movement.State === 'PENDIENTE' ? 'table-secondary' : movement.State === 'RECHAZADO' ? 'table-danger' : movement.State === 'APROBADO' ? 'table-success' : ''}>
 
                                         <td>{movement.Date.split('T')[0]}</td>
-                                        <td>{movement.Client.Person.Last_Name} {movement.Client.Person.Last_Name}</td>
+                                        <td>{movement.Client.Person.First_Name} {movement.Client.Person.Last_Name}</td>
                                         <td>{movement.Description}</td>
                                         <td className='d-flex'>
                                             <button className={`btn btn-success`} onClick={() => handleShowModal(movement)}  ><i className="bi bi-check-lg"></i></button>

@@ -184,7 +184,7 @@ const ClientAppointments = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Crear nueva Categoria</Modal.Title>
+          <Modal.Title>Pedir cita</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>Fecha</p>
