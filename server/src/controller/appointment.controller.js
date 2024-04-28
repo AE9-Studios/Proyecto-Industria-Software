@@ -98,8 +98,12 @@ export const getAppointmentsSolicitation = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
+    try {
 
     // Convertir la fecha a un objeto Date
+    if (!date || isNaN(new Date(date))) {
+        return res.status(400).json(["La fecha es requerida y debe ser una cadena de fecha válida"]);
+    }
     const startDate = new Date(date);
 
     // Crear una nueva fecha que sea 30 minutos después
@@ -119,7 +123,6 @@ export const createAppointment = async (req, res) => {
 
     if (findAppointInHour) return res.status(400).json(["Ya existe una cita en esa hora"]);
 
-    try {
         const newAppointment = await prisma.aPPOINTMENT.create({
             data: {
                 Date: date, // Convert the date to ISO-8601 format
