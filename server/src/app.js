@@ -19,14 +19,13 @@ import { fileURLToPath } from 'url';
 const app = express();
 
 
-
 app.use(cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded());
 
-app.use(admin.options.rootPath, adminAuth, adminRouter)
+
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/human-resources', humanResourcesRoutes);
@@ -35,12 +34,18 @@ app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
+app.use(function (req, res, next) {
+    res.set('Cache-Control', 'no-store');
+    next();
+});
+app.use(admin.options.rootPath, adminAuth, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const imagesProducts = path.join(__dirname, 'img', 'products');
 app.use('/api/img/products', express.static(imagesProducts));
 app.use(express.static(path.join(__dirname, "/public")));
+
 
 console.log(`AdminJS started on http://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
 
