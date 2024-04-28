@@ -22,7 +22,7 @@ export const adminAuth = async (req, res, next) => {
         if(userFound.Role !==  "ADMINISTRADOR"){
             return res.status(403).send('Autorizacion denegada');
         }
-        return adminRouter(req, res, next)
+        return next();
     })
 
 }
