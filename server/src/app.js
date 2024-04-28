@@ -34,10 +34,7 @@ app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
-app.use(function (req, res, next) {
-    res.set('Cache-Control', 'no-store');
-    next();
-});
+
 app.use(admin.options.rootPath, adminAuth, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
