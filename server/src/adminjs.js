@@ -619,6 +619,11 @@ const adminOptions = {
     ],
 };
 
+
 export const admin = new AdminJS(adminOptions)
+
+
+await admin.initialize();
+
 
 export const adminRouter = AdminJSExpress.buildRouter(admin)
