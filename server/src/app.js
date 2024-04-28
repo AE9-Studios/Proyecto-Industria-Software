@@ -35,7 +35,7 @@ app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
 
-app.use(admin.options.rootPath, adminAuth)
+app.use(admin.options.rootPath, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
