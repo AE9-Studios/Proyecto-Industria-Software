@@ -6,6 +6,7 @@ import { dark, light, noSidebar } from '@adminjs/themes'
 import { PrismaClient } from '@prisma/client'
 import path from "path";
 import { fileURLToPath } from "url";
+import { debug } from "console";
 
 
 const Base_De_datos = new PrismaClient()
@@ -32,6 +33,9 @@ const adminOptions = {
     assets: {
         styles: ["styles.css"],
     },
+    locale: {
+        debug: false,
+    },
     isDebug: false,
     rootPath: '/admin-crud',
     defaultTheme: light.id,
@@ -52,7 +56,7 @@ const adminOptions = {
     componentLoader,
     resources: [
         {
-            resource: { model: getModelByName('USER'), client: Base_De_datos},
+            resource: { model: getModelByName('USER'), client: Base_De_datos },
             options: {
                 actions: {
                     new: {
