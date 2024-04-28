@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded());
 
-app.use(admin.options.rootPath, adminAuth, adminRouter)
+app.use(admin.options.rootPath, adminRouter)
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/human-resources', humanResourcesRoutes);
