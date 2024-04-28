@@ -16,7 +16,7 @@ export const createAppointmentSolicitation = async (req, res) => {
             data: {
                 Date: new Date(date),
                 Description: description,
-                Client_Fk: parseInt(clientId),
+                Client_Fk: parseInt(findClient.Id),
                 State: 'PENDIENTE'
             }
         });
@@ -239,9 +239,15 @@ export const getAppointments = async (req, res) => {
 export const getAppointmentsSolicitationToClient = async (req, res) => {
     const { id } = req.params;
     try {
+        const findClient = await prisma.cLIENT.findFirst({
+            where: {
+                User_Fk: parseInt(id)
+            }
+        });
+
         const appointments = await prisma.aPPOINTMENT_SOLICITATION.findMany({
             where: {
-                Client_Fk: parseInt(id)
+                Client_Fk: parseInt(findClient.User_Fk)
             },
             include: {
                 Client: {

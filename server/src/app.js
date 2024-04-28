@@ -35,7 +35,7 @@ app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
 
-app.use(admin.options.rootPath,adminAuth, adminRouter)
+app.use(admin.options.rootPath, adminRouter)
 
 
 // archivos estaticos 
