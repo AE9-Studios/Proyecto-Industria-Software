@@ -6,8 +6,12 @@ import { dark, light, noSidebar } from '@adminjs/themes'
 import { PrismaClient } from '@prisma/client'
 import path from "path";
 import { fileURLToPath } from "url";
-import { debug } from "console";
-
+import Connect from 'connect-pg-simple'
+import session from 'express-session'
+import jwt from 'jsonwebtoken'
+import 'dotenv/config'
+import prisma from "./db.js";
+import { log } from "console";
 
 const Base_De_datos = new PrismaClient()
 AdminJS.registerAdapter({ Database, Resource })
@@ -27,7 +31,44 @@ const Components = {
     // other custom components
 }
 
+const authenticate = async (req, res) => {
+    const { token } = req.cookies;
 
+    if (!token) return null;
+
+    try {
+        const user = await jwtVerify(token, process.env.TOKEN_SECRET);
+        const userFound = await prisma.USER.findFirst({
+            where: {
+                Id: user.id
+            }
+        });
+
+        if (!userFound || userFound.Role !== "ADMINISTRADOR") {
+            return null;
+        }
+
+        const DEFAULT_ADMIN = {
+            email: userFound.Email,
+            password: userFound.Password,
+        };
+
+        return Promise.resolve(DEFAULT_ADMIN);
+    } catch (err) {
+        res.status(403).send('Autorizacion denegada');
+        return null;
+    }
+}
+
+const ConnectSession = Connect(session)
+  const sessionStore = new ConnectSession({
+    conObject: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production',
+    },
+    tableName: 'session',
+    createTableIfMissing: true,
+  })
 
 const adminOptions = {
     assets: {
@@ -38,6 +79,7 @@ const adminOptions = {
     },
     isDebug: false,
     rootPath: '/admin-crud',
+    loginPath: 'https://classic-vision.alhanisespinal.tech/login',
     defaultTheme: light.id,
     availableThemes: [dark, light, noSidebar],
     branding: {
@@ -621,4 +663,23 @@ const adminOptions = {
 
 export const admin = new AdminJS(adminOptions)
 
-export const adminRouter = AdminJSExpress.buildRouter(admin)
+export const adminRouter = AdminJSExpress.buildAuthenticatedRouter(
+    admin,
+    {
+        authenticate,
+        cookieName: 'adminjs',
+        cookiePassword: 'sessionsecret',
+    },
+    null,
+    {
+        store: sessionStore,
+        resave: true,
+        saveUninitialized: true,
+        secret: 'sessionsecret',
+        cookie: {
+            httpOnly: process.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === 'production',
+        },
+        name: 'adminjs',
+    }
+)
