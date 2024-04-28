@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import prisma from "../db.js";
+import { adminRouter } from '../adminjs.js';
 
 export const adminAuth = async (req, res, next) => {
     const { token } = req.cookies
@@ -21,7 +22,7 @@ export const adminAuth = async (req, res, next) => {
         if(userFound.Role !==  "ADMINISTRADOR"){
             return res.status(403).send('Autorizacion denegada');
         }
-        next()
+        return adminRouter(req, res, next)
     })
 
 }
