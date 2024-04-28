@@ -34,10 +34,10 @@ app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
 
-app.get('/admin-crud', (req, res) => {
-    res.redirect('http://3.221.247.199/admin-crud');
+app.get('/admin-crud',adminAuth, (req, res) => {
+    res.redirect('http://3.221.247.199/admin-crud/panel');
 });
-app.use(admin.options.rootPath, adminAuth, adminRouter)
+app.use(admin.options.rootPath, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
