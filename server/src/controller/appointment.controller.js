@@ -5,7 +5,7 @@ import { http500 } from "../libs/handleErrors.js";
 export const createAppointmentSolicitation = async (req, res) => {
     const { date, description, clientId } = req.body;
     try {
-        const findClient = await prisma.cLIENT.findUnique({
+        const findClient = await prisma.cLIENT.findFirst({
             where: {
                 User_Fk: parseInt(clientId)
             }
