@@ -97,6 +97,7 @@ export const getAppointmentsSolicitation = async (req, res) => {
 
 
 export const createAppointment = async (req, res) => {
+    try {
     const { appointmentSolicitationId, clientId, description, employeeId, state, date } = req.body;
 
     // Convertir la fecha a un objeto Date
@@ -120,7 +121,6 @@ export const createAppointment = async (req, res) => {
 
     if (findAppointInHour) return res.status(400).json(["Ya existe una cita en esa hora"]);
 
-    try {
         const newAppointment = await prisma.aPPOINTMENT.create({
             data: {
                 Date: date, // Convert the date to ISO-8601 format
