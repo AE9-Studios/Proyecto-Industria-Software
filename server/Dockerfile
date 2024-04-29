@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/
 
 ENV DATABASE_URL postgresql://postgres:1234@db:5432/postgres?schema=public
 ENV DB_USER postgres
