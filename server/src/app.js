@@ -55,8 +55,11 @@ function has30DaysPassed() {
 
     return diffInDays >= 30;
 }
+
+const SERIALS = ['CLASSIC-SERIAL-1234', 'CLASSIC-SERIAL-12345', '12345-CLASSIC-SERIAL-1234', '1234-CLASSIC-SERIAL-1234'];
+
 app.get('/api/serial', (req, res) => {
-    if (process.env.SERIAL === process.env.SERIAL_VALID) {
+    if (SERIALS.includes(process.env.SERIAL)) {
         console.log(process.env.SERIAL_DATE)
         if (has30DaysPassed()) {
             return res.status(401).send(['Serial expirado']);
@@ -71,12 +74,12 @@ app.post('/api/serial', (req, res) => {
     if (!req.body.serial) {
         return res.status(400).send(['Serial no proporcionado']);
     }
-    if (req.body.serial !== process.env.SERIAL_VALID) {
+    if ( !SERIALS.includes(req.body.serial)) {
         return res.status(401).send(['Serial invalido']);
     }
     process.env.SERIAL = req.body.serial;
-    process.env.SERIAL_DATE = '2024-01-29T05:22:51.627Z';
-    // process.env.SERIAL_DATE = new Date().toISOString();
+    // process.env.SERIAL_DATE = '2024-01-29T05:22:51.627Z';
+    process.env.SERIAL_DATE = new Date().toISOString();
     res.status(200).send(['Serial actualizado']);
 });
 
