@@ -7,14 +7,14 @@ services:
       context: server
     container_name: back-end
     working_dir: /usr/src/app
-    volumes: 
-      - ./server:/usr/src/app
+    # volumes: 
+    #   - ./server:/usr/src/app
     tty: true
     ports: 
       - "3000:3000"
     expose:
       - "3000"
-    command: npm install
+    command: npm run dev
 
 
   front-end:
