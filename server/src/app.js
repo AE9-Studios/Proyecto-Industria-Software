@@ -42,6 +42,8 @@ const imagesProducts = path.join(__dirname, 'img', 'products');
 app.use('/api/img/products', express.static(imagesProducts));
 app.use(express.static(path.join(__dirname, "/public")));
 
+console.log(__dirname)
+
 console.log(`AdminJS started on http://localhost:${process.env.BACKEND_PORT}${admin.options.rootPath}`)
 
 export default app; // exportamos la aplicación para poder usarla en otros archivos

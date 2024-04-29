@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid"
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'src/img/products'); // Carpeta donde se guardarán los archivos subidos
+        cb(null, '../../src/img/products'); // Carpeta donde se guardarán los archivos subidos
     },
     filename: function (req, file, cb) {
         const filename = `${uuid()}-${Date.now()}${path.extname(file.originalname)}`; // Nombre del archivo en función de la marca de tiempo y el nombre original
