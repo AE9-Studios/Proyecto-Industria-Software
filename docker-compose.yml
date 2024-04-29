@@ -8,8 +8,7 @@ services:
     container_name: back-end
     working_dir: /usr/src/app
     volumes: 
-      - ./server:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./classicvision:/usr/src/app
     tty: true
     ports: 
       - "3000:3000"
