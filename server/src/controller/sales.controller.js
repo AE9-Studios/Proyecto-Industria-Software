@@ -8,6 +8,7 @@ import {
 import {
   sendEmailPurchaseSuccess,
   sendEmailOrderDone,
+  sendEmailSupplier,
 } from "../libs/sendEmail.js";
 
 import { logActivity } from "../libs/logActivity.js";
@@ -63,9 +64,6 @@ export const saveInvoice = async (req, res) => {
 
     if (employeeId !== "null") {
       employee = await prisma.EMPLOYEE.findFirst({
-        where: {
-          User_Fk: parseInt(employeeId),
-        },
         select: {
           Id: true,
           User: {
@@ -140,6 +138,16 @@ export const saveInvoice = async (req, res) => {
             "Salida de inventario",
             `Se ha registado una cantidad saliente de ${product.quantity} del producto ${product.Name}`
           );
+
+          const inventoryMovement = await prisma.iNVENTORY_MOVEMENT.create({
+            data: {
+              Product_Fk: product.Id,
+              Quantity: product.quantity,
+              State: "SALIDA",
+              Description: `Se ha registado una cantidad saliente de ${product.quantity} del producto ${product.Name}`,
+            },
+          });
+
           const invoiceOrderProductDetail =
             await prisma.INVOICE_ORDER_PRODUCT_DETAILS.create({
               data: {
@@ -157,9 +165,38 @@ export const saveInvoice = async (req, res) => {
             where: {
               Product_Fk: product.Id,
             },
+            include: {
+              Product: {
+                select: {
+                  Id: true, // Suponiendo que Id es el campo de identificación de tu producto
+                  Name: true, // Otros campos que desees seleccionar
+                  Description: true,
+                  Brand: true,
+                  Price_Buy: true,
+                  Price_Sell: true,
+                  // Agrega otros campos de PRODUCT que desees seleccionar
+                  Supplier: true,
+                },
+              },
+            },
           });
 
           if (inventory) {
+            if (inventory.Stock <= inventory.Min_Stock) {
+              console.log("reordenando....");
+              await sendEmailSupplier(
+                inventory.Product.Supplier,
+                "¡Se ha alcanzado el punto de reorden en Óptica Classic Vision!",
+                `<p>Hola <strong>${inventory.Product.Supplier.Name}</strong>,</p>
+              <p>Se ha alcanzado el punto de reorden en Classic Vision.</p>
+              <p>Se solicita la entrega de ${inventory.Min_Stock} unidades nuevas de ${inventory.Product.Name}, ${inventory.Product.Brand}</p>
+              <br>
+              <p>¡Gracias!</p>
+              <img src="cid:signature" alt="Classic Vision Logo" style="width:450px;height:auto;">
+              `
+              );
+            }
+
             const updatedStock = inventory.Stock - product.quantity;
             const updatedValuedInventory =
               updatedStock * invoiceOrderProductDetail.Product.Price_Sell;
@@ -280,7 +317,7 @@ export const getAllInvoiceOrders = async (req, res) => {
         Client: {
           include: {
             Person: true,
-            User: true
+            User: true,
           },
         },
         Employee: {
@@ -526,7 +563,7 @@ export const getAllOrders = async (req, res) => {
         Client: {
           include: {
             Person: true,
-            User: true
+            User: true,
           },
         },
         Employee: {

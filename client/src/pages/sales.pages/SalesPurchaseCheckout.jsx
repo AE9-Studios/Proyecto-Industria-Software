@@ -24,6 +24,8 @@ const SalesPurchaseCheckout = () => {
   const valuationRef = useRef(24.71);
 
   const totalRef = useRef(0);
+  const discountRef = useRef(false);
+
   const purchaseListRef = useRef(purchaseList);
 
   const getExchangeRate = async (baseCurrency, targetCurrency) => {
@@ -52,6 +54,9 @@ const SalesPurchaseCheckout = () => {
         const discountApplied =
           user.role === "ADMINISTRADOR" ? false : isSenior;
 
+          discountRef.current = discountApplied
+
+          console.log(discountRef)
         invoiceNumberRef.current = nextInvoiceId;
         setDiscountApplied(discountApplied);
         valuationRef.current = rate;
@@ -190,13 +195,13 @@ const SalesPurchaseCheckout = () => {
                     subtotal: (parseFloat(totalRef.current) / 1.15).toFixed(2),
                     total: (
                       parseFloat(totalRef.current) -
-                      (discountApplied ? parseFloat(totalRef.current) * 0.1 : 0)
+                      (discountRef.current ? parseFloat(totalRef.current) * 0.1 : 0)
                     ).toFixed(2),
                     userName: user.userName,
                     userId: user.id,
                     employeeId: null,
                     email: user.email,
-                    discount: discountApplied
+                    discount: discountRef.current
                       ? `${(parseFloat(totalRef.current) * 0.1).toFixed(
                           2
                         )} (10% Tercera Edad)`

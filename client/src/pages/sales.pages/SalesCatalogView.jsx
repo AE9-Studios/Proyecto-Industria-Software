@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { ProductContext } from "../../context/ShoppingCartContext";
 import { CartContext } from "../../context/ShoppingCartContext";
 import CardProducts from "../../components/CardProduct";
+import { storage } from '../../libs/firebaseConfig';
+import { ref, getDownloadURL } from "firebase/storage";
 
 const SalesCatalogView = () => {
   const { products } = useContext(ProductContext);
   const { addPurchase, purchaseList, deletePurchase } = useContext(CartContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [productImages, setProductImages] = useState({});
+
+  useEffect(() => {
+    const getProductImages = async () => {
+      const images = {};
+      try {
+        await Promise.all(products.map(async (product) => {
+          const storageRef = ref(storage, `images/${product.Name}`); 
+          const url = await getDownloadURL(storageRef);
+          images[product.Id] = url;
+        }));
+        setProductImages(images);
+      } catch (error) {
+        console.error("Error al obtener las imágenes desde Firebase:", error);
+      }
+    };
+    getProductImages();
+  }, [products]); 
 
   const handleAdd = (purchase) => {
     addPurchase(purchase);
@@ -40,13 +60,7 @@ const SalesCatalogView = () => {
           {filteredProducts.map((product) => (
             <CardProducts
               key={product.Id}
-              image={
-                product.Image
-                  // ? `http://localhost:3000/api/img/products/${product.Image}` //dev
-                  ? `https://classic-vision.alhanisespinal.tech/api/img/products/${product.Image}` //deploy
-                  : 
-                    "/noimage.jpg"
-              }
+              image={productImages[product.Id] || "/noimage.jpg"} 
               title={product.Name}
               description={product.Description}
               price={product.Price_Buy}

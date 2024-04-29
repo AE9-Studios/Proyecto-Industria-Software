@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-
+import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
@@ -14,4 +14,5 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+export const storage = getStorage(app);
 export const messaging = getMessaging(app);

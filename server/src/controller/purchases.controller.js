@@ -181,6 +181,15 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
           `Se ha registado una cantidad entrante de ${Quantity} del producto ${product.Name}`
         );
 
+        const inventoryMovement = await prisma.iNVENTORY_MOVEMENT.create({
+          data: {
+            Product_Fk: Product_Fk,
+            Quantity: Quantity,
+            State: "ENTRADA",
+            Description: `Se ha registado una cantidad entrante de ${Quantity} del producto ${product.Name}`,
+          },
+        });
+        
         const existingInventory = await prisma.INVENTORY.findFirst({
           where: { Product_Fk: Product_Fk },
         });

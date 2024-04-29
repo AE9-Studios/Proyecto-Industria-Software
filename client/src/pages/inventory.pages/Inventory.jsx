@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { createCategory, createProduct, createSupplier, deleteCategory, deleteProduct, deleteSupplier, getCategory, getInventory, getProducts, getSuppliers } from '../../api/inventory';
 import { Button, Modal } from 'react-bootstrap';
 import BottomNavigation from '../../components/BottomNavigation';
+import { storage } from '../../libs/firebaseConfig';
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 const Inventory = () => {
+
+    const [progresspercent, setProgresspercent] = useState(0);
+
 
     const list = [
         {
@@ -49,27 +54,49 @@ const Inventory = () => {
 
     const newProduct = async () => {
         try {
-            const res = await createProduct({
-                Name: document.getElementById('name-prod').value,
-                Description: document.getElementById('desp-prod').value,
-                Brand: document.getElementById('brand-prod').value,
-                Price_Buy: parseInt(document.getElementById('price-buy-prod').value),
-                Price_Sell: parseInt(document.getElementById('price-sell-prod').value),
-                Category_Fk: parseInt(document.getElementById('category-prod').value),
-                Supplier_Fk: parseInt(document.getElementById('supplier-prod').value),
-                file: document.getElementById('file').files[0]
-            });
-            console.log(document.getElementById('file').files[0]);
-            console.log(res);
-            setShowModalProd(false);
-            alert('Producto creado');
-            getProductFunc();
+            const file = document.getElementById('file').files[0];
+            const storageRef = ref(storage, `images/${document.getElementById('name-prod').value}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+    
+            uploadTask.on("state_changed",
+                (snapshot) => {
+                    const progress =
+                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgresspercent(progress);
+                },
+                (error) => {
+                    alert(error);
+                },
+                async () => {
+                    try {
+
+                        const res = await createProduct({
+                            Name: document.getElementById('name-prod').value,
+                            Description: document.getElementById('desp-prod').value,
+                            Brand: document.getElementById('brand-prod').value,
+                            Price_Buy: parseInt(document.getElementById('price-buy-prod').value),
+                            Price_Sell: parseInt(document.getElementById('price-sell-prod').value),
+                            Category_Fk: parseInt(document.getElementById('category-prod').value),
+                            Supplier_Fk: parseInt(document.getElementById('supplier-prod').value),
+                            file: document.getElementById('file').files[0]                       
+                        });
+    
+                        console.log(res);
+                        setShowModalProd(false);
+                        alert('Producto creado');
+                        getProductFunc();
+                    } catch (error) {
+                        alert('Error al crear el producto');
+                        console.error(error);
+                    }
+                }
+            );
         } catch (error) {
-            alert('Error al crear el producto');
-            error.response.data.map((err) => alert(err));
-            console.log(error);
+            alert('Error al cargar la imagen');
+            console.error(error);
         }
-    }
+    };
+    
 
     const getProductFunc = async (id) => {
         try {
