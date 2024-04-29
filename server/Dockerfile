@@ -14,6 +14,4 @@ ENV TOKEN_SECRET 1234
 
 COPY . .
 
-RUN npm install
-
 EXPOSE 3000

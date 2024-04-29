@@ -3,7 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import path, { dirname } from "path";
-
+import 'dotenv/config'
 
 import inventoryRoutes from './routes/inventory.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -34,6 +34,43 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/purchases', purchasesRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/activity-log', activityLogRoutes)
+
+function has30DaysPassed() {
+    const serialDate = new Date(process.env.SERIAL_DATE);
+    const currentDate = new Date();
+
+    // Calcula la diferencia en días entre la fecha actual y la fecha del serial
+    const diffInDays = Math.ceil((currentDate - serialDate) / (1000 * 60 * 60 * 24));
+
+    return diffInDays >= 30;
+}
+
+app.get('/api/serial', (req, res) => {
+    if (process.env.SERIAL === process.env.SERIAL_VALID) {
+        console.log(process.env.SERIAL_DATE)
+        if (has30DaysPassed()) {
+            return res.status(401).send(['Serial expirado']);
+        }
+        
+        return res.send(['Serial valido']);
+    }
+    res.status(401).send(['Serial invalido']);
+});
+app.post('/api/serial', (req, res) => {
+    console.log(req.body)
+    if (!req.body.serial) {
+        return res.status(400).send(['Serial no proporcionado']);
+    }
+    if (req.body.serial !== process.env.SERIAL_VALID) {
+        return res.status(401).send(['Serial invalido']);
+    }
+    process.env.SERIAL = req.body.serial;
+    process.env.SERIAL_DATE = new Date().toISOString();
+    // process.env.SERIAL_DATE = new Date().toISOString();
+    res.status(200).send(['Serial actualizado']);
+});
+
+
 
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
