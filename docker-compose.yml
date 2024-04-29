@@ -9,7 +9,6 @@ services:
     working_dir: /usr/src/app
     volumes: 
       - ./server:/usr/src/app
-      - /usr/src/app/node_modules
     tty: true
     ports: 
       - "3000:3000"
