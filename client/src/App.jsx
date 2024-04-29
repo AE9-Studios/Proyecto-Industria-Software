@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
 import NotificationHandler from './components/NotificationHandler'
 import Emulator from './components/Warning'
-import {AccountRecovery, ResetPasswordPage } from './pages/PasswordRecovery'
+import { AccountRecovery, ResetPasswordPage } from './pages/PasswordRecovery'
 import PanelAdmin from './pages/admin.pages/PanelAdmin'
 import EmployeeHome from './pages/human-resources.pages/EmployeeHome'
 import ClientHome from './pages/client.pages/ClientHome'
@@ -60,25 +60,52 @@ import PurchasesQuotation from './pages/purchases.pages/PurchasesQuotation'
 import PurchasesOrderList from './pages/purchases.pages/PurchasesOrderList'
 import PurchasesOrderDetails from './pages/purchases.pages/PurchasesOrderDetails'
 import PurchasesReceiptList from './pages/purchases.pages/PurchasesReceiptList'
+import Serial from './Serial'
+import { getSerial } from './api/auth'
+import { useEffect, useState } from 'react'
 
 
 function App() {
+
+  const [serial, setSerial] = useState(false)
+
+  const verifySerial = async () => {
+    try {
+      const res = await getSerial()
+      console.log(res)
+      setSerial(true)
+    } catch (error) {
+      error.response.data.map(e => console.log(e))
+    }
+  }
+
+  useEffect(()=>{
+    verifySerial()
+  },[serial])
+
+
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/forgot-password' element={<AccountRecovery />} />
-          <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
-          <Route path='/dontlookatme' element={<Emulator />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path='/admin/*' element={<AdminRoutes />} />
-            <Route path='/client/*' element={<ClientRoutes />} />
-            <Route path='/employee/*' element={<EmployeeRoutes />} />
-          </Route>
-        </Routes>
+        {
+           serial ? <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/forgot-password' element={<AccountRecovery />} />
+            <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
+            <Route path='/dontlookatme' element={<Emulator />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path='/admin/*' element={<AdminRoutes />} />
+              <Route path='/client/*' element={<ClientRoutes />} />
+              <Route path='/employee/*' element={<EmployeeRoutes />} />
+            </Route>
+          </Routes>
+            :
+            <Routes>
+              <Route path='/' element={<Serial />} />
+            </Routes>
+        }
       </BrowserRouter>
     </AuthProvider>
   )
@@ -182,7 +209,7 @@ function EmployeeRoutes() {
           <Route path='permission/:id' element={<EmployeePermissionDetails />} />
           <Route path='vacation/:id' element={<EmployeeVacationDetails />} />
           <Route path='requests' element={<EmployeeRequestList />} />
-          { user.employeeData.Position === 'MEDICO' ? <Route path='/appointments' element={<AppointmentsEmployee />} /> : null}
+          {user.employeeData.Position === 'MEDICO' ? <Route path='/appointments' element={<AppointmentsEmployee />} /> : null}
 
         </>}
       </Routes>
