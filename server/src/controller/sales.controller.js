@@ -91,8 +91,6 @@ export const saveInvoice = async (req, res) => {
       });
     }
 
-    console.log(employee)
-
     const newInvoiceOrder = await prisma.INVOICE_ORDER.create({
       data: {
         Client_Fk: client_Fk,

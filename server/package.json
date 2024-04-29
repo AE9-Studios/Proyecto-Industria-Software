@@ -46,5 +46,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "prisma": "^5.10.2"  }
+    "prisma": "^5.10.2"
+  }
 }
