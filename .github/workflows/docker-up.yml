@@ -44,4 +44,5 @@ jobs:
             sudo docker network connect node-network back-end
             sudo docker network connect node-network front-end
             sudo docker network connect node-network nginx
+            docker exec -it back-end npm run dev
             exit
