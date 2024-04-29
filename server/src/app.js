@@ -37,6 +37,41 @@ app.use('/api/activity-log', activityLogRoutes)
 
 app.use(admin.options.rootPath, adminRouter)
 
+//serial
+
+function has30DaysPassed() {
+    const serialDate = new Date(process.env.SERIAL_DATE);
+    const currentDate = new Date();
+
+    // Calcula la diferencia en días entre la fecha actual y la fecha del serial
+    const diffInDays = Math.ceil((currentDate - serialDate) / (1000 * 60 * 60 * 24));
+
+    return diffInDays >= 30;
+}
+app.get('/api/serial', (req, res) => {
+    if (process.env.SERIAL === process.env.SERIAL_VALID) {
+        console.log(process.env.SERIAL_DATE)
+        if (has30DaysPassed()) {
+            return res.status(401).send(['Serial expirado']);
+        }
+        
+        return res.send(['Serial valido']);
+    }
+    res.status(401).send(['Serial invalido']);
+});
+app.post('/api/serial', (req, res) => {
+    console.log(req.body)
+    if (!req.body.serial) {
+        return res.status(400).send(['Serial no proporcionado']);
+    }
+    if (req.body.serial !== process.env.SERIAL_VALID) {
+        return res.status(401).send(['Serial invalido']);
+    }
+    process.env.SERIAL = req.body.serial;
+    // process.env.SERIAL_DATE = '2024-01-29T05:22:51.627Z';
+    process.env.SERIAL_DATE = new Date().toISOString();
+    res.status(200).send(['Serial actualizado']);
+});
 
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);

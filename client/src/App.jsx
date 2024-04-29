@@ -60,29 +60,57 @@ import PurchasesQuotation from './pages/purchases.pages/PurchasesQuotation'
 import PurchasesOrderList from './pages/purchases.pages/PurchasesOrderList'
 import PurchasesOrderDetails from './pages/purchases.pages/PurchasesOrderDetails'
 import PurchasesReceiptList from './pages/purchases.pages/PurchasesReceiptList'
+import { useEffect, useState } from 'react'
+import { getSerial } from './api/auth'
+import Serial from './Serial'
 
 
 function App() {
+
+  const [serial, setSerial] = useState(false)
+
+  const verifySerial = async () => {
+    try {
+      const res = await getSerial()
+      console.log(res)
+      setSerial(true)
+    } catch (error) {
+      error.response.data.map(e => console.log(e))
+    }
+  }
+
+  useEffect(()=>{
+    verifySerial()
+  },[serial])
+
+
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/forgot-password' element={<AccountRecovery />} />
-          <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
-          <Route path='/dontlookatme' element={<Emulator />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path='/admin/*' element={<AdminRoutes />} />
-            <Route path='/client/*' element={<ClientRoutes />} />
-            <Route path='/employee/*' element={<EmployeeRoutes />} />
-          </Route>
-        </Routes>
+        {
+           serial ? <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='/forgot-password' element={<AccountRecovery />} />
+            <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
+            <Route path='/dontlookatme' element={<Emulator />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path='/admin/*' element={<AdminRoutes />} />
+              <Route path='/client/*' element={<ClientRoutes />} />
+              <Route path='/employee/*' element={<EmployeeRoutes />} />
+            </Route>
+          </Routes>
+            :
+            <Routes>
+              <Route path='/' element={<Serial />} />
+            </Routes>
+        }
       </BrowserRouter>
     </AuthProvider>
   )
 }
+
 
 function AdminRoutes() {
   const { user } = useAuth()
