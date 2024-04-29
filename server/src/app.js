@@ -41,6 +41,7 @@ app.use(admin.options.rootPath, adminRouter)
 // archivos estaticos 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+console.log(__dirname);
 const imagesProducts = path.join(__dirname, 'img', 'products');
 app.use('/api/img/products', express.static(imagesProducts));
 app.use(express.static(path.join(__dirname, "/public")));
