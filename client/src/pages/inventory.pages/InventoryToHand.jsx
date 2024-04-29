@@ -96,7 +96,6 @@ const InventoryToHand = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     return (
         <div className='' >
-            <div>Espacio para el menu </div>
             <div className="container mt-4 bg-white rounded-4  table-responsive" >
                 <div className='d-flex justify-content-center align-items-center'>
                     <div className="col">

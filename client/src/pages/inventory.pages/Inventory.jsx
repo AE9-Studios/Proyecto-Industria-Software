@@ -55,7 +55,6 @@ const Inventory = () => {
                 Brand: document.getElementById('brand-prod').value,
                 Price_Buy: parseInt(document.getElementById('price-buy-prod').value),
                 Price_Sell: parseInt(document.getElementById('price-sell-prod').value),
-                Stock: parseInt(document.getElementById('stock-prod').value),
                 Category_Fk: parseInt(document.getElementById('category-prod').value),
                 Supplier_Fk: parseInt(document.getElementById('supplier-prod').value),
                 file: document.getElementById('file').files[0]
@@ -214,7 +213,6 @@ const Inventory = () => {
 
     return (
         <div className='pb-4' >
-            <div>Espacio para el menu </div>
             <div className="container mt-4 bg-white rounded-4 table-responsive" >
                 <div className='d-flex justify-content-center align-items-center'>
                     <div className="col">
@@ -443,9 +441,6 @@ const Inventory = () => {
                     <br />
                     <p>Imagen</p>
                     <input id='file' type="file" className="form-control" />
-                    <br />
-                    <p>Cantidad</p>
-                    <input id='stock-prod' type="number" className="form-control" placeholder={`Ingrese la cantidad`} />
                     <br />
                     <p>Categoria</p>
                     <select id='category-prod' className="form-select" aria-label="Default select example">

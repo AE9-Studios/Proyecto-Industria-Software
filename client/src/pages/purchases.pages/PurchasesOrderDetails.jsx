@@ -19,6 +19,7 @@ const PurchasesOrderDetails = () => {
     { title: "Panel", url: "/admin/home", icon: "bi bi-house-fill" },
   ];
   const { user } = useAuth();
+  const stockMinimoRef = useRef();
   const navigate = useNavigate();
   const [purchaseOrder, setPurchaseOrder] = useState("");
   const [attachedFile, setAttachedFile] = useState(null);
@@ -150,6 +151,7 @@ const PurchasesOrderDetails = () => {
                 formData.append("id", purchaseOrder.Id);
                 formData.append("receipt", attachedFileRef.current);
                 formData.append("userName", user.userName);
+                formData.append("minStock", stockMinimoRef.current.value); 
                 updatePurchaseOrderAndInventory(formData)
                   .then(() => {})
                   .catch((error) => {
@@ -329,6 +331,23 @@ const PurchasesOrderDetails = () => {
                       accept=".pdf"
                       onChange={handleFileChange}
                     />
+                    <br />
+                    <div className="col-6 text-center">
+                      <div className="row align-items-center">
+                        <div className="col-auto">
+                          <label htmlFor="stockMinimo">Stock mínimo:</label>
+                        </div>
+                        <div className="col">
+                          <input
+                            ref={stockMinimoRef}
+                            className="form-control"
+                            type="number"
+                            min="1"
+                            id="stockMinimo"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -7,12 +7,6 @@ import BottomNavigation from "../../components/BottomNavigation";
 const EmployeeVacationDetails = () => {
   const list = [
     { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-    {
-      title: "Permisos",
-      url: "/employee/permission",
-      icon: "bi bi-calendar-check",
-    },
-    { title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2" },
   ];
   const [vacation, setVacation] = useState(null);
   const { user } = useAuth();

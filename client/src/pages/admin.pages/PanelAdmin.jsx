@@ -23,7 +23,7 @@ const PanelAdmin = () => {
     <div>
       <div className="container p-2 m-auto">
         <h3 className='text-center'>Panel de Administración</h3>
-        <p className='p-2'>El administrador puede gestionar ventas, compras, inventario, recursos humanos, citas. Ademas de administrar los registros de los modelos en la Base de datos.
+        <p className='text-center p-2'>El administrador puede gestionar ventas, compras, inventario, recursos humanos, citas. Ademas de administrar los registros de los modelos en la Base de datos.
           <br />
           Seleccione una opción para dirigirse al panel correspondiente.
         </p>

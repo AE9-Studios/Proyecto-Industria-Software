@@ -7,8 +7,7 @@ import BottomNavigation from "../../components/BottomNavigation";
 export const EmployeePermissionCreate = () => {
   const list = [
     { title: "Inicio", url: "/employee/home", icon: "bi bi-house-fill" },
-    {title: "Permisos", url: "/employee/permission", icon: "bi bi-calendar-check"},
-    {title: "Solicitudes", url: "/employee/requests", icon: "bi bi-mailbox2"},
+
   ];
   const {
     register,

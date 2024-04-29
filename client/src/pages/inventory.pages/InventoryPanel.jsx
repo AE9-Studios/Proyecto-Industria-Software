@@ -19,7 +19,7 @@ const InventoryPanel = () => {
     <div>
       <div className="container p-2 m-auto">
         <h3 className='text-center'>Panel de Inventario</h3>
-        <p className='p-2'>Gestiona el inventario de productos de la empresa.
+        <p className='text-center p-2'>Gestiona el inventario de productos de la empresa.
           <br />
           Seleccione una opción para dirigirse al panel correspondiente.
         </p>

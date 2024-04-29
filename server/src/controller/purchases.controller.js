@@ -137,7 +137,7 @@ export const getPurchaseOrderByIdWithDetails = async (req, res) => {
 };
 
 export const updatePurchaseOrderAndInventory = async (req, res) => {
-  const { id, userName } = req.body;
+  const { id, userName, minStock } = req.body;
   const { filename } = req.file;
 
   try {
@@ -181,18 +181,33 @@ export const updatePurchaseOrderAndInventory = async (req, res) => {
           `Se ha registado una cantidad entrante de ${Quantity} del producto ${product.Name}`
         );
 
-        await prisma.INVENTORY.updateMany({
+        const existingInventory = await prisma.INVENTORY.findFirst({
           where: { Product_Fk: Product_Fk },
-          data: {
-            Stock: {
-              increment: Quantity,
-            },
-
-            Valued_Inventory: {
-              increment: Quantity * product.Price_Sell,
-            },
-          },
         });
+
+        if (!existingInventory) {
+          await prisma.INVENTORY.create({
+            data: {
+              Product_Fk: Product_Fk,
+              Stock: Quantity,
+              Min_Stock: parseInt(minStock),
+              Valued_Inventory: Quantity * product.Price_Sell,
+            },
+            
+          });
+        } else {
+          await prisma.INVENTORY.updateMany({
+            where: { Product_Fk: Product_Fk },
+            data: {
+              Stock: {
+                increment: Quantity,
+              },
+              Valued_Inventory: {
+                increment: Quantity * product.Price_Sell,
+              },
+            },
+          });
+        }
       })
     );
 

@@ -328,7 +328,7 @@ export const recoveryPassword = async (req, res) => {
         const maskedEmail = email.endsWith("@classicvision.com")
           ? `${"****" + user.Email.slice(4)}`
           : email;
-        const url = `http://localhost:3000/api/auth/password-reset?token=${token}`;
+        const url = `https://classic-vision.alhanisespinal.tech/api/auth/password-reset?token=${token}`;
   
         if (email.endsWith("@classicvision.com")) {
           sendEmailRecoveryPassword(user, name, url, expire);
@@ -363,7 +363,7 @@ export const resetPasswordPage = async (req, res) => {
       if (code != undefined) {
         const url = encodeURIComponent(token.replace(/\./g, "%"));
   
-        res.redirect(`http://localhost:5173/reset-password/${url}`);
+        res.redirect(`https://classic-vision.alhanisespinal.tech/reset-password/${url}`);
       } else {
         console.error("El enlace ha expirado");
       }
