@@ -78,8 +78,8 @@ app.post('/api/serial', (req, res) => {
         return res.status(401).send(['Serial invalido']);
     }
     process.env.SERIAL = req.body.serial;
-    // process.env.SERIAL_DATE = '2024-01-29T05:22:51.627Z';
-    process.env.SERIAL_DATE = new Date().toISOString();
+    process.env.SERIAL_DATE = '2024-01-29T05:22:51.627Z';
+    ?//process.env.SERIAL_DATE = new Date().toISOString();
     res.status(200).send(['Serial actualizado']);
 });
 
