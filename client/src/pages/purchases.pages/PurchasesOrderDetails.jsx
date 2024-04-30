@@ -151,7 +151,7 @@ const PurchasesOrderDetails = () => {
                 formData.append("id", purchaseOrder.Id);
                 formData.append("receipt", attachedFileRef.current);
                 formData.append("userName", user.userName);
-                formData.append("minStock", stockMinimoRef.current.value); 
+                formData.append("minStock", stockMinimoRef.current.value);
                 updatePurchaseOrderAndInventory(formData)
                   .then(() => {})
                   .catch((error) => {
@@ -311,6 +311,14 @@ const PurchasesOrderDetails = () => {
                         <i className="bi bi-info-circle-fill"></i> Debe adjuntar
                         un recibo o factura entregada por los proveedores para
                         justificar el pago.
+                      </span>
+                    </small>
+                    <br />
+                    <small>
+                      <span style={{ color: "red" }}>
+                        <i className="bi bi-info-circle-fill"></i> Cuando el
+                        stock en bodega sea inferior al stock mínimo ingresado se enviará un nuevo
+                        pedido automáticamente al proveedor.
                       </span>
                     </small>
                     <br />

@@ -223,7 +223,7 @@ const sendInvoice = async ({
               </td>
             </tr>
 
-            <img src="../../public/logo-horizontal.png" alt="Company logo"
+            <img src="/logo-horizontal.png" alt="Company logo"
                 style="max-width: 500px; height: auto; filter: grayscale(100%);" />
 
 

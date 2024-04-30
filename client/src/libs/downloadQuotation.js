@@ -108,7 +108,7 @@ const downloadQuotation = ({
                         <div class="watermark">COTIZACIÓN COTIZACIÓN COTIZACIÓN COTIZACIÓN COTIZACIÓN</div>
                         <div class="quotation-title">Cotización</div>
                         <div style="text-align: center;">
-                            <img src="../../public/logo-horizontal.png" alt="Company logo"
+                            <img src="/logo-horizontal.png" alt="Company logo"
                                  style="max-width: 500px; height: auto; filter: grayscale(100%);" />
                         </div>
                         <table class="information">

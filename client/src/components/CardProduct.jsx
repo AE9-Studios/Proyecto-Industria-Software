@@ -7,6 +7,7 @@ const CardProducts = ({
   handleAdd,
   handleRemove,
   inCart,
+  description
 }) => {
   return (
     <div
@@ -52,6 +53,7 @@ const CardProducts = ({
             </span>
           </h5>
           <h5 className="card-title">{title}</h5>
+          <h6>{description}</h6>
         </div>
         <div className="mt-auto text-center">
           <hr />
@@ -81,6 +83,7 @@ const CardProducts = ({
 CardProducts.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   handleAdd: PropTypes.func.isRequired,
   handleRemove: PropTypes.func.isRequired,
